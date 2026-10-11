@@ -460,34 +460,6 @@
 
 {{-- =========================
     ADD ORDER MODAL
-========================= --}}
-
-<div class="modal-overlay" id="addOrderModal">
-
-    <div class="order-modal">
-
-        {{-- HEADER --}}
-        <div class="modal-header">
-
-            <div>
-                <span class="modal-eyebrow">NEW ORDER</span>
-                <h2>Add New Order</h2>
-                <p>Tambahkan pesanan baru ke sistem REBANT.</p>
-            </div>
-
-            <button
-                type="button"
-                class="modal-close"
-                id="closeAddOrderModal"
-            >
-                <svg width="20" height="20"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <path d="M6 6l12 12"/>
-                    <path d="M18 6L6 18"/>
-                </svg>
             </button>
 
         </div>
