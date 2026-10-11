@@ -9,7 +9,8 @@
     @vite([
         'resources/css/admin.css',
         'resources/css/orders.css',
-        'resources/css/order-detail.css'
+        'resources/css/order-detail.css',
+        'resources/css/products.css'
     ])
 
     @stack('styles')
@@ -58,7 +59,7 @@
 
 
     {{-- Order Management --}}
-    <a href="#"
+    <a href="/admin/orders"
        class="nav-item {{ request()->is('admin/orders*') ? 'active' : '' }}">
 
         <svg width="20" height="20" viewBox="0 0 24 24"
@@ -74,7 +75,10 @@
 
 
     {{-- Master Produk & SKU --}}
-    <a href="#" class="nav-item">
+    <a
+    href="/admin/products"
+    class="nav-item {{ request()->is('admin/products*') ? 'active' : '' }}"
+>
 
         <svg width="20" height="20" viewBox="0 0 24 24"
              fill="none" stroke="currentColor" stroke-width="1.8">
