@@ -176,7 +176,7 @@
 
         <div>
             <h2>Order Items</h2>
-            <p>Daftar produk yang dipesan pelanggan.</p>
+            <p>Daftar produk dan varian yang dipesan pelanggan.</p>
         </div>
 
         <div class="detail-card-icon">
@@ -201,6 +201,8 @@
             <thead>
                 <tr>
                     <th>Produk</th>
+                    <th>Varian</th>
+                    <th>SKU Variant</th>
                     <th>Harga Satuan</th>
                     <th>Qty</th>
                     <th>Subtotal</th>
@@ -209,7 +211,7 @@
 
             <tbody>
 
-                {{-- PRODUCT 1 --}}
+                {{-- ITEM 1 --}}
                 <tr>
 
                     <td>
@@ -218,20 +220,39 @@
 
                             <img
                                 src="{{ asset('images/login-illustration.png') }}"
-                                alt="Wall Decor Minimalist"
+                                alt="Sign Peringatan Hitam"
                                 class="detail-product-image"
                             >
 
                             <div>
-                                <strong>Wall Decor Minimalist</strong>
-                                <span>SKU: RB-WD01</span>
+                                <strong>
+                                    Sign Peringatan Hitam (9x30)
+                                </strong>
+
+                                <span>
+                                    SKU Product: D6A
+                                </span>
                             </div>
 
                         </div>
 
                     </td>
 
-                    <td>Rp100.000</td>
+                    <td>
+                        <span class="detail-variant-name">
+                            CCTV
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="detail-variant-sku">
+                            D6A-1
+                        </span>
+                    </td>
+
+                    <td>
+                        Rp12.000
+                    </td>
 
                     <td>
                         <span class="detail-quantity">
@@ -240,13 +261,15 @@
                     </td>
 
                     <td>
-                        <strong>Rp200.000</strong>
+                        <strong>
+                            Rp24.000
+                        </strong>
                     </td>
 
                 </tr>
 
 
-                {{-- PRODUCT 2 --}}
+                {{-- ITEM 2 --}}
                 <tr>
 
                     <td>
@@ -255,29 +278,50 @@
 
                             <img
                                 src="{{ asset('images/login-illustration.png') }}"
-                                alt="Wall Decor Premium"
+                                alt="Minimalist Wall Shelf"
                                 class="detail-product-image"
                             >
 
                             <div>
-                                <strong>Wall Decor Premium</strong>
-                                <span>SKU: RB-WD03</span>
+                                <strong>
+                                    Minimalist Wall Shelf
+                                </strong>
+
+                                <span>
+                                    SKU Product: RAK-MIN-002
+                                </span>
                             </div>
 
                         </div>
 
                     </td>
 
-                    <td>Rp150.000</td>
-
                     <td>
-                        <span class="detail-quantity">
-                            1
+                        <span class="detail-variant-name">
+                            Natural
                         </span>
                     </td>
 
                     <td>
-                        <strong>Rp150.000</strong>
+                        <span class="detail-variant-sku">
+                            RAK-MIN-002-1
+                        </span>
+                    </td>
+
+                    <td>
+                        Rp163.000
+                    </td>
+
+                    <td>
+                        <span class="detail-quantity">
+                            2
+                        </span>
+                    </td>
+
+                    <td>
+                        <strong>
+                            Rp326.000
+                        </strong>
                     </td>
 
                 </tr>
@@ -419,11 +463,13 @@
         </div>
 
         <div>
-            <strong>Status sedang diproses oleh sistem</strong>
+            <strong>
+                Status sedang diproses oleh sistem
+            </strong>
 
             <p>
-                Sistem akan memeriksa ketersediaan stok untuk
-                menentukan proses order selanjutnya.
+                Sistem akan memeriksa ketersediaan stok setiap
+                varian untuk menentukan proses order selanjutnya.
             </p>
         </div>
 

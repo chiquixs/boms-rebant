@@ -61,7 +61,6 @@
 
         </div>
 
-
         <select class="product-filter-select">
             <option value="">Semua Kategori</option>
             <option value="wall-decor">Wall Decor</option>
@@ -69,13 +68,11 @@
             <option value="vas-bunga">Vas Bunga</option>
         </select>
 
-
         <select class="product-filter-select">
             <option value="">Semua Tipe</option>
             <option value="mts">MTS — Make to Stock</option>
             <option value="mto">MTO — Make to Order</option>
         </select>
-
 
         <select class="product-filter-select">
             <option value="">Semua Status</option>
@@ -96,6 +93,7 @@
 
             <div>
                 <h2>Daftar Produk</h2>
+
                 <p>
                     Kelola seluruh produk dan SKU yang tersedia.
                 </p>
@@ -115,7 +113,8 @@
                 <thead>
                     <tr>
                         <th>Produk</th>
-                        <th>SKU</th>
+                        <th>SKU Product</th>
+                        <th>Varian</th>
                         <th>Kategori</th>
                         <th>Tipe</th>
                         <th>Stok Saat Ini</th>
@@ -153,18 +152,25 @@
                             </div>
                         </td>
 
-
                         <td>
                             <span class="sku-code">
                                 WD-HEX-001
                             </span>
                         </td>
 
+                        <td>
+                            <button
+                                type="button"
+                                class="variant-count-button"
+                                id="toggleVariantProduct1"
+                            >
+                                5 Varian
+                            </button>
+                        </td>
 
                         <td>
                             Wall Decor
                         </td>
-
 
                         <td>
                             <span class="production-badge mts">
@@ -172,13 +178,11 @@
                             </span>
                         </td>
 
-
                         <td>
                             <strong class="stock-value">
                                 32 pcs
                             </strong>
                         </td>
-
 
                         <td>
                             <div class="stock-target">
@@ -187,14 +191,12 @@
                             </div>
                         </td>
 
-
                         <td>
                             <span class="stock-status safe">
                                 <span></span>
                                 Aman
                             </span>
                         </td>
-
 
                         <td>
                             <div class="product-actions">
@@ -208,28 +210,20 @@
                                 </button>
 
                                 <button
-    type="button"
-    class="product-action edit edit-product-button"
-    title="Edit produk"
-
-    data-sku="WD-HEX-001"
-    data-name="Hexagon Wall Decor Set of 3"
-    data-category="wall-decor"
-    data-price="150000"
-
-    data-length="30"
-    data-width="20"
-
-    data-method="mts"
-
-    data-current-stock="32"
-    data-minimum-stock="10"
-    data-target-stock="50"
-
-    data-image="{{ asset('images/login-illustration.png') }}"
->
-    Edit
-</button>
+                                    type="button"
+                                    class="product-action edit edit-product-button"
+                                    title="Edit produk"
+                                    data-sku="WD-HEX-001"
+                                    data-name="Hexagon Wall Decor Set of 3"
+                                    data-category="wall-decor"
+                                    data-price="150000"
+                                    data-length="30"
+                                    data-width="20"
+                                    data-method="mts"
+                                    data-image="{{ asset('images/login-illustration.png') }}"
+                                >
+                                    Edit
+                                </button>
 
                                 <button
                                     type="button"
@@ -253,6 +247,75 @@
                                 </button>
 
                             </div>
+                        </td>
+
+                    </tr>
+
+
+                    {{-- PRODUCT 1 VARIANTS --}}
+                    <tr
+                        class="variant-detail-row"
+                        id="variantRowProduct1"
+                        style="display: none;"
+                    >
+
+                        <td colspan="9">
+
+                            <div class="variant-detail-content">
+
+                                <div class="variant-detail-header">
+                                    <div>
+                                        <strong>Varian Produk</strong>
+                                        <span>5 varian tersedia</span>
+                                    </div>
+                                </div>
+
+                                <div class="variant-list">
+
+                                    <div class="variant-item">
+                                        <span class="sku-code">D6A-1</span>
+                                        <strong>CCTV</strong>
+                                        <span>Stock: 50</span>
+                                        <span>Min: 30</span>
+                                        <span>Target: 80</span>
+                                    </div>
+
+                                    <div class="variant-item">
+                                        <span class="sku-code">D6A-2</span>
+                                        <strong>Dilarang Merokok</strong>
+                                        <span>Stock: 75</span>
+                                        <span>Min: 30</span>
+                                        <span>Target: 80</span>
+                                    </div>
+
+                                    <div class="variant-item">
+                                        <span class="sku-code">D6A-3</span>
+                                        <strong>Area Merokok</strong>
+                                        <span>Stock: 30</span>
+                                        <span>Min: 30</span>
+                                        <span>Target: 80</span>
+                                    </div>
+
+                                    <div class="variant-item">
+                                        <span class="sku-code">D6A-4</span>
+                                        <strong>Arah Kiblat</strong>
+                                        <span>Stock: 34</span>
+                                        <span>Min: 30</span>
+                                        <span>Target: 80</span>
+                                    </div>
+
+                                    <div class="variant-item">
+                                        <span class="sku-code">D6A-5</span>
+                                        <strong>Jagalah Kebersihan</strong>
+                                        <span>Stock: 20</span>
+                                        <span>Min: 30</span>
+                                        <span>Target: 80</span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
                         </td>
 
                     </tr>
@@ -284,18 +347,21 @@
                             </div>
                         </td>
 
-
                         <td>
                             <span class="sku-code">
                                 RAK-MIN-002
                             </span>
                         </td>
 
+                        <td>
+                            <span class="stock-muted">
+                                —
+                            </span>
+                        </td>
 
                         <td>
                             Rak Dinding
                         </td>
-
 
                         <td>
                             <span class="production-badge mts">
@@ -303,13 +369,11 @@
                             </span>
                         </td>
 
-
                         <td>
                             <strong class="stock-value low">
                                 8 pcs
                             </strong>
                         </td>
-
 
                         <td>
                             <div class="stock-target">
@@ -318,14 +382,12 @@
                             </div>
                         </td>
 
-
                         <td>
                             <span class="stock-status low">
                                 <span></span>
                                 Low Stock
                             </span>
                         </td>
-
 
                         <td>
                             <div class="product-actions">
@@ -399,25 +461,11 @@
                             </div>
                         </td>
 
-
                         <td>
                             <span class="sku-code">
                                 WD-CUS-003
                             </span>
                         </td>
-
-
-                        <td>
-                            Wall Decor
-                        </td>
-
-
-                        <td>
-                            <span class="production-badge mto">
-                                MTO
-                            </span>
-                        </td>
-
 
                         <td>
                             <span class="stock-muted">
@@ -425,6 +473,21 @@
                             </span>
                         </td>
 
+                        <td>
+                            Wall Decor
+                        </td>
+
+                        <td>
+                            <span class="production-badge mto">
+                                MTO
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="stock-muted">
+                                —
+                            </span>
+                        </td>
 
                         <td>
                             <span class="stock-muted">
@@ -432,14 +495,12 @@
                             </span>
                         </td>
 
-
                         <td>
                             <span class="stock-status ondemand">
                                 <span></span>
                                 On Demand
                             </span>
                         </td>
-
 
                         <td>
                             <div class="product-actions">
@@ -513,18 +574,21 @@
                             </div>
                         </td>
 
-
                         <td>
                             <span class="sku-code">
                                 VAS-NOR-004
                             </span>
                         </td>
 
+                        <td>
+                            <span class="stock-muted">
+                                —
+                            </span>
+                        </td>
 
                         <td>
                             Vas Bunga
                         </td>
-
 
                         <td>
                             <span class="production-badge mts">
@@ -532,13 +596,11 @@
                             </span>
                         </td>
 
-
                         <td>
                             <strong class="stock-value">
                                 24 pcs
                             </strong>
                         </td>
-
 
                         <td>
                             <div class="stock-target">
@@ -547,14 +609,12 @@
                             </div>
                         </td>
 
-
                         <td>
                             <span class="stock-status safe">
                                 <span></span>
                                 Aman
                             </span>
                         </td>
-
 
                         <td>
                             <div class="product-actions">
@@ -628,18 +688,21 @@
                             </div>
                         </td>
 
-
                         <td>
                             <span class="sku-code">
                                 RAK-FLT-005
                             </span>
                         </td>
 
+                        <td>
+                            <span class="stock-muted">
+                                —
+                            </span>
+                        </td>
 
                         <td>
                             Rak Dinding
                         </td>
-
 
                         <td>
                             <span class="production-badge mts">
@@ -647,13 +710,11 @@
                             </span>
                         </td>
 
-
                         <td>
                             <strong class="stock-value low">
                                 5 pcs
                             </strong>
                         </td>
-
 
                         <td>
                             <div class="stock-target">
@@ -662,14 +723,12 @@
                             </div>
                         </td>
 
-
                         <td>
                             <span class="stock-status low">
                                 <span></span>
                                 Low Stock
                             </span>
                         </td>
-
 
                         <td>
                             <div class="product-actions">
@@ -737,7 +796,6 @@
 
     <div class="product-modal">
 
-
         {{-- =========================
             MODAL HEADER
         ========================= --}}
@@ -758,7 +816,6 @@
                 </p>
 
             </div>
-
 
             <button
                 type="button"
@@ -803,24 +860,21 @@
 
                     <div class="product-form-grid">
 
-
-                        {{-- SKU --}}
                         <div class="product-form-group">
 
                             <label for="productSku">
-                                Kode SKU
+                                SKU Product
                             </label>
 
                             <input
                                 type="text"
                                 id="productSku"
-                                placeholder="Contoh: WD-HEX-001"
+                                placeholder="Contoh: D6A"
                             >
 
                         </div>
 
 
-                        {{-- PRODUCT NAME --}}
                         <div class="product-form-group">
 
                             <label for="productName">
@@ -836,7 +890,6 @@
                         </div>
 
 
-                        {{-- CATEGORY --}}
                         <div class="product-form-group">
 
                             <label for="productCategory">
@@ -866,7 +919,6 @@
                         </div>
 
 
-                        {{-- PRICE --}}
                         <div class="product-form-group">
 
                             <label for="productPrice">
@@ -875,9 +927,7 @@
 
                             <div class="price-input-wrapper">
 
-                                <span>
-                                    Rp
-                                </span>
+                                <span>Rp</span>
 
                                 <input
                                     type="number"
@@ -891,7 +941,6 @@
                         </div>
 
 
-                        {{-- LENGTH --}}
                         <div class="product-form-group">
 
                             <label for="productLength">
@@ -908,16 +957,13 @@
                                     placeholder="Contoh: 30"
                                 >
 
-                                <span>
-                                    cm
-                                </span>
+                                <span>cm</span>
 
                             </div>
 
                         </div>
 
 
-                        {{-- WIDTH --}}
                         <div class="product-form-group">
 
                             <label for="productWidth">
@@ -934,9 +980,7 @@
                                     placeholder="Contoh: 20"
                                 >
 
-                                <span>
-                                    cm
-                                </span>
+                                <span>cm</span>
 
                             </div>
 
@@ -945,15 +989,12 @@
                     </div>
 
 
-                    {{-- =========================
-                        PRODUCT IMAGE
-                    ========================= --}}
+                    {{-- PRODUCT IMAGE --}}
                     <div class="product-form-group product-image-group">
 
                         <label for="productImage">
                             Foto Produk
                         </label>
-
 
                         <label
                             for="productImage"
@@ -961,8 +1002,6 @@
                             id="productImageUpload"
                         >
 
-
-                            {{-- DEFAULT UPLOAD --}}
                             <div
                                 class="product-image-default"
                                 id="productImageDefault"
@@ -985,7 +1024,6 @@
 
                                 </div>
 
-
                                 <div class="product-upload-text">
 
                                     <strong>
@@ -1001,7 +1039,6 @@
                             </div>
 
 
-                            {{-- IMAGE PREVIEW --}}
                             <div
                                 class="product-image-preview"
                                 id="productImagePreview"
@@ -1012,7 +1049,6 @@
                                     alt="Preview foto produk"
                                     id="productPreviewImage"
                                 >
-
 
                                 <div class="product-preview-info">
 
@@ -1025,7 +1061,6 @@
                                     </span>
 
                                 </div>
-
 
                                 <div class="product-preview-change">
 
@@ -1046,7 +1081,6 @@
                             </div>
 
                         </label>
-
 
                         <input
                             type="file"
@@ -1077,11 +1111,8 @@
 
                     </div>
 
-
                     <div class="production-method-options">
 
-
-                        {{-- MTS --}}
                         <label class="production-method-card active">
 
                             <input
@@ -1106,7 +1137,6 @@
                         </label>
 
 
-                        {{-- MTO --}}
                         <label class="production-method-card">
 
                             <input
@@ -1131,91 +1161,164 @@
 
                     </div>
 
-
-                    {{-- =========================
-                        MTS STOCK SETTINGS
-                    ========================= --}}
-                    <div
-                        class="mts-stock-settings"
-                        id="mtsStockSettings"
-                    >
+                </div>
 
 
-                        {{-- CURRENT STOCK --}}
-                        <div class="product-form-group">
+                {{-- =========================
+                    PRODUCT VARIANTS
+                ========================= --}}
+                <div class="product-form-section">
 
-                            <label for="currentStock">
-                                Current Stock
-                            </label>
+                    <div class="product-form-section-title">
 
-                            <div class="stock-input-wrapper">
+                        <h3>
+                            Varian Produk
+                        </h3>
 
-                                <input
-                                    type="number"
-                                    id="currentStock"
-                                    min="0"
-                                    placeholder="0"
-                                >
+                        <p>
+                            Tambahkan SKU dan informasi stok
+                            untuk setiap varian produk.
+                        </p>
 
-                                <span>
-                                    pcs
-                                </span>
-
-                            </div>
-
-                        </div>
+                    </div>
 
 
-                        {{-- MINIMUM STOCK --}}
-                        <div class="product-form-group">
+                    <div id="variantFormsContainer">
 
-                            <label for="minimumStock">
-                                Minimum Stock Alert Level
-                            </label>
+                        {{-- VARIANT 1 --}}
+                        <div class="product-variant-form">
 
-                            <div class="stock-input-wrapper">
+                            <div class="product-variant-form-header">
 
-                                <input
-                                    type="number"
-                                    id="minimumStock"
-                                    min="0"
-                                    placeholder="10"
-                                >
+                                <div>
+                                    <strong>
+                                        Varian 1
+                                    </strong>
 
-                                <span>
-                                    pcs
-                                </span>
+                                    <span>
+                                        Varian utama produk
+                                    </span>
+                                </div>
 
                             </div>
 
-                        </div>
+
+                            <div class="variant-form-grid">
+
+                                <div class="product-form-group">
+
+                                    <label for="variantSku">
+                                        SKU Variant
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="variantSku"
+                                        name="variantSku[]"
+                                        placeholder="Contoh: D6A-1"
+                                    >
+
+                                </div>
 
 
-                        {{-- TARGET STOCK --}}
-                        <div class="product-form-group">
+                                <div class="product-form-group">
 
-                            <label for="targetStock">
-                                Target Buffer Stock
-                            </label>
+                                    <label for="variantName">
+                                        Nama Variant
+                                    </label>
 
-                            <div class="stock-input-wrapper">
+                                    <input
+                                        type="text"
+                                        id="variantName"
+                                        name="variantName[]"
+                                        placeholder="Contoh: CCTV"
+                                    >
 
-                                <input
-                                    type="number"
-                                    id="targetStock"
-                                    min="0"
-                                    placeholder="50"
-                                >
+                                </div>
 
-                                <span>
-                                    pcs
-                                </span>
+
+                                <div class="product-form-group variant-stock-field">
+
+                                    <label for="variantCurrentStock">
+                                        Current Stock
+                                    </label>
+
+                                    <div class="stock-input-wrapper">
+
+                                        <input
+                                            type="number"
+                                            id="variantCurrentStock"
+                                            name="variantCurrentStock[]"
+                                            min="0"
+                                            placeholder="0"
+                                        >
+
+                                        <span>pcs</span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="product-form-group variant-stock-field">
+
+                                    <label for="variantMinimumStock">
+                                        Minimum Stock
+                                    </label>
+
+                                    <div class="stock-input-wrapper">
+
+                                        <input
+                                            type="number"
+                                            id="variantMinimumStock"
+                                            name="variantMinimumStock[]"
+                                            min="0"
+                                            placeholder="30"
+                                        >
+
+                                        <span>pcs</span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="product-form-group variant-stock-field">
+
+                                    <label for="variantTargetStock">
+                                        Target Stock
+                                    </label>
+
+                                    <div class="stock-input-wrapper">
+
+                                        <input
+                                            type="number"
+                                            id="variantTargetStock"
+                                            name="variantTargetStock[]"
+                                            min="0"
+                                            placeholder="80"
+                                        >
+
+                                        <span>pcs</span>
+
+                                    </div>
+
+                                </div>
 
                             </div>
 
                         </div>
 
                     </div>
+
+
+                    <button
+                        type="button"
+                        class="add-variant-button"
+                        id="addVariantButton"
+                    >
+                        + Tambah Varian
+                    </button>
 
                 </div>
 
@@ -1235,14 +1338,13 @@
                     Batal
                 </button>
 
-
                 <button
-    type="submit"
-    class="product-save-button"
-    id="productSaveButton"
->
-    Simpan Produk
-</button>
+                    type="submit"
+                    class="product-save-button"
+                    id="productSaveButton"
+                >
+                    Simpan Produk
+                </button>
 
             </div>
 
@@ -1279,38 +1381,38 @@ document.addEventListener('DOMContentLoaded', function () {
     const cancelProductModal =
         document.getElementById('cancelProductModal');
 
-        const productModalTitle =
-    document.getElementById('productModalTitle');
+    const productModalTitle =
+        document.getElementById('productModalTitle');
 
-const productModalDescription =
-    document.getElementById('productModalDescription');
+    const productModalDescription =
+        document.getElementById('productModalDescription');
 
-const productSaveButton =
-    document.getElementById('productSaveButton');
+    const productSaveButton =
+        document.getElementById('productSaveButton');
 
-const editProductButtons =
-    document.querySelectorAll('.edit-product-button');
+    const editProductButtons =
+        document.querySelectorAll('.edit-product-button');
 
 
-/* FORM INPUTS */
+    /* FORM INPUTS */
 
-const productSku =
-    document.getElementById('productSku');
+    const productSku =
+        document.getElementById('productSku');
 
-const productName =
-    document.getElementById('productName');
+    const productName =
+        document.getElementById('productName');
 
-const productCategory =
-    document.getElementById('productCategory');
+    const productCategory =
+        document.getElementById('productCategory');
 
-const productPrice =
-    document.getElementById('productPrice');
+    const productPrice =
+        document.getElementById('productPrice');
 
-const productLength =
-    document.getElementById('productLength');
+    const productLength =
+        document.getElementById('productLength');
 
-const productWidth =
-    document.getElementById('productWidth');
+    const productWidth =
+        document.getElementById('productWidth');
 
 
     /* PRODUCTION METHOD */
@@ -1324,18 +1426,6 @@ const productWidth =
         document.querySelectorAll(
             '.production-method-card'
         );
-
-    const mtsStockSettings =
-        document.getElementById('mtsStockSettings');
-
-    const currentStock =
-        document.getElementById('currentStock');
-
-    const minimumStock =
-        document.getElementById('minimumStock');
-
-    const targetStock =
-        document.getElementById('targetStock');
 
 
     /* PRODUCT IMAGE */
@@ -1356,36 +1446,59 @@ const productWidth =
         document.getElementById('productImageName');
 
 
+    /* VARIANTS */
+
+    const variantFormsContainer =
+        document.getElementById('variantFormsContainer');
+
+    const addVariantButton =
+        document.getElementById('addVariantButton');
+
+    let variantCount = 1;
+
+
     /* =========================================================
        RESET PRODUCT FORM
     ========================================================= */
 
     function resetProductForm() {
 
-        /* RESET ALL FORM INPUTS */
-
         productForm.reset();
 
         productModalTitle.textContent =
-    'Tambah Produk Baru';
+            'Tambah Produk Baru';
 
-productModalDescription.textContent =
-    'Tambahkan informasi produk dan metode produksinya.';
+        productModalDescription.textContent =
+            'Tambahkan informasi produk dan metode produksinya.';
 
-productSaveButton.textContent =
-    'Simpan Produk';
+        productSaveButton.textContent =
+            'Simpan Produk';
+
+            /* RESET DYNAMIC VARIANTS */
+
+const variantCards =
+    variantFormsContainer.querySelectorAll(
+        '.product-variant-form'
+    );
+
+variantCards.forEach(function (card, index) {
+
+    if (index > 0) {
+        card.remove();
+    }
+
+});
+
+variantCount = 1;
 
 
-        /* RESET IMAGE INPUT */
+        /* RESET IMAGE */
 
         productImage.value = '';
 
         productPreviewImage.src = '';
 
         productImageName.textContent = '';
-
-
-        /* SHOW DEFAULT IMAGE UPLOAD */
 
         productImageDefault
             .classList.remove('hidden');
@@ -1394,16 +1507,13 @@ productSaveButton.textContent =
             .classList.remove('active');
 
 
-        /* RESET PRODUCTION CARD */
+        /* RESET PRODUCTION METHOD */
 
         productionCards.forEach(function (card) {
 
             card.classList.remove('active');
 
         });
-
-
-        /* SET MTS AS DEFAULT */
 
         const mtsRadio =
             document.querySelector(
@@ -1416,190 +1526,138 @@ productSaveButton.textContent =
             .closest('.production-method-card')
             .classList.add('active');
 
-
-        /* SHOW STOCK SETTINGS */
-
-        mtsStockSettings
-            .classList.remove('hidden');
-
-
-        /* ENABLE MTS INPUTS */
-
-        currentStock.disabled = false;
-
-        minimumStock.disabled = false;
-
-        targetStock.disabled = false;
-
     }
+
 
     /* =========================================================
-   OPEN EDIT PRODUCT
-========================================================= */
+       OPEN EDIT PRODUCT
+    ========================================================= */
 
-function openEditModal(button) {
+    function openEditModal(button) {
 
-    /* RESET DULU */
-    resetProductForm();
-
-
-    /* CHANGE MODAL MODE */
-
-    productModalTitle.textContent =
-        'Edit Produk';
-
-    productModalDescription.textContent =
-        'Perbarui informasi dan pengaturan produk.';
-
-    productSaveButton.textContent =
-        'Simpan Perubahan';
+        resetProductForm();
 
 
-    /* BASIC PRODUCT DATA */
+        /* MODAL MODE */
 
-    productSku.value =
-        button.dataset.sku;
+        productModalTitle.textContent =
+            'Edit Produk';
 
-    productName.value =
-        button.dataset.name;
+        productModalDescription.textContent =
+            'Perbarui informasi dan pengaturan produk.';
 
-    productCategory.value =
-        button.dataset.category;
-
-    productPrice.value =
-        button.dataset.price;
-
-    productLength.value =
-        button.dataset.length;
-
-    productWidth.value =
-        button.dataset.width;
+        productSaveButton.textContent =
+            'Simpan Perubahan';
 
 
-    /* PRODUCT IMAGE */
+        /* BASIC PRODUCT DATA */
 
-    if (button.dataset.image) {
+        productSku.value =
+            button.dataset.sku;
 
-        productPreviewImage.src =
-            button.dataset.image;
+        productName.value =
+            button.dataset.name;
 
-        productImageName.textContent =
-            'Foto produk saat ini';
+        productCategory.value =
+            button.dataset.category;
 
-        productImageDefault
-            .classList.add('hidden');
+        productPrice.value =
+            button.dataset.price;
 
-        productImagePreview
+        productLength.value =
+            button.dataset.length;
+
+        productWidth.value =
+            button.dataset.width;
+
+
+        /* PRODUCT IMAGE */
+
+        if (button.dataset.image) {
+
+            productPreviewImage.src =
+                button.dataset.image;
+
+            productImageName.textContent =
+                'Foto produk saat ini';
+
+            productImageDefault
+                .classList.add('hidden');
+
+            productImagePreview
+                .classList.add('active');
+
+        }
+
+
+        /* PRODUCTION METHOD */
+
+        productionCards.forEach(function (card) {
+
+            card.classList.remove('active');
+
+        });
+
+        const selectedMethod =
+            document.querySelector(
+                'input[name="productionMethod"][value="' +
+                button.dataset.method +
+                '"]'
+            );
+
+        if (selectedMethod) {
+
+    selectedMethod.checked = true;
+
+    selectedMethod
+        .closest('.production-method-card')
+        .classList.add('active');
+
+    updateVariantStockVisibility(
+        selectedMethod.value
+    );
+
+}
+
+
+        /* OPEN MODAL */
+
+        productModal
             .classList.add('active');
+
+        document.body.style.overflow =
+            'hidden';
 
     }
 
 
-    /* PRODUCTION METHOD */
+    editProductButtons.forEach(function (button) {
 
-    productionCards.forEach(function (card) {
+        button.addEventListener(
+            'click',
+            function () {
 
-        card.classList.remove('active');
+                openEditModal(button);
+
+            }
+        );
 
     });
 
 
-    const selectedMethod =
-        document.querySelector(
-            'input[name="productionMethod"][value="' +
-            button.dataset.method +
-            '"]'
-        );
-
-
-    if (selectedMethod) {
-
-        selectedMethod.checked = true;
-
-        selectedMethod
-            .closest('.production-method-card')
-            .classList.add('active');
-
-    }
-
-
-    /* MTS */
-
-    if (button.dataset.method === 'mts') {
-
-        mtsStockSettings
-            .classList.remove('hidden');
-
-        currentStock.disabled = false;
-        minimumStock.disabled = false;
-        targetStock.disabled = false;
-
-        currentStock.value =
-            button.dataset.currentStock;
-
-        minimumStock.value =
-            button.dataset.minimumStock;
-
-        targetStock.value =
-            button.dataset.targetStock;
-
-    }
-
-
-    /* MTO */
-
-    else {
-
-        mtsStockSettings
-            .classList.add('hidden');
-
-        currentStock.disabled = true;
-        minimumStock.disabled = true;
-        targetStock.disabled = true;
-
-    }
-
-
-    /* OPEN MODAL */
-
-    productModal
-        .classList.add('active');
-
-    document.body.style.overflow =
-        'hidden';
-
-}
-
-editProductButtons.forEach(function (button) {
-
-    button.addEventListener(
-        'click',
-        function () {
-
-            openEditModal(button);
-
-        }
-    );
-
-});
-
     /* =========================================================
-       OPEN MODAL
+       OPEN ADD PRODUCT MODAL
     ========================================================= */
 
     function openModal() {
-
-        /*
-         * Add Product selalu dimulai
-         * dengan form yang fresh.
-         */
 
         resetProductForm();
 
         productModal
             .classList.add('active');
 
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow =
+            'hidden';
 
     }
 
@@ -1613,12 +1671,8 @@ editProductButtons.forEach(function (button) {
         productModal
             .classList.remove('active');
 
-        document.body.style.overflow = '';
-
-        /*
-         * Setelah modal ditutup,
-         * buang semua temporary input.
-         */
+        document.body.style.overflow =
+            '';
 
         resetProductForm();
 
@@ -1626,7 +1680,7 @@ editProductButtons.forEach(function (button) {
 
 
     /* =========================================================
-       OPEN BUTTON
+       MODAL EVENTS
     ========================================================= */
 
     openProductModal.addEventListener(
@@ -1634,30 +1688,16 @@ editProductButtons.forEach(function (button) {
         openModal
     );
 
-
-    /* =========================================================
-       CLOSE BUTTON
-    ========================================================= */
-
     closeProductModal.addEventListener(
         'click',
         closeModal
     );
-
-
-    /* =========================================================
-       CANCEL BUTTON
-    ========================================================= */
 
     cancelProductModal.addEventListener(
         'click',
         closeModal
     );
 
-
-    /* =========================================================
-       CLICK OUTSIDE MODAL
-    ========================================================= */
 
     productModal.addEventListener(
         'click',
@@ -1672,10 +1712,6 @@ editProductButtons.forEach(function (button) {
         }
     );
 
-
-    /* =========================================================
-       ESC KEY
-    ========================================================= */
 
     document.addEventListener(
         'keydown',
@@ -1705,17 +1741,11 @@ editProductButtons.forEach(function (button) {
             const file =
                 productImage.files[0];
 
-
-            /* NO FILE */
-
             if (!file) {
 
                 return;
 
             }
-
-
-            /* ONLY ALLOW IMAGE */
 
             if (!file.type.startsWith('image/')) {
 
@@ -1725,38 +1755,57 @@ editProductButtons.forEach(function (button) {
 
             }
 
-
-            /* CREATE LOCAL PREVIEW URL */
-
             const imageUrl =
                 URL.createObjectURL(file);
-
-
-            /* SHOW IMAGE */
 
             productPreviewImage.src =
                 imageUrl;
 
-
-            /* SHOW FILE NAME */
-
             productImageName.textContent =
                 file.name;
 
-
-            /* HIDE DEFAULT UPLOAD */
-
             productImageDefault
                 .classList.add('hidden');
-
-
-            /* SHOW PREVIEW */
 
             productImagePreview
                 .classList.add('active');
 
         }
     );
+
+    function updateVariantStockVisibility(method) {
+
+    const variantStockFields =
+        document.querySelectorAll(
+            '.variant-stock-field'
+        );
+
+    variantStockFields.forEach(function (field) {
+
+        const input =
+            field.querySelector('input');
+
+        if (method === 'mto') {
+
+            field.style.display = 'none';
+
+            if (input) {
+                input.disabled = true;
+            }
+
+        } else {
+
+            field.style.display = '';
+
+            if (input) {
+                input.disabled = false;
+            }
+
+        }
+
+    });
+
+}
 
 
     /* =========================================================
@@ -1769,9 +1818,6 @@ editProductButtons.forEach(function (button) {
             'change',
             function () {
 
-
-                /* REMOVE ACTIVE FROM ALL CARDS */
-
                 productionCards.forEach(
                     function (card) {
 
@@ -1780,53 +1826,228 @@ editProductButtons.forEach(function (button) {
                     }
                 );
 
-
-                /* ACTIVE SELECTED CARD */
-
                 radio
                     .closest('.production-method-card')
                     .classList.add('active');
 
-
-                /* =========================
-                   MTS
-                ========================= */
-
-                if (radio.value === 'mts') {
-
-                    mtsStockSettings
-                        .classList.remove('hidden');
-
-                    currentStock.disabled = false;
-
-                    minimumStock.disabled = false;
-
-                    targetStock.disabled = false;
-
-                }
-
-
-                /* =========================
-                   MTO
-                ========================= */
-
-                else {
-
-                    mtsStockSettings
-                        .classList.add('hidden');
-
-                    currentStock.disabled = true;
-
-                    minimumStock.disabled = true;
-
-                    targetStock.disabled = true;
-
-                }
+                    updateVariantStockVisibility(
+    radio.value
+);
 
             }
         );
 
     });
+
+
+    /* =========================================================
+       PRODUCT VARIANT TABLE TOGGLE
+    ========================================================= */
+
+    const toggleVariantProduct1 =
+        document.getElementById('toggleVariantProduct1');
+
+    const variantRowProduct1 =
+        document.getElementById('variantRowProduct1');
+
+    if (
+        toggleVariantProduct1 &&
+        variantRowProduct1
+    ) {
+
+        toggleVariantProduct1.addEventListener(
+            'click',
+            function () {
+
+                const isHidden =
+                    variantRowProduct1.style.display === 'none';
+
+                variantRowProduct1.style.display =
+                    isHidden
+                        ? 'table-row'
+                        : 'none';
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       DYNAMIC PRODUCT VARIANTS
+    ========================================================= */
+
+    addVariantButton.addEventListener(
+        'click',
+        function () {
+
+            variantCount++;
+
+            const variantCard =
+                document.createElement('div');
+
+            variantCard.className =
+                'product-variant-form';
+
+            variantCard.innerHTML = `
+                <div class="product-variant-form-header">
+
+                    <div>
+                        <strong>
+                            Varian ${variantCount}
+                        </strong>
+
+                        <span>
+                            Varian tambahan produk
+                        </span>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="remove-variant-button"
+                    >
+                        Hapus
+                    </button>
+
+                </div>
+
+
+                <div class="variant-form-grid">
+
+                    <div class="product-form-group">
+
+                        <label>
+                            SKU Variant
+                        </label>
+
+                        <input
+                            type="text"
+                            name="variantSku[]"
+                            placeholder="Contoh: D6A-${variantCount}"
+                        >
+
+                    </div>
+
+
+                    <div class="product-form-group">
+
+                        <label>
+                            Nama Variant
+                        </label>
+
+                        <input
+                            type="text"
+                            name="variantName[]"
+                            placeholder="Masukkan nama varian"
+                        >
+
+                    </div>
+
+
+                    <div class="product-form-group variant-stock-field">
+
+                        <label>
+                            Current Stock
+                        </label>
+
+                        <div class="stock-input-wrapper">
+
+                            <input
+                                type="number"
+                                name="variantCurrentStock[]"
+                                min="0"
+                                placeholder="0"
+                            >
+
+                            <span>pcs</span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="product-form-group variant-stock-field">
+
+                        <label>
+                            Minimum Stock
+                        </label>
+
+                        <div class="stock-input-wrapper">
+
+                            <input
+                                type="number"
+                                name="variantMinimumStock[]"
+                                min="0"
+                                placeholder="30"
+                            >
+
+                            <span>pcs</span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="product-form-group variant-stock-field">
+
+                        <label>
+                            Target Stock
+                        </label>
+
+                        <div class="stock-input-wrapper">
+
+                            <input
+                                type="number"
+                                name="variantTargetStock[]"
+                                min="0"
+                                placeholder="80"
+                            >
+
+                            <span>pcs</span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+
+
+            variantFormsContainer
+                .appendChild(variantCard);
+
+                const selectedProductionMethod =
+    document.querySelector(
+        'input[name="productionMethod"]:checked'
+    );
+
+if (selectedProductionMethod) {
+
+    updateVariantStockVisibility(
+        selectedProductionMethod.value
+    );
+
+}
+
+
+            /* REMOVE VARIANT */
+
+            const removeButton =
+                variantCard.querySelector(
+                    '.remove-variant-button'
+                );
+
+            removeButton.addEventListener(
+                'click',
+                function () {
+
+                    variantCard.remove();
+
+                }
+            );
+
+        }
+    );
 
 });
 </script>
