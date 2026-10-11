@@ -30,20 +30,24 @@ Route::middleware('auth')->group(function () {
 
     // ADMIN
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/orders', fn () => view('admin.orders.index'))->name('orders.index');
+        Route::get('/orders', fn() => view('admin.orders.index'))->name('orders.index');
 
-        Route::get('/orders/{id}', fn ($id) => view('admin.orders.show', [
+        Route::get('/orders/{id}', fn($id) => view('admin.orders.show', [
             'orderId' => $id,
         ]))->name('orders.show');
     });
 
     // PRODUKSI
     Route::middleware('role:produksi')->prefix('produksi')->name('produksi.')->group(function () {
-        Route::get('/dashboard', fn () => 'Dashboard Produksi')->name('dashboard');
+        Route::get('/dashboard', fn() => 'Dashboard Produksi')->name('dashboard');
     });
 
     // BISNIS OWNER
     Route::middleware('role:bisnis owner')->prefix('owner')->name('owner.')->group(function () {
-        Route::get('/dashboard', fn () => 'Dashboard Bisnis Owner')->name('dashboard');
+        Route::get('/dashboard', fn() => 'Dashboard Bisnis Owner')->name('dashboard');
+    });
+
+    Route::get('/admin/products', function () {
+        return view('admin.products.index');
     });
 });
