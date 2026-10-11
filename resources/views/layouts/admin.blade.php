@@ -8,7 +8,8 @@
 
     @vite([
         'resources/css/admin.css',
-        'resources/css/orders.css'
+        'resources/css/orders.css',
+        'resources/css/order-detail.css'
     ])
 
     @stack('styles')

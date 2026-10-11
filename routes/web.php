@@ -13,3 +13,9 @@ Route::get('/login', function () {
 Route::get('/admin/orders', function () {
     return view('admin.orders.index');
 });
+
+Route::get('/admin/orders/{id}', function ($id) {
+    return view('admin.orders.show', [
+        'orderId' => $id
+    ]);
+});
