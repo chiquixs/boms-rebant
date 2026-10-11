@@ -208,12 +208,28 @@
                                 </button>
 
                                 <button
-                                    type="button"
-                                    class="product-action edit"
-                                    title="Edit produk"
-                                >
-                                    Edit
-                                </button>
+    type="button"
+    class="product-action edit edit-product-button"
+    title="Edit produk"
+
+    data-sku="WD-HEX-001"
+    data-name="Hexagon Wall Decor Set of 3"
+    data-category="wall-decor"
+    data-price="150000"
+
+    data-length="30"
+    data-width="20"
+
+    data-method="mts"
+
+    data-current-stock="32"
+    data-minimum-stock="10"
+    data-target-stock="50"
+
+    data-image="{{ asset('images/login-illustration.png') }}"
+>
+    Edit
+</button>
 
                                 <button
                                     type="button"
@@ -1221,11 +1237,12 @@
 
 
                 <button
-                    type="submit"
-                    class="product-save-button"
-                >
-                    Simpan Produk
-                </button>
+    type="submit"
+    class="product-save-button"
+    id="productSaveButton"
+>
+    Simpan Produk
+</button>
 
             </div>
 
@@ -1261,6 +1278,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const cancelProductModal =
         document.getElementById('cancelProductModal');
+
+        const productModalTitle =
+    document.getElementById('productModalTitle');
+
+const productModalDescription =
+    document.getElementById('productModalDescription');
+
+const productSaveButton =
+    document.getElementById('productSaveButton');
+
+const editProductButtons =
+    document.querySelectorAll('.edit-product-button');
+
+
+/* FORM INPUTS */
+
+const productSku =
+    document.getElementById('productSku');
+
+const productName =
+    document.getElementById('productName');
+
+const productCategory =
+    document.getElementById('productCategory');
+
+const productPrice =
+    document.getElementById('productPrice');
+
+const productLength =
+    document.getElementById('productLength');
+
+const productWidth =
+    document.getElementById('productWidth');
 
 
     /* PRODUCTION METHOD */
@@ -1315,6 +1365,15 @@ document.addEventListener('DOMContentLoaded', function () {
         /* RESET ALL FORM INPUTS */
 
         productForm.reset();
+
+        productModalTitle.textContent =
+    'Tambah Produk Baru';
+
+productModalDescription.textContent =
+    'Tambahkan informasi produk dan metode produksinya.';
+
+productSaveButton.textContent =
+    'Simpan Produk';
 
 
         /* RESET IMAGE INPUT */
@@ -1374,6 +1433,155 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
+    /* =========================================================
+   OPEN EDIT PRODUCT
+========================================================= */
+
+function openEditModal(button) {
+
+    /* RESET DULU */
+    resetProductForm();
+
+
+    /* CHANGE MODAL MODE */
+
+    productModalTitle.textContent =
+        'Edit Produk';
+
+    productModalDescription.textContent =
+        'Perbarui informasi dan pengaturan produk.';
+
+    productSaveButton.textContent =
+        'Simpan Perubahan';
+
+
+    /* BASIC PRODUCT DATA */
+
+    productSku.value =
+        button.dataset.sku;
+
+    productName.value =
+        button.dataset.name;
+
+    productCategory.value =
+        button.dataset.category;
+
+    productPrice.value =
+        button.dataset.price;
+
+    productLength.value =
+        button.dataset.length;
+
+    productWidth.value =
+        button.dataset.width;
+
+
+    /* PRODUCT IMAGE */
+
+    if (button.dataset.image) {
+
+        productPreviewImage.src =
+            button.dataset.image;
+
+        productImageName.textContent =
+            'Foto produk saat ini';
+
+        productImageDefault
+            .classList.add('hidden');
+
+        productImagePreview
+            .classList.add('active');
+
+    }
+
+
+    /* PRODUCTION METHOD */
+
+    productionCards.forEach(function (card) {
+
+        card.classList.remove('active');
+
+    });
+
+
+    const selectedMethod =
+        document.querySelector(
+            'input[name="productionMethod"][value="' +
+            button.dataset.method +
+            '"]'
+        );
+
+
+    if (selectedMethod) {
+
+        selectedMethod.checked = true;
+
+        selectedMethod
+            .closest('.production-method-card')
+            .classList.add('active');
+
+    }
+
+
+    /* MTS */
+
+    if (button.dataset.method === 'mts') {
+
+        mtsStockSettings
+            .classList.remove('hidden');
+
+        currentStock.disabled = false;
+        minimumStock.disabled = false;
+        targetStock.disabled = false;
+
+        currentStock.value =
+            button.dataset.currentStock;
+
+        minimumStock.value =
+            button.dataset.minimumStock;
+
+        targetStock.value =
+            button.dataset.targetStock;
+
+    }
+
+
+    /* MTO */
+
+    else {
+
+        mtsStockSettings
+            .classList.add('hidden');
+
+        currentStock.disabled = true;
+        minimumStock.disabled = true;
+        targetStock.disabled = true;
+
+    }
+
+
+    /* OPEN MODAL */
+
+    productModal
+        .classList.add('active');
+
+    document.body.style.overflow =
+        'hidden';
+
+}
+
+editProductButtons.forEach(function (button) {
+
+    button.addEventListener(
+        'click',
+        function () {
+
+            openEditModal(button);
+
+        }
+    );
+
+});
 
     /* =========================================================
        OPEN MODAL
