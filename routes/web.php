@@ -40,3 +40,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', fn () => 'Dashboard Bisnis Owner')->name('dashboard');
     });
 });
+Route::get('/admin/orders', function () {
+    return view('admin.orders.index');
+});
+
+Route::get('/admin/orders/{id}', function ($id) {
+    return view('admin.orders.show', [
+        'orderId' => $id
+    ]);
+});
