@@ -52,8 +52,9 @@
 
 </div>
 
+
 {{-- =========================
-    ORDER INFORMATION
+    ORDER & CUSTOMER INFORMATION
 ========================= --}}
 
 <div class="detail-info-grid">
@@ -61,31 +62,27 @@
     {{-- ORDER INFORMATION --}}
     <div class="detail-card">
 
-        <div class="detail-card-header status-card-header">
+        <div class="detail-card-header">
 
-    <div>
-        <h2>Order Status</h2>
-        <p>Pantau progress pesanan hingga selesai.</p>
-    </div>
+            <div>
+                <h2>Order Information</h2>
+                <p>Informasi utama pesanan.</p>
+            </div>
 
-    <button
-        type="button"
-        class="next-status-button"
-        id="nextStatusButton"
-    >
-        <span>Move to Waiting Production</span>
+            <div class="detail-card-icon">
+                <svg width="18" height="18"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8">
+                    <path d="M6 2h9l5 5v15H6z"/>
+                    <path d="M14 2v6h6"/>
+                    <path d="M9 13h6"/>
+                    <path d="M9 17h6"/>
+                </svg>
+            </div>
 
-        <svg width="14" height="14"
-             viewBox="0 0 24 24"
-             fill="none"
-             stroke="currentColor"
-             stroke-width="2">
-            <path d="M5 12h14"/>
-            <path d="m13 6 6 6-6 6"/>
-        </svg>
-    </button>
-
-</div>
+        </div>
 
         <div class="detail-info-list">
 
@@ -100,6 +97,7 @@
             </div>
 
             <div class="detail-info-item">
+
                 <span>Platform</span>
 
                 <strong>
@@ -107,6 +105,7 @@
                         TikTok Shop
                     </span>
                 </strong>
+
             </div>
 
             <div class="detail-info-item">
@@ -123,6 +122,7 @@
     <div class="detail-card">
 
         <div class="detail-card-header">
+
             <div>
                 <h2>Customer Information</h2>
                 <p>Informasi pelanggan dan catatan pesanan.</p>
@@ -138,6 +138,7 @@
                     <path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/>
                 </svg>
             </div>
+
         </div>
 
         <div class="detail-info-list">
@@ -163,6 +164,7 @@
     </div>
 
 </div>
+
 
 {{-- =========================
     ORDER ITEMS
@@ -300,6 +302,7 @@
 
 </div>
 
+
 {{-- =========================
     ORDER STATUS
 ========================= --}}
@@ -330,7 +333,7 @@
     <div class="status-progress">
 
         {{-- NEW --}}
-        <div class="status-step active" data-status-step="0">
+        <div class="status-step active">
 
             <div class="status-step-marker">
                 <span>1</span>
@@ -344,11 +347,11 @@
         </div>
 
 
-        <div class="status-line" data-status-line="0"></div>
+        <div class="status-line"></div>
 
 
         {{-- WAITING PRODUCTION --}}
-        <div class="status-step" data-status-step="1">
+        <div class="status-step">
 
             <div class="status-step-marker">
                 <span>2</span>
@@ -356,17 +359,17 @@
 
             <div class="status-step-info">
                 <strong>Waiting Production</strong>
-                <span>Menunggu produksi</span>
+                <span>Stok belum mencukupi</span>
             </div>
 
         </div>
 
 
-        <div class="status-line" data-status-line="1"></div>
+        <div class="status-line"></div>
 
 
         {{-- READY TO PACK --}}
-        <div class="status-step" data-status-step="2">
+        <div class="status-step">
 
             <div class="status-step-marker">
                 <span>3</span>
@@ -374,17 +377,17 @@
 
             <div class="status-step-info">
                 <strong>Ready to Pack</strong>
-                <span>Siap dikemas</span>
+                <span>Barang siap dikemas</span>
             </div>
 
         </div>
 
 
-        <div class="status-line" data-status-line="2"></div>
+        <div class="status-line"></div>
 
 
         {{-- COMPLETED --}}
-        <div class="status-step" data-status-step="3">
+        <div class="status-step">
 
             <div class="status-step-marker">
                 <span>4</span>
@@ -392,9 +395,36 @@
 
             <div class="status-step-info">
                 <strong>Completed</strong>
-                <span>Order selesai</span>
+                <span>Pesanan selesai</span>
             </div>
 
+        </div>
+
+    </div>
+
+
+    {{-- STATUS INFORMATION --}}
+    <div class="status-information">
+
+        <div class="status-information-icon">
+            <svg width="16" height="16"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+                <circle cx="12" cy="12" r="9"/>
+                <path d="M12 11v5"/>
+                <path d="M12 8h.01"/>
+            </svg>
+        </div>
+
+        <div>
+            <strong>Status sedang diproses oleh sistem</strong>
+
+            <p>
+                Sistem akan memeriksa ketersediaan stok untuk
+                menentukan proses order selanjutnya.
+            </p>
         </div>
 
     </div>
@@ -402,129 +432,3 @@
 </div>
 
 @endsection
-
-@push('scripts')
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    const statusSteps =
-        document.querySelectorAll('[data-status-step]');
-
-    const statusLines =
-        document.querySelectorAll('[data-status-line]');
-
-    const nextStatusButton =
-        document.getElementById('nextStatusButton');
-
-    const statusBadge =
-        document.querySelector('.detail-title-row .order-status');
-
-    const statuses = [
-        {
-            name: 'New',
-            className: 'new'
-        },
-        {
-            name: 'Waiting Production',
-            className: 'waiting'
-        },
-        {
-            name: 'Ready to Pack',
-            className: 'ready'
-        },
-        {
-            name: 'Completed',
-            className: 'completed'
-        }
-    ];
-
-    let currentStatus = 0;
-
-
-    function updateStatusUI() {
-
-        statusSteps.forEach((step, index) => {
-
-            step.classList.remove(
-                'active',
-                'completed'
-            );
-
-            if (index < currentStatus) {
-                step.classList.add('completed');
-            }
-
-            if (index === currentStatus) {
-                step.classList.add('active');
-            }
-
-        });
-
-
-        statusLines.forEach((line, index) => {
-
-            line.classList.toggle(
-                'completed',
-                index < currentStatus
-            );
-
-        });
-
-
-        // Update badge di header
-        if (statusBadge) {
-
-            statusBadge.className =
-                'order-status ' +
-                statuses[currentStatus].className;
-
-            statusBadge.innerHTML =
-                '<span></span>' +
-                statuses[currentStatus].name;
-
-        }
-
-
-        // Kalau sudah Completed
-        if (currentStatus === statuses.length - 1) {
-
-            nextStatusButton.disabled = true;
-
-            nextStatusButton.querySelector('span')
-                .textContent = 'Order Completed';
-
-            return;
-        }
-
-
-        // Tampilkan status berikutnya di tombol
-        nextStatusButton.disabled = false;
-
-        nextStatusButton.querySelector('span')
-            .textContent =
-                'Move to ' +
-                statuses[currentStatus + 1].name;
-
-    }
-
-
-    nextStatusButton.addEventListener('click', function () {
-
-        if (currentStatus < statuses.length - 1) {
-
-            currentStatus++;
-
-            updateStatusUI();
-
-        }
-
-    });
-
-
-    updateStatusUI();
-
-});
-</script>
-
-@endpush

@@ -9,7 +9,6 @@
 .back-to-orders {
     display: inline-flex;
     align-items: center;
-
     gap: 6px;
 
     margin-bottom: 22px;
@@ -62,10 +61,13 @@
 }
 
 .detail-page-header p {
+    margin: 0;
+
     color: var(--text-muted);
 
     font-size: 12px;
 }
+
 
 /* =========================
    DETAIL INFORMATION GRID
@@ -106,7 +108,7 @@
 }
 
 .detail-card-header h2 {
-    margin-bottom: 4px;
+    margin: 0 0 4px;
 
     color: var(--text);
 
@@ -115,6 +117,8 @@
 }
 
 .detail-card-header p {
+    margin: 0;
+
     color: var(--text-muted);
 
     font-size: 9px;
@@ -212,6 +216,7 @@
     font-size: 10px;
     line-height: 1.6;
 }
+
 
 /* =========================
    ORDER ITEMS CARD
@@ -387,6 +392,7 @@
     font-weight: 700;
 }
 
+
 /* =========================
    ORDER STATUS
 ========================= */
@@ -460,7 +466,9 @@
 }
 
 
-/* ACTIVE STATUS */
+/* =========================
+   ACTIVE STATUS
+========================= */
 
 .status-step.active .status-step-marker {
     border-color: var(--green);
@@ -478,11 +486,16 @@
     color: var(--text-muted);
 }
 
-/* COMPLETED / PASSED STEP */
+
+/* =========================
+   COMPLETED / PASSED STATUS
+========================= */
 
 .status-step.completed .status-step-marker {
     border-color: var(--green);
+
     background: var(--green-light);
+
     color: var(--green-dark);
 }
 
@@ -494,12 +507,10 @@
     color: var(--text-muted);
 }
 
-.status-line.completed {
-    background: var(--green);
-}
 
-
-/* CONNECTING LINE */
+/* =========================
+   STATUS CONNECTING LINE
+========================= */
 
 .status-line {
     height: 1.5px;
@@ -513,54 +524,70 @@
     border-radius: 10px;
 }
 
-/* =========================
-   STATUS ACTION
-========================= */
-
-.status-card-header {
-    align-items: center;
+.status-line.completed {
+    background: var(--green);
 }
 
-.next-status-button {
-    display: inline-flex;
+
+/* =========================
+   STATUS INFORMATION
+========================= */
+
+.status-information {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 10px;
+
+    margin-top: 22px;
+    padding: 13px 14px;
+
+    border: 1px solid #E3E9DF;
+    border-radius: 10px;
+
+    background: #F6F9F4;
+}
+
+.status-information-icon {
+    width: 28px;
+    height: 28px;
+
+    display: flex;
     align-items: center;
     justify-content: center;
 
-    gap: 7px;
+    flex-shrink: 0;
 
-    padding: 9px 13px;
+    border-radius: 8px;
 
-    border: none;
-    border-radius: 9px;
+    background: var(--green-light);
 
-    background: var(--green-dark);
+    color: var(--green-dark);
+}
 
-    color: var(--white);
+.status-information>div:last-child {
+    display: flex;
+    flex-direction: column;
 
-    font-family: inherit;
+    gap: 3px;
+}
+
+.status-information strong {
+    color: var(--green-dark);
+
     font-size: 9px;
     font-weight: 600;
-
-    cursor: pointer;
-
-    transition: 0.2s ease;
 }
 
-.next-status-button:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
+.status-information p {
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 9px;
+    line-height: 1.5;
 }
 
-.next-status-button:disabled {
-    background: #DADDD6;
-
-    color: #969A92;
-
-    cursor: default;
-
-    transform: none;
-    opacity: 1;
-}
 
 /* =========================
    RESPONSIVE
@@ -572,12 +599,41 @@
         grid-template-columns: 1fr;
     }
 
+    .order-status-card {
+        overflow-x: auto;
+    }
+
     .status-progress {
         min-width: 650px;
     }
 
-    .order-status-card {
-        overflow-x: auto;
+}
+
+@media (max-width: 600px) {
+
+    .detail-title-row {
+        align-items: flex-start;
+        flex-direction: column;
+
+        gap: 8px;
+    }
+
+    .detail-title-row h1 {
+        font-size: 24px;
+    }
+
+    .detail-card {
+        padding: 18px;
+    }
+
+    .detail-card-header {
+        gap: 10px;
+    }
+
+    .detail-order-total {
+        justify-content: space-between;
+
+        gap: 15px;
     }
 
 }
