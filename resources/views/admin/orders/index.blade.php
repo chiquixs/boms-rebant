@@ -4,7 +4,6 @@
 
 @section('content')
 
-
 {{-- =========================
     PAGE HEADER
 ========================= --}}
@@ -219,6 +218,7 @@
 
                 {{-- ORDER 1 --}}
                 <tr>
+
                     <td>
                         <span class="order-id">#RB-1001</span>
                     </td>
@@ -244,6 +244,7 @@
 
                     <td>
                         <button
+                            type="button"
                             class="action-button"
                             title="Lihat detail order"
                         >
@@ -257,11 +258,13 @@
                             </svg>
                         </button>
                     </td>
+
                 </tr>
 
 
                 {{-- ORDER 2 --}}
                 <tr>
+
                     <td>
                         <span class="order-id">#RB-1002</span>
                     </td>
@@ -287,6 +290,7 @@
 
                     <td>
                         <button
+                            type="button"
                             class="action-button"
                             title="Lihat detail order"
                         >
@@ -300,11 +304,13 @@
                             </svg>
                         </button>
                     </td>
+
                 </tr>
 
 
                 {{-- ORDER 3 --}}
                 <tr>
+
                     <td>
                         <span class="order-id">#RB-1003</span>
                     </td>
@@ -330,6 +336,7 @@
 
                     <td>
                         <button
+                            type="button"
                             class="action-button"
                             title="Lihat detail order"
                         >
@@ -343,11 +350,13 @@
                             </svg>
                         </button>
                     </td>
+
                 </tr>
 
 
                 {{-- ORDER 4 --}}
                 <tr>
+
                     <td>
                         <span class="order-id">#RB-1004</span>
                     </td>
@@ -373,6 +382,7 @@
 
                     <td>
                         <button
+                            type="button"
                             class="action-button"
                             title="Lihat detail order"
                         >
@@ -386,11 +396,13 @@
                             </svg>
                         </button>
                     </td>
+
                 </tr>
 
 
                 {{-- ORDER 5 --}}
                 <tr>
+
                     <td>
                         <span class="order-id">#RB-1005</span>
                     </td>
@@ -416,6 +428,7 @@
 
                     <td>
                         <button
+                            type="button"
                             class="action-button"
                             title="Lihat detail order"
                         >
@@ -429,6 +442,7 @@
                             </svg>
                         </button>
                     </td>
+
                 </tr>
 
             </tbody>
@@ -438,7 +452,10 @@
     </div>
 
 
-    {{-- TABLE FOOTER --}}
+    {{-- =========================
+        TABLE FOOTER
+    ========================= --}}
+
     <div class="table-footer">
 
         <span>
@@ -446,11 +463,11 @@
         </span>
 
         <div class="pagination">
-            <button disabled>‹</button>
-            <button class="active">1</button>
-            <button>2</button>
-            <button>3</button>
-            <button>›</button>
+            <button type="button" disabled>‹</button>
+            <button type="button" class="active">1</button>
+            <button type="button">2</button>
+            <button type="button">3</button>
+            <button type="button">›</button>
         </div>
 
     </div>
@@ -460,12 +477,40 @@
 
 {{-- =========================
     ADD ORDER MODAL
+========================= --}}
+
+<div class="modal-overlay" id="addOrderModal">
+
+    <div class="order-modal">
+
+        {{-- MODAL HEADER --}}
+        <div class="modal-header">
+
+            <div>
+                <span class="modal-eyebrow">NEW ORDER</span>
+                <h2>Add New Order</h2>
+                <p>Tambahkan pesanan baru ke sistem REBANT.</p>
+            </div>
+
+            <button
+                type="button"
+                class="modal-close"
+                id="closeAddOrderModal"
+            >
+                <svg width="20" height="20"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2">
+                    <path d="M6 6l12 12"/>
+                    <path d="M18 6L6 18"/>
+                </svg>
             </button>
 
         </div>
 
 
-        {{-- FORM --}}
+        {{-- MODAL FORM --}}
         <form id="addOrderForm" onsubmit="return false;">
 
             <div class="modal-body">
@@ -511,9 +556,19 @@
                         </label>
 
                         <select id="orderPlatform">
-                            <option value="">Pilih platform</option>
-                            <option value="tiktok">TikTok Shop</option>
-                            <option value="shopee">Shopee</option>
+
+                            <option value="">
+                                Pilih platform
+                            </option>
+
+                            <option value="tiktok">
+                                TikTok Shop
+                            </option>
+
+                            <option value="shopee">
+                                Shopee
+                            </option>
+
                         </select>
 
                     </div>
@@ -703,7 +758,7 @@
                 </div>
 
 
-                {{-- STATUS --}}
+                {{-- STATUS INFO --}}
                 <div class="new-order-info">
 
                     <span>Status order</span>
@@ -717,7 +772,7 @@
             </div>
 
 
-            {{-- FOOTER --}}
+            {{-- MODAL FOOTER --}}
             <div class="modal-footer">
 
                 <button
@@ -767,21 +822,25 @@
         document.getElementById('cancelAddOrder');
 
 
+    // Open modal
     openAddOrderModal.addEventListener('click', function () {
         addOrderModal.classList.add('active');
     });
 
 
+    // Close from X
     closeAddOrderModal.addEventListener('click', function () {
         addOrderModal.classList.remove('active');
     });
 
 
+    // Close from Cancel
     cancelAddOrder.addEventListener('click', function () {
         addOrderModal.classList.remove('active');
     });
 
 
+    // Close when clicking outside modal
     addOrderModal.addEventListener('click', function (event) {
 
         if (event.target === addOrderModal) {
@@ -791,6 +850,7 @@
     });
 
 
+    // Close with Escape
     document.addEventListener('keydown', function (event) {
 
         if (event.key === 'Escape') {
@@ -934,7 +994,6 @@
             const item =
                 event.target.closest('.order-item');
 
-
             updateProductItem(item);
 
             calculateOrderTotal();
@@ -951,7 +1010,6 @@
         }
 
     });
-
 
 
     orderItems.addEventListener('input', function (event) {
@@ -1104,7 +1162,7 @@
             orderItems.querySelectorAll('.order-item');
 
 
-        // Minimal satu produk
+        // Minimal harus ada satu produk
         if (items.length <= 1) {
             return;
         }
