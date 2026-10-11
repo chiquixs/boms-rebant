@@ -1356,3 +1356,310 @@
     }
 
 }
+
+/* =========================
+   PRODUCT VARIANT BUTTON
+========================= */
+
+.variant-count-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 5px 9px;
+
+    border: 1px solid #DCE7D7;
+    border-radius: 20px;
+
+    background: #F3F8F0;
+
+    color: var(--green-dark);
+
+    font-family: inherit;
+    font-size: 8px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition: 0.2s ease;
+}
+
+.variant-count-button:hover {
+    border-color: var(--green);
+
+    background: var(--green-light);
+}
+
+
+/* =========================
+   VARIANT EXPANDED ROW
+========================= */
+
+.variant-detail-row>td {
+    padding: 0 !important;
+
+    border-top: none !important;
+
+    background: #FAFBF8;
+}
+
+.variant-detail-content {
+    margin: 0 14px 14px;
+
+    padding: 14px;
+
+    border: 1px solid #E5EAE1;
+    border-radius: 10px;
+
+    background: #F8FAF6;
+}
+
+
+/* =========================
+   VARIANT HEADER
+========================= */
+
+.variant-detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+}
+
+.variant-detail-header>div {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+}
+
+.variant-detail-header strong {
+    color: var(--text);
+
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.variant-detail-header span {
+    padding: 3px 6px;
+
+    border-radius: 20px;
+
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    font-size: 7px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   VARIANT LIST
+========================= */
+
+.variant-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+}
+
+.variant-item {
+    display: grid;
+
+    grid-template-columns:
+        80px minmax(150px, 1fr) 80px 70px 80px;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 9px 10px;
+
+    border: 1px solid #ECEFE9;
+    border-radius: 8px;
+
+    background: var(--white);
+}
+
+.variant-item:hover {
+    border-color: #DCE5D7;
+
+    background: #FDFEFC;
+}
+
+
+/* =========================
+   VARIANT DATA
+========================= */
+
+.variant-item strong {
+    overflow: hidden;
+
+    color: var(--text);
+
+    font-size: 8px;
+    font-weight: 600;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+.variant-item>span:not(.sku-code) {
+    color: var(--text-muted);
+
+    font-size: 8px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   VARIANT RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+
+    .variant-detail-content {
+        overflow-x: auto;
+    }
+
+    .variant-list {
+        min-width: 560px;
+    }
+
+}
+
+/* =========================
+   PRODUCT VARIANT FORM
+========================= */
+
+.product-variant-form {
+    padding: 14px;
+
+    border: 1px solid #E4E9E0;
+    border-radius: 10px;
+
+    background: #F8FAF6;
+}
+
+.product-variant-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 13px;
+}
+
+.product-variant-form-header>div {
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+.product-variant-form-header strong {
+    color: var(--text);
+
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.product-variant-form-header span {
+    color: var(--text-muted);
+
+    font-size: 8px;
+}
+
+
+/* VARIANT INPUT GRID */
+
+.variant-form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+
+/* ADD VARIANT */
+
+.add-variant-button {
+    width: 100%;
+
+    margin-top: 10px;
+    padding: 9px 12px;
+
+    border: 1px dashed #C9D6C3;
+    border-radius: 9px;
+
+    background: #F8FAF6;
+
+    color: var(--green-dark);
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.add-variant-button:hover {
+    border-color: var(--green);
+
+    background: var(--green-light);
+}
+
+
+@media (max-width: 700px) {
+
+    .variant-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* =========================
+   MULTIPLE PRODUCT VARIANTS
+========================= */
+
+#variantFormsContainer {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.remove-variant-button {
+    padding: 5px 8px;
+
+    border: 1px solid #E9C9C6;
+    border-radius: 7px;
+
+    background: #FDF4F3;
+
+    color: #A65C58;
+
+    font-family: inherit;
+    font-size: 8px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.remove-variant-button:hover {
+    border-color: #DDAEAA;
+
+    background: #FAE8E6;
+}

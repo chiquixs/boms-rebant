@@ -244,10 +244,10 @@
 
                     <td>
                         <a
-    href="/admin/orders/1001"
-    class="action-button"
-    title="Lihat detail order"
->
+                            href="/admin/orders/1001"
+                            class="action-button"
+                            title="Lihat detail order"
+                        >
                             <svg width="18" height="18"
                                  viewBox="0 0 24 24"
                                  fill="none"
@@ -602,8 +602,8 @@
                     <div class="order-items-header">
 
                         <div>
-                            <label>Produk / SKU</label>
-                            <span>Tambahkan produk yang dipesan pelanggan.</span>
+                            <label>Produk Pesanan</label>
+                            <span>Pilih produk dan varian yang dipesan pelanggan.</span>
                         </div>
 
                         <button
@@ -632,9 +632,10 @@
                         {{-- ITEM PERTAMA --}}
                         <div class="order-item">
 
+                            {{-- PRODUCT --}}
                             <div class="item-product">
 
-                                <label>Produk / SKU</label>
+                                <label>Produk</label>
 
                                 <div class="product-select-wrapper">
 
@@ -647,28 +648,31 @@
                                     <select class="product-select">
 
                                         <option value="">
-                                            Pilih produk / SKU
+                                            Pilih produk
                                         </option>
 
                                         <option
-                                            value="100000"
+                                            value="D6A"
+                                            data-price="12000"
                                             data-image="{{ asset('images/login-illustration.png') }}"
                                         >
-                                            RB-WD01 — Wall Decor Minimalist
+                                            D6A — Sign Peringatan Hitam (9x30)
                                         </option>
 
                                         <option
-                                            value="125000"
+                                            value="RAK-MIN-002"
+                                            data-price="125000"
                                             data-image="{{ asset('images/login-illustration.png') }}"
                                         >
-                                            RB-WD02 — Wall Decor Classic
+                                            RAK-MIN-002 — Minimalist Wall Shelf
                                         </option>
 
                                         <option
-                                            value="150000"
+                                            value="VAS-NOR-004"
+                                            data-price="95000"
                                             data-image="{{ asset('images/login-illustration.png') }}"
                                         >
-                                            RB-WD03 — Wall Decor Premium
+                                            VAS-NOR-004 — Nordic Flower Vase
                                         </option>
 
                                     </select>
@@ -678,6 +682,24 @@
                             </div>
 
 
+                            {{-- VARIANT --}}
+                            <div class="item-variant">
+
+                                <label>Varian</label>
+
+                                <select
+                                    class="variant-select"
+                                    disabled
+                                >
+                                    <option value="">
+                                        Pilih produk terlebih dahulu
+                                    </option>
+                                </select>
+
+                            </div>
+
+
+                            {{-- QUANTITY --}}
                             <div class="item-quantity">
 
                                 <label>Qty</label>
@@ -692,6 +714,7 @@
                             </div>
 
 
+                            {{-- PRICE --}}
                             <div class="item-price">
 
                                 <label>Harga</label>
@@ -703,6 +726,7 @@
                             </div>
 
 
+                            {{-- REMOVE --}}
                             <button
                                 type="button"
                                 class="remove-item-button"
@@ -875,6 +899,60 @@
         document.getElementById('orderTotal');
 
 
+    // ==========================
+    // PRODUCT VARIANTS
+    // ==========================
+
+    const productVariants = {
+
+        'D6A': [
+            {
+                sku: 'D6A-1',
+                name: 'CCTV'
+            },
+            {
+                sku: 'D6A-2',
+                name: 'Dilarang Merokok'
+            },
+            {
+                sku: 'D6A-3',
+                name: 'Area Merokok'
+            },
+            {
+                sku: 'D6A-4',
+                name: 'Arah Kiblat'
+            },
+            {
+                sku: 'D6A-5',
+                name: 'Jagalah Kebersihan'
+            }
+        ],
+
+        'RAK-MIN-002': [
+            {
+                sku: 'RAK-MIN-002-1',
+                name: 'Natural'
+            },
+            {
+                sku: 'RAK-MIN-002-2',
+                name: 'Dark Brown'
+            }
+        ],
+
+        'VAS-NOR-004': [
+            {
+                sku: 'VAS-NOR-004-1',
+                name: 'White'
+            },
+            {
+                sku: 'VAS-NOR-004-2',
+                name: 'Cream'
+            }
+        ]
+
+    };
+
+
 
     // ==========================
     // FORMAT RUPIAH
@@ -901,6 +979,9 @@
         const product =
             item.querySelector('.product-select');
 
+        const variant =
+            item.querySelector('.variant-select');
+
         const priceDisplay =
             item.querySelector('.price-display');
 
@@ -910,18 +991,77 @@
         const selectedOption =
             product.options[product.selectedIndex];
 
+        const productSku =
+            product.value;
+
+
+        // ==========================
+        // RESET VARIANT
+        // ==========================
+
+        variant.innerHTML = '';
+
+
+        if (!productSku) {
+
+            variant.disabled = true;
+
+            variant.innerHTML = `
+                <option value="">
+                    Pilih produk terlebih dahulu
+                </option>
+            `;
+
+        } else {
+
+            variant.disabled = false;
+
+            variant.innerHTML = `
+                <option value="">
+                    Pilih varian
+                </option>
+            `;
+
+
+            const variants =
+                productVariants[productSku] || [];
+
+
+            variants.forEach(function (variantData) {
+
+                const option =
+                    document.createElement('option');
+
+                option.value =
+                    variantData.sku;
+
+                option.textContent =
+                    `${variantData.name} — ${variantData.sku}`;
+
+                variant.appendChild(option);
+
+            });
+
+        }
+
+
+        // ==========================
+        // PRICE
+        // ==========================
+
         const price =
-            Number(product.value) || 0;
+            Number(selectedOption.dataset.price) || 0;
 
-
-        // Update harga
         priceDisplay.textContent =
             formatRupiah(price);
 
 
-        // Update thumbnail
+        // ==========================
+        // THUMBNAIL
+        // ==========================
+
         if (
-            product.value &&
+            productSku &&
             selectedOption.dataset.image
         ) {
 
@@ -962,8 +1102,11 @@
             const quantity =
                 item.querySelector('.quantity-input');
 
+            const selectedOption =
+                product.options[product.selectedIndex];
+
             const price =
-                Number(product.value) || 0;
+                Number(selectedOption.dataset.price) || 0;
 
             const qty =
                 Number(quantity.value) || 0;
@@ -1043,7 +1186,7 @@
 
             <div class="item-product">
 
-                <label>Produk / SKU</label>
+                <label>Produk</label>
 
                 <div class="product-select-wrapper">
 
@@ -1056,33 +1199,52 @@
                     <select class="product-select">
 
                         <option value="">
-                            Pilih produk / SKU
+                            Pilih produk
                         </option>
 
                         <option
-                            value="100000"
+                            value="D6A"
+                            data-price="12000"
                             data-image="{{ asset('images/login-illustration.png') }}"
                         >
-                            RB-WD01 — Wall Decor Minimalist
+                            D6A — Sign Peringatan Hitam (9x30)
                         </option>
 
                         <option
-                            value="125000"
+                            value="RAK-MIN-002"
+                            data-price="125000"
                             data-image="{{ asset('images/login-illustration.png') }}"
                         >
-                            RB-WD02 — Wall Decor Classic
+                            RAK-MIN-002 — Minimalist Wall Shelf
                         </option>
 
                         <option
-                            value="150000"
+                            value="VAS-NOR-004"
+                            data-price="95000"
                             data-image="{{ asset('images/login-illustration.png') }}"
                         >
-                            RB-WD03 — Wall Decor Premium
+                            VAS-NOR-004 — Nordic Flower Vase
                         </option>
 
                     </select>
 
                 </div>
+
+            </div>
+
+
+            <div class="item-variant">
+
+                <label>Varian</label>
+
+                <select
+                    class="variant-select"
+                    disabled
+                >
+                    <option value="">
+                        Pilih produk terlebih dahulu
+                    </option>
+                </select>
 
             </div>
 
