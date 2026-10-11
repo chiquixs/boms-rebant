@@ -6,8 +6,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/preview-login', function () {
+Route::get('/login', function () {
     return view('auth.login');
-})->withoutMiddleware([
-    \Illuminate\Session\Middleware\StartSession::class,
-]);
+});
