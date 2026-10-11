@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,18 @@
 
     {{-- CSS --}}
     @vite(['resources/css/login.css'])
+
+    <style>
+        .alert-error {
+            margin-bottom: 18px;
+            padding: 12px 14px;
+            background: #FDECEA;
+            color: #C0392B;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+    </style>
 </head>
 
 <body>
@@ -99,12 +111,21 @@
 
                 {{-- =========================
                      LOGIN FORM
-                     Frontend only sementara
                 ========================== --}}
                 <form
                     id="loginForm"
-                    onsubmit="return false;"
+                    method="POST"
+                    action="{{ route('login.process') }}"
                 >
+                    @csrf
+
+                    {{-- PESAN ERROR --}}
+                    @if ($errors->any())
+                        <div class="alert-error">
+                            {{ $errors->first() }}
+                        </div>
+                    @endif
+
 
                     {{-- EMAIL --}}
                     <div class="form-group">
@@ -147,8 +168,11 @@
                                 type="email"
                                 id="email"
                                 name="email"
+                                value="{{ old('email') }}"
                                 placeholder="Masukkan email"
                                 autocomplete="email"
+                                required
+                                autofocus
                             >
 
                         </div>
@@ -200,6 +224,7 @@
                                 name="password"
                                 placeholder="Masukkan password"
                                 autocomplete="current-password"
+                                required
                             >
 
                             {{-- Show / Hide Password --}}
@@ -241,37 +266,9 @@
 
                     </div>
 
-
-                    {{-- REMEMBER & FORGOT --}}
-                    <div class="form-options">
-
-                        <label class="remember">
-
-                            <input
-                                type="checkbox"
-                                id="remember"
-                                name="remember"
-                            >
-
-                            <span>
-                                Remember me
-                            </span>
-
-                        </label>
-
-                        <a
-                            href="#"
-                            onclick="return false;"
-                        >
-                            Forgot password?
-                        </a>
-
-                    </div>
-
-
                     {{-- LOGIN BUTTON --}}
                     <button
-                        type="button"
+                        type="submit"
                         class="login-button"
                     >
 
@@ -321,34 +318,18 @@
          JAVASCRIPT
     ========================== --}}
     <script>
-        const passwordInput =
-            document.getElementById('password');
-
-        const passwordToggle =
-            document.getElementById('passwordToggle');
+        const passwordInput  = document.getElementById('password');
+        const passwordToggle = document.getElementById('passwordToggle');
 
         passwordToggle.addEventListener('click', function () {
+            const isHidden = passwordInput.type === 'password';
 
-            if (passwordInput.type === 'password') {
+            passwordInput.type = isHidden ? 'text' : 'password';
 
-                passwordInput.type = 'text';
-
-                passwordToggle.setAttribute(
-                    'aria-label',
-                    'Hide password'
-                );
-
-            } else {
-
-                passwordInput.type = 'password';
-
-                passwordToggle.setAttribute(
-                    'aria-label',
-                    'Show password'
-                );
-
-            }
-
+            passwordToggle.setAttribute(
+                'aria-label',
+                isHidden ? 'Hide password' : 'Show password'
+            );
         });
     </script>
 
