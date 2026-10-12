@@ -1,0 +1,11 @@
+code,name,category,production_method,price,length_cm,width_cm,description,is_active
+D6-A,Sign Peringatan Hitam (9x30),SIGN PERINGATAN,MTS,12000,30,9,MDF cat hitam,true
+I9-J,Quotes Black and White (15x20),QUOTES,MTS,12500,20,15,MDF cat hitam/putih,true
+FKGU-B-N,Frame Kayu Karakter Jepang (10x30),KARAKTER,MTO,47000,30,10,Frame kayu natural 10x30,true
+O13-C,Buka - Istirahat Pastel (20x30),BUKA TUTUP,MTS,35000,30,20,MDF cat hitam 2 sisi,true
+T29-A,Malang Tempo Dulu (30x45),KLASIK,MTO,39000,45,30,MDF biasa,true
+PBS3-O32-A,Modern Line Art Black & White set isi 3 (20x30),MODERN,MTO,112000,90,60,Set isi 3 PB 1 cm,true
+GG-B,Gantungan Gelang Kayu 2 Sisi,RAK,MTO,64000,22,15,Gelang kayu 2 sisi,true
+D6-E,Basecamp Bola Internasional (9x30),SIGN PERINGATAN,MTS,11000,30,9,MDF biasa,true
+N6-A,Sign Free Wifi (20x20),SIGN PERINGATAN,MTS,16000,20,20,MDF biasa,true
+PBS3-O32-B,Modern Art Woman set isi 3 (20x30),MODERN,MTO,130000,90,60,Set isi 3 PB 3 cm,true

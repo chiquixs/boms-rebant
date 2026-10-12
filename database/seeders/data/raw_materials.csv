@@ -1,0 +1,8 @@
+code,name,unit,material_type,sheet_length_cm,sheet_width_cm,current_stock,safety_stock,target_stock,is_active
+MDF-6MM,mdf 6 mm,lembar,SHEET,244,122,7,5,10,true
+WOOD-01,kayu pinus,batang,NON_SHEET,,,4,5,10,true
+PAINT-BL,cat hitam,ml,NON_SHEET,,,600,300,500,true
+PAINT-WH,cat putih,ml,NON_SHEET,,,760,300,500,true
+PAINT-PN,cat pink,ml,NON_SHEET,,,360,300,500,true
+HMR-3MM,hmr 3 mm,lembar,SHEET,244,122,3,5,10,true
+HMR-1MM,hmr 1 mm,lembar,SHEET,244,122,4,5,10,true

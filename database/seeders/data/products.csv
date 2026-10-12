@@ -1,0 +1,48 @@
+group_code,sku,variant_name,current_stock,min_stock,target_stock,is_active
+D6-A,D6A-1,CCTV,50,30,80,true
+D6-A,D6A-2,Dilarang Merokok,75,30,80,true
+D6-A,D6A-3,Area Merokok,30,30,80,true
+D6-A,D6A-4,Arah Kiblat,34,30,80,true
+D6-A,D6A-5,Jagalah Kebersihan,20,30,80,true
+I9-J,I9J-1,Leave Home,20,10,20,true
+I9-J,I9J-2,Die,25,10,20,true
+I9-J,I9J-3,Creativity,23,10,20,true
+I9-J,I9J-4,The More,21,10,20,true
+I9-J,I9J-5,Baskerville,15,10,20,true
+FKGU-B-N,FKGU-B-N-V1,V1,0,,,true
+FKGU-B-N,FKGU-B-N-V2,V2,0,,,true
+FKGU-B-N,FKGU-B-N-V3,V3,0,,,true
+FKGU-B-N,FKGU-B-N-V4,V4,0,,,true
+FKGU-B-N,FKGU-B-N-V5,V5,0,,,true
+O13-C,O13C-1,Pink,8,5,15,true
+O13-C,O13C-2,Hijau,9,5,15,true
+O13-C,O13C-3,Ungu,6,5,15,true
+O13-C,O13C-4,Biru,11,5,15,true
+T29-A,T29A-1,Alun alun,0,,,true
+T29-A,T29A-2,Balai Kota,0,,,true
+T29-A,T29A-3,Benstur Kantor,0,,,true
+T29-A,T29A-4,Gereja,0,,,true
+T29-A,T29A-5,Kayutangan,0,,,true
+PBS3-O32-A,PBS3-O32-A-1,Cat,0,,,true
+PBS3-O32-A,PBS3-O32-A-2,Home,0,,,true
+PBS3-O32-A,PBS3-O32-A-3,Life is so Peak,0,,,true
+PBS3-O32-A,PBS3-O32-A-4,Coffee,0,,,true
+GG-B,GG-B-P,Pink,0,,,true
+GG-B,GG-B-W,White,0,,,true
+GG-B,GG-B-N,Natural,0,,,true
+D6-E,D6E-1,Juventus,23,10,20,true
+D6-E,D6E-2,Chelsea,25,10,20,true
+D6-E,D6E-3,PSG,32,10,20,true
+D6-E,D6E-4,Man City,12,10,20,true
+D6-E,D6E-5,Real Madrid,18,10,20,true
+D6-E,D6E-6,Barcelona,15,10,20,true
+D6-E,D6E-7,Liverpool,32,10,20,true
+N6-A,N6A-1,Hitam Putih,7,5,8,true
+N6-A,N6A-2,Putih Hitam,8,5,8,true
+N6-A,N6A-3,Merah Hitam,9,5,8,true
+N6-A,N6A-4,Kuning Putih,7,5,8,true
+N6-A,N6A-5,Ungu Putih,10,5,8,true
+N6-A,N6A-6,Ungu Hitam,11,5,8,true
+PBS3-O32-B,PBS3-O32-B-1,Lady Green,0,,,true
+PBS3-O32-B,PBS3-O32-B-2,Lady Red,0,,,true
+PBS3-O32-B,PBS3-O32-B-3,Lady Navy,0,,,true
