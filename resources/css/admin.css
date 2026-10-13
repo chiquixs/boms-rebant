@@ -452,65 +452,76 @@ button {
 
 
 /* ========================================
-   SUBMENU
+   SIDEBAR SUBMENU
 ======================================== */
 
 .nav-submenu {
     display: none;
 
-    padding-left: 46px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    margin: 4px 0 6px 22px;
+    padding: 3px 0 3px 14px;
+
+    border-left: 1.5px solid var(--border);
 }
 
 .nav-group.open .nav-submenu {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 
-/* Submenu item */
+/* Submenu Item */
 
 .nav-subitem {
+    position: relative;
+
     display: flex;
     align-items: center;
-    gap: 10px;
 
-    padding: 9px 12px;
+    min-height: 34px;
+    padding: 6px 11px;
+
+    border-radius: 8px;
 
     color: var(--text-muted);
+
     text-decoration: none;
 
     font-size: 13px;
     font-weight: 500;
 
-    border-radius: 8px;
-
-    transition: background 0.2s ease,
-                color 0.2s ease;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
 }
+
+
+/* Hover */
 
 .nav-subitem:hover {
-    background: var(--green-light);
+    background: rgba(157, 186, 140, 0.12);
+
     color: var(--green-dark);
+
+    transform: translateX(2px);
 }
 
 
-/* Small dot */
-
-.nav-subitem-dot {
-    width: 5px;
-    height: 5px;
-
-    border-radius: 50%;
-
-    background: currentColor;
-}
-
-
-/* Active submenu */
+/* Active */
 
 .nav-subitem.active {
-    color: var(--green-dark);
     background: var(--green-light);
+
+    color: var(--green-dark);
+
     font-weight: 600;
+}
+
+
+/* Hilangkan dot lama */
+
+.nav-subitem-dot {
+    display: none;
 }

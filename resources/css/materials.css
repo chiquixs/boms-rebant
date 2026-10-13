@@ -1,0 +1,803 @@
+/* ========================================
+   MATERIAL PAGE
+======================================== */
+
+.material-page {
+    width: 100%;
+}
+
+
+/* ========================================
+   HEADER
+======================================== */
+
+.material-page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+
+    margin-bottom: 20px;
+}
+
+.material-page-header h1 {
+    margin: 0 0 5px;
+
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.25;
+
+    color: var(--text);
+}
+
+.material-page-header p {
+    margin: 0;
+
+    font-size: 13px;
+
+    color: var(--text-muted);
+}
+
+
+/* ========================================
+   ADD BUTTON
+======================================== */
+
+.add-material-button {
+    height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    flex-shrink: 0;
+
+    padding: 0 15px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: var(--green-dark);
+    color: var(--white);
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+.add-material-button span {
+    font-size: 17px;
+    font-weight: 400;
+}
+
+.add-material-button:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+
+/* ========================================
+   CARD
+======================================== */
+
+.material-card {
+    width: 100%;
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    overflow: hidden;
+}
+
+
+/* ========================================
+   TOOLBAR
+======================================== */
+
+.material-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    padding: 13px 16px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+/* ========================================
+   SEARCH
+======================================== */
+
+.material-search {
+    width: 290px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    box-sizing: border-box;
+
+    padding: 0 11px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background: var(--white);
+
+    color: var(--text-muted);
+}
+
+.material-search:focus-within {
+    border-color: var(--green);
+}
+
+.material-search svg {
+    flex-shrink: 0;
+}
+
+.material-search input {
+    width: 100%;
+    height: 100%;
+
+    padding: 0;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    font-family: inherit;
+    font-size: 12px;
+
+    color: var(--text);
+}
+
+.material-search input::placeholder {
+    color: var(--text-muted);
+}
+
+
+/* ========================================
+   FILTER
+======================================== */
+
+.material-filter {
+    width: 140px;
+    height: 36px;
+
+    box-sizing: border-box;
+
+    padding: 0 10px;
+
+    flex-shrink: 0;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+
+    background: var(--white);
+
+    font-family: inherit;
+    font-size: 12px;
+
+    color: var(--text);
+
+    cursor: pointer;
+}
+
+.material-filter:focus {
+    border-color: var(--green);
+}
+
+
+/* ========================================
+   TABLE WRAPPER
+======================================== */
+
+.material-table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+/* ========================================
+   TABLE
+======================================== */
+
+.material-table {
+    width: 100%;
+    min-width: 960px;
+
+    border-collapse: collapse;
+
+    font-size: 12px;
+}
+
+
+/* ========================================
+   TABLE HEADER
+======================================== */
+
+.material-table th {
+    padding: 11px 14px;
+
+    background: #FAFBF8;
+
+    border-bottom: 1px solid var(--border);
+
+    color: var(--text-muted);
+
+    font-size: 9px;
+    font-weight: 700;
+
+    text-align: left;
+    text-transform: uppercase;
+
+    letter-spacing: 0.03em;
+
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   TABLE BODY
+======================================== */
+
+.material-table td {
+    padding: 13px 14px;
+
+    border-bottom: 1px solid var(--border);
+
+    background: transparent;
+
+    color: var(--text);
+
+    font-size: 11px;
+    font-weight: 500;
+
+    text-align: left;
+    vertical-align: middle;
+
+    white-space: nowrap;
+}
+
+.material-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.material-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.material-table tbody tr:hover {
+    background: #FBFCF9;
+}
+
+
+/* ========================================
+   FIRST COLUMN
+======================================== */
+
+.material-table th:first-child,
+.material-table td:first-child {
+    padding-left: 16px;
+}
+
+
+/* ========================================
+   MATERIAL NAME
+======================================== */
+
+.material-name {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+
+    color: var(--text);
+}
+
+
+/* ========================================
+   MATERIAL TYPE
+======================================== */
+
+.material-type {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 4px 7px;
+
+    border-radius: 6px;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    line-height: 1;
+
+    letter-spacing: 0.02em;
+
+    white-space: nowrap;
+}
+
+.material-type.sheet {
+    background: var(--green-light);
+
+    color: var(--green-dark);
+}
+
+.material-type.non-sheet {
+    background: var(--yellow-light);
+
+    color: #7A6728;
+}
+
+
+/* ========================================
+   EMPTY VALUE
+======================================== */
+
+.empty-value {
+    color: var(--text-muted) !important;
+}
+
+
+/* ========================================
+   STOCK
+======================================== */
+
+.stock-column,
+.stock-value {
+    text-align: center !important;
+}
+
+
+/* ========================================
+   STATUS
+======================================== */
+
+.material-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.material-status::before {
+    content: '';
+
+    width: 6px;
+    height: 6px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+}
+
+.material-status.active {
+    color: var(--green-dark);
+}
+
+.material-status.active::before {
+    background: var(--green);
+}
+
+.material-status.inactive {
+    color: var(--text-muted);
+}
+
+.material-status.inactive::before {
+    background: #C8CBC5;
+}
+
+
+/* ========================================
+   ACTION
+======================================== */
+
+.action-column {
+    text-align: center !important;
+}
+
+.material-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    white-space: nowrap;
+}
+
+.material-action {
+    height: 28px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 8px;
+
+    border-radius: 6px;
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.material-action.edit {
+    border: 1px solid var(--green);
+
+    background: var(--green-light);
+
+    color: var(--green-dark);
+}
+
+.material-action.edit:hover {
+    background: #DCE8D5;
+}
+
+.material-action.delete {
+    border: 1px solid #F0D3D0;
+
+    background: #FFF7F6;
+
+    color: #B85C55;
+}
+
+.material-action.delete:hover {
+    background: #FDECEA;
+}
+
+
+/* ========================================
+   MODAL OVERLAY
+======================================== */
+
+.material-modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    z-index: 1000;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(37, 40, 35, 0.35);
+
+    backdrop-filter: blur(2px);
+}
+
+.material-modal-overlay.active {
+    display: flex;
+}
+
+
+/* ========================================
+   MODAL
+======================================== */
+
+.material-modal {
+    width: 100%;
+    max-width: 620px;
+
+    max-height: calc(100vh - 40px);
+
+    overflow-y: auto;
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    box-shadow:
+        0 20px 60px rgba(37, 40, 35, 0.16);
+}
+
+
+/* ========================================
+   MODAL HEADER
+======================================== */
+
+.material-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+
+    padding: 18px 20px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.material-modal-header h2 {
+    margin: 0 0 4px;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    color: var(--text);
+}
+
+.material-modal-header p {
+    margin: 0;
+
+    font-size: 12px;
+
+    color: var(--text-muted);
+}
+
+.material-modal-close {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 7px;
+
+    background: transparent;
+
+    color: var(--text-muted);
+
+    font-family: inherit;
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+.material-modal-close:hover {
+    background: var(--background);
+
+    color: var(--text);
+}
+
+
+/* ========================================
+   MODAL BODY
+======================================== */
+
+.material-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    padding: 20px;
+}
+
+
+/* ========================================
+   SECTION TITLE
+======================================== */
+
+.material-form-section-title {
+    padding-bottom: 7px;
+
+    border-bottom: 1px solid var(--border);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    color: var(--green-dark);
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.04em;
+}
+
+
+/* ========================================
+   FORM GRID
+======================================== */
+
+.material-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.material-form-grid.stock-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+
+/* ========================================
+   FORM GROUP
+======================================== */
+
+.material-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.material-form-group label {
+    font-size: 11px;
+    font-weight: 600;
+
+    color: var(--text);
+}
+
+.material-form-group label span {
+    color: #B85C55;
+}
+
+
+/* ========================================
+   INPUT + SELECT
+======================================== */
+
+.material-form-group input,
+.material-form-group select {
+    width: 100%;
+    height: 38px;
+
+    box-sizing: border-box;
+
+    padding: 0 11px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+
+    background: var(--white);
+
+    color: var(--text);
+
+    font-family: inherit;
+    font-size: 12px;
+}
+
+.material-form-group input:focus,
+.material-form-group select:focus {
+    border-color: var(--green);
+
+    box-shadow:
+        0 0 0 3px rgba(157, 186, 140, 0.15);
+}
+
+
+/* ========================================
+   SHEET FIELDS
+======================================== */
+
+.material-sheet-fields {
+    display: none;
+
+    padding: 14px;
+
+    border: 1px solid var(--border);
+    border-radius: 9px;
+
+    background: #FAFBF8;
+}
+
+.material-sheet-fields .material-form-section-title {
+    margin-bottom: 14px;
+}
+
+
+/* ========================================
+   MODAL FOOTER
+======================================== */
+
+.material-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+
+    padding: 14px 20px;
+
+    border-top: 1px solid var(--border);
+
+    background: #FAFBF8;
+}
+
+.material-modal-button {
+    height: 36px;
+
+    padding: 0 14px;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.material-modal-button.cancel {
+    border: 1px solid var(--border);
+
+    background: var(--white);
+
+    color: var(--text);
+}
+
+.material-modal-button.cancel:hover {
+    background: var(--background);
+}
+
+.material-modal-button.save {
+    border: 1px solid var(--green-dark);
+
+    background: var(--green-dark);
+
+    color: var(--white);
+}
+
+.material-modal-button.save:hover {
+    opacity: 0.92;
+}
+
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 700px) {
+
+    .material-page-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .add-material-button {
+        width: 100%;
+    }
+
+    .material-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .material-search,
+    .material-filter {
+        width: 100%;
+    }
+
+    .material-modal-overlay {
+        padding: 14px;
+    }
+
+    .material-modal {
+        max-height: calc(100vh - 28px);
+    }
+
+    .material-form-grid,
+    .material-form-grid.stock-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
