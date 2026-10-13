@@ -151,6 +151,16 @@ Route::middleware('auth')->group(function () {
             Route::get('/materials', function () {
                 return view('admin.materials.index');
             })->name('materials.index');
+
+            Route::get('/inventory', function () {
+                return view('admin.inventory.index');
+            })->name('inventory.index');
+
+            Route::get('/inventory/{sku}/history', function ($sku) {
+                return view('admin.inventory.history', [
+                    'sku' => $sku,
+                ]);
+            })->name('inventory.history');
         });
 
 

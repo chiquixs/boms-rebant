@@ -1,0 +1,547 @@
+/* ========================================
+   STOCK HISTORY PAGE
+======================================== */
+
+.stock-history-page {
+    width: 100%;
+}
+
+
+/* ========================================
+   BACK
+======================================== */
+
+.stock-history-back {
+    width: fit-content;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    margin-bottom: 16px;
+
+    color: var(--text-muted);
+
+    font-size: 11px;
+    font-weight: 500;
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+.stock-history-back:hover {
+    color: var(--green-dark);
+}
+
+
+/* ========================================
+   HEADER
+======================================== */
+
+.stock-history-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+
+    margin-bottom: 20px;
+}
+
+.stock-history-breadcrumb {
+    margin-bottom: 7px;
+
+    color: var(--green-dark);
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.05em;
+}
+
+.stock-history-header h1 {
+    margin: 0 0 7px;
+
+    color: var(--text);
+
+    font-size: 22px;
+    font-weight: 700;
+
+    line-height: 1.25;
+}
+
+.stock-history-variant {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+
+    color: var(--text-muted);
+
+    font-size: 11px;
+}
+
+.stock-history-variant .separator {
+    color: #C5C8C2;
+}
+
+.stock-history-type {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 5px 9px;
+
+    flex-shrink: 0;
+
+    border-radius: 7px;
+
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+/* ========================================
+   SUMMARY
+======================================== */
+
+.stock-history-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+
+    margin-bottom: 20px;
+}
+
+.stock-history-summary-card {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 15px 16px;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    background: var(--white);
+}
+
+.stock-history-summary-card.primary {
+    border-color: #D5E1CF;
+
+    background: #FBFDF9;
+}
+
+.history-summary-label {
+    margin-bottom: 6px;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.history-summary-value {
+    color: var(--text);
+
+    font-size: 22px;
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+.history-summary-value.incoming {
+    color: var(--green-dark);
+}
+
+.history-summary-value.outgoing {
+    color: #B85C55;
+}
+
+.history-summary-unit,
+.history-summary-caption {
+    margin-top: 4px;
+
+    color: var(--text-muted);
+
+    font-size: 9px;
+}
+
+
+/* ========================================
+   MAIN CARD
+======================================== */
+
+.stock-history-card {
+    width: 100%;
+
+    overflow: hidden;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: var(--white);
+}
+
+
+/* ========================================
+   FILTER SECTION
+======================================== */
+
+.stock-history-filter-section {
+    padding: 17px 16px 18px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.stock-history-section-heading {
+    margin-bottom: 14px;
+}
+
+.stock-history-section-heading h2 {
+    margin: 0 0 4px;
+
+    color: var(--text);
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.stock-history-section-heading p {
+    margin: 0;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+}
+
+
+/* ========================================
+   FILTERS
+======================================== */
+
+.stock-history-filters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.stock-history-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.stock-history-filter-group label {
+    color: var(--text);
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.stock-history-filter-group select {
+    width: 100%;
+    height: 36px;
+
+    box-sizing: border-box;
+
+    padding: 0 11px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+
+    background: var(--white);
+
+    color: var(--text);
+
+    font-family: inherit;
+    font-size: 11px;
+
+    cursor: pointer;
+}
+
+.stock-history-filter-group select:focus {
+    border-color: var(--green);
+
+    box-shadow:
+        0 0 0 3px rgba(157, 186, 140, 0.12);
+}
+
+
+/* ========================================
+   TABLE SECTION
+======================================== */
+
+.stock-history-table-section {
+    padding-top: 17px;
+}
+
+.stock-history-table-section
+.stock-history-section-heading {
+    padding: 0 16px;
+}
+
+
+/* ========================================
+   TABLE WRAPPER
+======================================== */
+
+.stock-history-table-wrapper {
+    width: 100%;
+
+    overflow-x: auto;
+}
+
+
+/* ========================================
+   TABLE
+======================================== */
+
+.stock-history-table {
+    width: 100%;
+    min-width: 720px;
+
+    border-collapse: collapse;
+
+    font-size: 11px;
+}
+
+.stock-history-table th {
+    padding: 10px 14px;
+
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+
+    background: #FAFBF8;
+
+    color: var(--text-muted);
+
+    font-size: 9px;
+    font-weight: 700;
+
+    text-align: left;
+    text-transform: uppercase;
+
+    letter-spacing: 0.03em;
+
+    white-space: nowrap;
+}
+
+.stock-history-table td {
+    padding: 12px 14px;
+
+    border-bottom: 1px solid var(--border);
+
+    color: var(--text);
+
+    font-size: 11px;
+    font-weight: 500;
+
+    vertical-align: middle;
+}
+
+.stock-history-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.stock-history-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.stock-history-table tbody tr:hover {
+    background: #FBFCF9;
+}
+
+
+/* ========================================
+   DATE
+======================================== */
+
+.history-date {
+    min-width: 100px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.history-date strong {
+    color: var(--text);
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.history-date span {
+    color: var(--text-muted);
+
+    font-size: 9px;
+}
+
+
+/* ========================================
+   ACTIVITY
+======================================== */
+
+.history-activity {
+    min-width: 170px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.history-activity strong {
+    color: var(--text);
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.history-activity span {
+    color: var(--text-muted);
+
+    font-size: 9px;
+}
+
+
+/* ========================================
+   SOURCE
+======================================== */
+
+.history-source {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 4px 7px;
+
+    border-radius: 6px;
+
+    background: var(--yellow-light);
+
+    color: #7A6728;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.history-source.production {
+    background: var(--green-light);
+
+    color: var(--green-dark);
+}
+
+.history-source.adjustment {
+    background: #F0F1EE;
+
+    color: var(--text-muted);
+}
+
+
+/* ========================================
+   CHANGE
+======================================== */
+
+.history-change {
+    font-size: 10px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.history-change.incoming {
+    color: var(--green-dark);
+}
+
+.history-change.outgoing {
+    color: #B85C55;
+}
+
+.history-change.initial {
+    color: var(--text);
+}
+
+
+/* ========================================
+   BALANCE
+======================================== */
+
+.history-balance {
+    font-weight: 600 !important;
+
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   EMPTY STATE
+======================================== */
+
+.stock-history-empty {
+    display: none;
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    min-height: 180px;
+
+    padding: 30px;
+
+    color: var(--text-muted);
+
+    text-align: center;
+}
+
+.stock-history-empty svg {
+    margin-bottom: 4px;
+
+    color: var(--green);
+}
+
+.stock-history-empty strong {
+    color: var(--text);
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.stock-history-empty span {
+    font-size: 10px;
+}
+
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 800px) {
+
+    .stock-history-summary {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .stock-history-header {
+        flex-direction: column;
+    }
+
+    .stock-history-filters {
+        grid-template-columns: 1fr;
+    }
+
+}
