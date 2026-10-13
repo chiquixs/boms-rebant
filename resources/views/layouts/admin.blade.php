@@ -11,7 +11,8 @@
         'resources/css/orders.css',
         'resources/css/order-detail.css',
         'resources/css/products.css',
-        'resources/css/product-bom.css'
+        'resources/css/product-bom.css',
+        'resources/css/categories.css'
     ])
 
     @stack('styles')
@@ -76,20 +77,61 @@
 
 
     {{-- Master Produk & SKU --}}
-    <a
-    href="/admin/products"
-    class="nav-item {{ request()->is('admin/products*') ? 'active' : '' }}"
->
+<div class="nav-group {{ request()->is('admin/products*') || request()->is('admin/categories*') ? 'open' : '' }}">
 
-        <svg width="20" height="20" viewBox="0 0 24 24"
-             fill="none" stroke="currentColor" stroke-width="1.8">
-            <path d="M21 8l-9 5-9-5"/>
-            <path d="M3 8l9-5 9 5v8l-9 5-9-5V8Z"/>
-            <path d="M12 13v8"/>
-        </svg>
+    <div class="nav-parent">
 
-        <span>Master Produk & SKU</span>
-    </a>
+        <a
+            href="/admin/products"
+            class="nav-item nav-parent-link {{ request()->is('admin/products*') ? 'active' : '' }}"
+        >
+
+            <svg width="20" height="20" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M21 8l-9 5-9-5"/>
+                <path d="M3 8l9-5 9 5v8l-9 5-9-5V8Z"/>
+                <path d="M12 13v8"/>
+            </svg>
+
+            <span>Master Produk & SKU</span>
+
+        </a>
+
+
+        <button
+            type="button"
+            class="nav-toggle"
+            aria-label="Toggle submenu"
+        >
+            <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                class="nav-chevron"
+            >
+                <path d="m6 9 6 6 6-6"/>
+            </svg>
+        </button>
+
+    </div>
+
+
+    <div class="nav-submenu">
+
+        <a
+            href="/admin/categories"
+            class="nav-subitem {{ request()->is('admin/categories*') ? 'active' : '' }}"
+        >
+            <span class="nav-subitem-dot"></span>
+            <span>Kategori</span>
+        </a>
+
+    </div>
+
+</div>
 
 
     {{-- Inventory --}}
@@ -216,6 +258,32 @@
 
 
 @stack('scripts')
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const navGroups =
+        document.querySelectorAll('.nav-group');
+
+    navGroups.forEach(function (group) {
+
+        const toggle =
+            group.querySelector('.nav-toggle');
+
+        if (!toggle) {
+            return;
+        }
+
+        toggle.addEventListener('click', function () {
+
+            group.classList.toggle('open');
+
+        });
+
+    });
+
+});
+</script>
 
 </body>
 </html>

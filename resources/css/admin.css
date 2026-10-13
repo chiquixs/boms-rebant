@@ -383,3 +383,134 @@ button {
         padding: 32px 28px 45px;
     }
 }
+
+/* ========================================
+   SIDEBAR SUBMENU
+======================================== */
+
+.nav-group {
+    width: 100%;
+}
+
+
+/* Parent menu */
+
+.nav-parent {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.nav-parent-link {
+    flex: 1;
+    padding-right: 42px;
+}
+
+
+/* Toggle arrow */
+
+.nav-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    background: transparent;
+
+    color: var(--text-muted);
+    cursor: pointer;
+
+    border-radius: 8px;
+
+    transition: background 0.2s ease,
+                color 0.2s ease;
+}
+
+.nav-toggle:hover {
+    background: rgba(82, 106, 72, 0.08);
+    color: var(--green-dark);
+}
+
+
+/* Arrow animation */
+
+.nav-chevron {
+    transition: transform 0.25s ease;
+}
+
+.nav-group.open .nav-chevron {
+    transform: rotate(180deg);
+}
+
+
+/* ========================================
+   SUBMENU
+======================================== */
+
+.nav-submenu {
+    display: none;
+
+    padding-left: 46px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.nav-group.open .nav-submenu {
+    display: block;
+}
+
+
+/* Submenu item */
+
+.nav-subitem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 9px 12px;
+
+    color: var(--text-muted);
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    border-radius: 8px;
+
+    transition: background 0.2s ease,
+                color 0.2s ease;
+}
+
+.nav-subitem:hover {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+
+
+/* Small dot */
+
+.nav-subitem-dot {
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: currentColor;
+}
+
+
+/* Active submenu */
+
+.nav-subitem.active {
+    color: var(--green-dark);
+    background: var(--green-light);
+    font-weight: 600;
+}
