@@ -12,7 +12,8 @@
         'resources/css/order-detail.css',
         'resources/css/products.css',
         'resources/css/product-bom.css',
-        'resources/css/categories.css'
+        'resources/css/categories.css',
+        'resources/css/materials.css'
     ])
 
     @stack('styles')
@@ -77,8 +78,13 @@
 
 
     {{-- Master Produk & SKU --}}
-<div class="nav-group {{ request()->is('admin/products*') || request()->is('admin/categories*') ? 'open' : '' }}">
-
+<div class="nav-group {{
+    request()->is('admin/products*') ||
+    request()->is('admin/categories*') ||
+    request()->is('admin/materials*')
+        ? 'open'
+        : ''
+}}">
     <div class="nav-parent">
 
         <a
@@ -121,15 +127,26 @@
 
     <div class="nav-submenu">
 
-        <a
-            href="/admin/categories"
-            class="nav-subitem {{ request()->is('admin/categories*') ? 'active' : '' }}"
-        >
-            <span class="nav-subitem-dot"></span>
-            <span>Kategori</span>
-        </a>
+    {{-- Kategori --}}
+    <a
+        href="/admin/categories"
+        class="nav-subitem {{ request()->is('admin/categories*') ? 'active' : '' }}"
+    >
+        <span class="nav-subitem-dot"></span>
+        <span>Kategori</span>
+    </a>
 
-    </div>
+
+    {{-- Bahan Mentah --}}
+    <a
+        href="/admin/materials"
+        class="nav-subitem {{ request()->is('admin/materials*') ? 'active' : '' }}"
+    >
+        <span class="nav-subitem-dot"></span>
+        <span>Bahan Mentah</span>
+    </a>
+
+</div>
 
 </div>
 

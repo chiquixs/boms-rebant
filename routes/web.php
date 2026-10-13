@@ -33,7 +33,6 @@ Route::middleware('guest')->group(function () {
 
     Route::post('/login', [LoginController::class, 'login'])
         ->name('login.process');
-
 });
 
 
@@ -67,19 +66,17 @@ Route::middleware('auth')->group(function () {
         return match ($request->user()->role->name) {
 
             'admin' =>
-                redirect()->route('admin.orders.index'),
+            redirect()->route('admin.orders.index'),
 
             'produksi' =>
-                redirect()->route('produksi.dashboard'),
+            redirect()->route('produksi.dashboard'),
 
             'bisnis owner' =>
-                redirect()->route('owner.dashboard'),
+            redirect()->route('owner.dashboard'),
 
             default =>
-                abort(403),
-
+            abort(403),
         };
-
     })->name('dashboard');
 
 
@@ -104,7 +101,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/orders', function () {
 
                 return view('admin.orders.index');
-
             })->name('orders.index');
 
 
@@ -113,7 +109,6 @@ Route::middleware('auth')->group(function () {
                 return view('admin.orders.show', [
                     'orderId' => $id,
                 ]);
-
             })->name('orders.show');
 
 
@@ -126,7 +121,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/products', function () {
 
                 return view('admin.products.index');
-
             })->name('products.index');
 
 
@@ -141,7 +135,6 @@ Route::middleware('auth')->group(function () {
                 return view('admin.products.bom', [
                     'sku' => $sku,
                 ]);
-
             })->name('products.bom');
 
 
@@ -152,11 +145,12 @@ Route::middleware('auth')->group(function () {
             */
 
             Route::get('/categories', function () {
-
                 return view('admin.categories.index');
-
             })->name('categories.index');
 
+            Route::get('/materials', function () {
+                return view('admin.materials.index');
+            })->name('materials.index');
         });
 
 
@@ -174,9 +168,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/dashboard', function () {
 
                 return 'Dashboard Produksi';
-
             })->name('dashboard');
-
         });
 
 
@@ -194,9 +186,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/dashboard', function () {
 
                 return 'Dashboard Bisnis Owner';
-
             })->name('dashboard');
-
         });
-
 });
