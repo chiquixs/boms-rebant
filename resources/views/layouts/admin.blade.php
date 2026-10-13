@@ -10,7 +10,8 @@
         'resources/css/admin.css',
         'resources/css/orders.css',
         'resources/css/order-detail.css',
-        'resources/css/products.css'
+        'resources/css/products.css',
+        'resources/css/product-bom.css'
     ])
 
     @stack('styles')
