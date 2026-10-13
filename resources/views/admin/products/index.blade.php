@@ -154,8 +154,8 @@
 
                         <td>
                             <span class="sku-code">
-                                WD-HEX-001
-                            </span>
+    D6A
+</span>
                         </td>
 
                         <td>
@@ -201,13 +201,13 @@
                         <td>
                             <div class="product-actions">
 
-                                <button
-                                    type="button"
-                                    class="product-action bom"
-                                    title="Resep BOM"
-                                >
-                                    BOM
-                                </button>
+                                <a
+    href="/admin/products/D6A/bom"
+    class="product-action bom"
+    title="Resep BOM"
+>
+    BOM
+</a>
 
                                 <button
                                     type="button"
