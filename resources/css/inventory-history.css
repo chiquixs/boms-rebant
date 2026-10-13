@@ -520,6 +520,79 @@
     font-size: 10px;
 }
 
+/* ========================================
+   RAW MATERIAL HISTORY
+======================================== */
+
+.stock-history-type.raw-material {
+    background: var(--yellow-light);
+    color: #7A6728;
+}
+
+
+/* Supplier / Production destination */
+
+.material-history-party {
+    min-width: 130px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.material-history-party strong {
+    font-size: 10px;
+    font-weight: 600;
+
+    color: var(--text);
+}
+
+.material-history-party span {
+    font-size: 9px;
+
+    color: var(--text-muted);
+}
+
+
+/* Reference */
+
+.material-reference {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 4px 7px;
+
+    border-radius: 6px;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.material-reference.procurement {
+    background: var(--yellow-light);
+    color: #7A6728;
+}
+
+.material-reference.production {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+
+.material-reference.adjustment {
+    background: #F0F1EE;
+    color: var(--text-muted);
+}
+
+
+/* Raw material history table */
+
+.material-history-table {
+    min-width: 820px;
+}
+
 
 /* ========================================
    RESPONSIVE

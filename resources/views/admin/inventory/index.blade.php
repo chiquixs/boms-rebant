@@ -33,74 +33,39 @@
 
 
     {{-- =========================
-        SUMMARY CARDS
+        SUMMARY
     ========================== --}}
     <div class="inventory-summary-grid">
 
         <div class="inventory-summary-card">
-            <div class="summary-label">
-                SKU Stok Rendah
-            </div>
-
-            <div class="summary-value danger">
-                2
-            </div>
-
-            <div class="summary-caption">
-                Variant di bawah safety stock
-            </div>
+            <div class="summary-label">SKU Stok Rendah</div>
+            <div class="summary-value danger">2</div>
+            <div class="summary-caption">Variant di bawah safety stock</div>
         </div>
 
-
         <div class="inventory-summary-card">
-            <div class="summary-label">
-                Bahan Baku Menipis
-            </div>
-
-            <div class="summary-value warning">
-                1
-            </div>
-
-            <div class="summary-caption">
-                Bahan di bawah safety stock
-            </div>
+            <div class="summary-label">Bahan Baku Menipis</div>
+            <div class="summary-value warning">1</div>
+            <div class="summary-caption">Bahan di bawah safety stock</div>
         </div>
 
-
         <div class="inventory-summary-card">
-            <div class="summary-label">
-                Stok Masuk Hari Ini
-            </div>
-
-            <div class="summary-value">
-                12
-            </div>
-
-            <div class="summary-caption">
-                Transaksi stok masuk
-            </div>
+            <div class="summary-label">Stok Masuk Hari Ini</div>
+            <div class="summary-value">12</div>
+            <div class="summary-caption">Transaksi stok masuk</div>
         </div>
 
-
         <div class="inventory-summary-card">
-            <div class="summary-label">
-                Stok Keluar Hari Ini
-            </div>
-
-            <div class="summary-value">
-                8
-            </div>
-
-            <div class="summary-caption">
-                Transaksi stok keluar
-            </div>
+            <div class="summary-label">Stok Keluar Hari Ini</div>
+            <div class="summary-value">8</div>
+            <div class="summary-caption">Transaksi stok keluar</div>
         </div>
 
     </div>
 
 
     {{-- =========================
-        INVENTORY CONTENT
+        INVENTORY CARD
     ========================== --}}
     <div class="inventory-card">
 
@@ -135,7 +100,7 @@
 
 
         {{-- ========================================
-             TAB 1 — PRODUK JADI
+             PRODUK JADI
         ========================================= --}}
         <div
             class="inventory-tab-content active"
@@ -145,13 +110,9 @@
             <div class="inventory-section-header">
                 <div>
                     <h2>Stok Produk Jadi</h2>
-
-                    <p>
-                        Stok produk MTS berdasarkan SKU Variant.
-                    </p>
+                    <p>Stok produk MTS berdasarkan SKU Variant.</p>
                 </div>
             </div>
-
 
             <div class="inventory-table-wrapper">
 
@@ -166,328 +127,122 @@
                             <th>Safety Stock</th>
                             <th>Target Stock</th>
                             <th>Status</th>
-                            <th class="inventory-action-column">
-                                Aksi
-                            </th>
+                            <th class="inventory-action-column">Aksi</th>
                         </tr>
                     </thead>
 
                     <tbody>
 
-                        {{-- D6A-1 --}}
                         <tr>
                             <td>
                                 <div class="inventory-product-info">
-                                    <strong>
-                                        Sign Peringatan Hitam (9x30)
-                                    </strong>
-
-                                    <span>
-                                        SKU Product: D6A
-                                    </span>
+                                    <strong>Sign Peringatan Hitam (9x30)</strong>
+                                    <span>SKU Product: D6A</span>
                                 </div>
                             </td>
-
                             <td>CCTV</td>
-
-                            <td>
-                                <span class="inventory-sku">
-                                    D6A-1
-                                </span>
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                50
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                30
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                80
-                            </td>
-
-                            <td>
-                                <span class="stock-status safe">
-                                    Aman
-                                </span>
-                            </td>
-
+                            <td><span class="inventory-sku">D6A-1</span></td>
+                            <td class="inventory-stock-number">50</td>
+                            <td class="inventory-stock-number">30</td>
+                            <td class="inventory-stock-number">80</td>
+                            <td><span class="stock-status safe">Aman</span></td>
                             <td>
                                 <a
                                     href="/admin/inventory/D6A-1/history"
                                     class="history-button"
                                 >
-                                    <svg
-                                        width="14"
-                                        height="14"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="1.8"
-                                    >
-                                        <path d="M3 12a9 9 0 1 0 3-6.7"/>
-                                        <path d="M3 4v5h5"/>
-                                        <path d="M12 7v5l3 2"/>
-                                    </svg>
-
                                     Riwayat
                                 </a>
                             </td>
                         </tr>
 
-
-                        {{-- D6A-2 --}}
                         <tr>
                             <td>
                                 <div class="inventory-product-info">
-                                    <strong>
-                                        Sign Peringatan Hitam (9x30)
-                                    </strong>
-
-                                    <span>
-                                        SKU Product: D6A
-                                    </span>
+                                    <strong>Sign Peringatan Hitam (9x30)</strong>
+                                    <span>SKU Product: D6A</span>
                                 </div>
                             </td>
-
                             <td>Dilarang Merokok</td>
-
-                            <td>
-                                <span class="inventory-sku">
-                                    D6A-2
-                                </span>
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                75
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                30
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                80
-                            </td>
-
-                            <td>
-                                <span class="stock-status safe">
-                                    Aman
-                                </span>
-                            </td>
-
+                            <td><span class="inventory-sku">D6A-2</span></td>
+                            <td class="inventory-stock-number">75</td>
+                            <td class="inventory-stock-number">30</td>
+                            <td class="inventory-stock-number">80</td>
+                            <td><span class="stock-status safe">Aman</span></td>
                             <td>
                                 <a
                                     href="/admin/inventory/D6A-2/history"
                                     class="history-button"
                                 >
-                                    <svg
-                                        width="14"
-                                        height="14"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="1.8"
-                                    >
-                                        <path d="M3 12a9 9 0 1 0 3-6.7"/>
-                                        <path d="M3 4v5h5"/>
-                                        <path d="M12 7v5l3 2"/>
-                                    </svg>
-
                                     Riwayat
                                 </a>
                             </td>
                         </tr>
 
-
-                        {{-- D6A-3 --}}
                         <tr>
                             <td>
                                 <div class="inventory-product-info">
-                                    <strong>
-                                        Sign Peringatan Hitam (9x30)
-                                    </strong>
-
-                                    <span>
-                                        SKU Product: D6A
-                                    </span>
+                                    <strong>Sign Peringatan Hitam (9x30)</strong>
+                                    <span>SKU Product: D6A</span>
                                 </div>
                             </td>
-
                             <td>Area Merokok</td>
-
-                            <td>
-                                <span class="inventory-sku">
-                                    D6A-3
-                                </span>
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                30
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                30
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                80
-                            </td>
-
-                            <td>
-                                <span class="stock-status warning">
-                                    Perhatian
-                                </span>
-                            </td>
-
+                            <td><span class="inventory-sku">D6A-3</span></td>
+                            <td class="inventory-stock-number">30</td>
+                            <td class="inventory-stock-number">30</td>
+                            <td class="inventory-stock-number">80</td>
+                            <td><span class="stock-status warning">Perhatian</span></td>
                             <td>
                                 <a
                                     href="/admin/inventory/D6A-3/history"
                                     class="history-button"
                                 >
-                                    <svg
-                                        width="14"
-                                        height="14"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="1.8"
-                                    >
-                                        <path d="M3 12a9 9 0 1 0 3-6.7"/>
-                                        <path d="M3 4v5h5"/>
-                                        <path d="M12 7v5l3 2"/>
-                                    </svg>
-
                                     Riwayat
                                 </a>
                             </td>
                         </tr>
 
-
-                        {{-- D6A-4 --}}
                         <tr>
                             <td>
                                 <div class="inventory-product-info">
-                                    <strong>
-                                        Sign Peringatan Hitam (9x30)
-                                    </strong>
-
-                                    <span>
-                                        SKU Product: D6A
-                                    </span>
+                                    <strong>Sign Peringatan Hitam (9x30)</strong>
+                                    <span>SKU Product: D6A</span>
                                 </div>
                             </td>
-
                             <td>Arah Kiblat</td>
-
-                            <td>
-                                <span class="inventory-sku">
-                                    D6A-4
-                                </span>
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                34
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                30
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                80
-                            </td>
-
-                            <td>
-                                <span class="stock-status safe">
-                                    Aman
-                                </span>
-                            </td>
-
+                            <td><span class="inventory-sku">D6A-4</span></td>
+                            <td class="inventory-stock-number">34</td>
+                            <td class="inventory-stock-number">30</td>
+                            <td class="inventory-stock-number">80</td>
+                            <td><span class="stock-status safe">Aman</span></td>
                             <td>
                                 <a
                                     href="/admin/inventory/D6A-4/history"
                                     class="history-button"
                                 >
-                                    <svg
-                                        width="14"
-                                        height="14"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="1.8"
-                                    >
-                                        <path d="M3 12a9 9 0 1 0 3-6.7"/>
-                                        <path d="M3 4v5h5"/>
-                                        <path d="M12 7v5l3 2"/>
-                                    </svg>
-
                                     Riwayat
                                 </a>
                             </td>
                         </tr>
 
-
-                        {{-- D6A-5 --}}
                         <tr>
                             <td>
                                 <div class="inventory-product-info">
-                                    <strong>
-                                        Sign Peringatan Hitam (9x30)
-                                    </strong>
-
-                                    <span>
-                                        SKU Product: D6A
-                                    </span>
+                                    <strong>Sign Peringatan Hitam (9x30)</strong>
+                                    <span>SKU Product: D6A</span>
                                 </div>
                             </td>
-
                             <td>Jagalah Kebersihan</td>
-
-                            <td>
-                                <span class="inventory-sku">
-                                    D6A-5
-                                </span>
-                            </td>
-
-                            <td class="inventory-stock-number low-stock">
-                                20
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                30
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                80
-                            </td>
-
-                            <td>
-                                <span class="stock-status low">
-                                    Rendah
-                                </span>
-                            </td>
-
+                            <td><span class="inventory-sku">D6A-5</span></td>
+                            <td class="inventory-stock-number low-stock">20</td>
+                            <td class="inventory-stock-number">30</td>
+                            <td class="inventory-stock-number">80</td>
+                            <td><span class="stock-status low">Rendah</span></td>
                             <td>
                                 <a
                                     href="/admin/inventory/D6A-5/history"
                                     class="history-button"
                                 >
-                                    <svg
-                                        width="14"
-                                        height="14"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="1.8"
-                                    >
-                                        <path d="M3 12a9 9 0 1 0 3-6.7"/>
-                                        <path d="M3 4v5h5"/>
-                                        <path d="M12 7v5l3 2"/>
-                                    </svg>
-
                                     Riwayat
                                 </a>
                             </td>
@@ -503,7 +258,7 @@
 
 
         {{-- ========================================
-             TAB 2 — BAHAN BAKU
+             BAHAN BAKU
         ========================================= --}}
         <div
             class="inventory-tab-content"
@@ -513,17 +268,13 @@
             <div class="inventory-section-header">
                 <div>
                     <h2>Stok Bahan Baku</h2>
-
-                    <p>
-                        Satuan mengikuti master data bahan mentah.
-                    </p>
+                    <p>Stok dan riwayat bahan mengikuti master data bahan mentah.</p>
                 </div>
             </div>
 
-
             <div class="inventory-table-wrapper">
 
-                <table class="inventory-table">
+                <table class="inventory-table raw-material-table">
 
                     <thead>
                         <tr>
@@ -534,6 +285,7 @@
                             <th>Safety Stock</th>
                             <th>Target Stock</th>
                             <th>Status</th>
+                            <th class="inventory-action-column">Aksi</th>
                         </tr>
                     </thead>
 
@@ -542,7 +294,10 @@
                         {{-- MDF --}}
                         <tr>
                             <td>
-                                <strong>MDF</strong>
+                                <div class="inventory-product-info">
+                                    <strong>MDF</strong>
+                                    <span>Ukuran: 120 × 240 cm</span>
+                                </div>
                             </td>
 
                             <td>
@@ -553,22 +308,23 @@
 
                             <td>lembar</td>
 
-                            <td class="inventory-stock-number">
-                                20
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                5
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                30
-                            </td>
+                            <td class="inventory-stock-number">20</td>
+                            <td class="inventory-stock-number">5</td>
+                            <td class="inventory-stock-number">30</td>
 
                             <td>
                                 <span class="stock-status safe">
                                     Aman
                                 </span>
+                            </td>
+
+                            <td>
+                                <a
+                                    href="/admin/inventory/material/MDF/history"
+                                    class="history-button"
+                                >
+                                    Riwayat
+                                </a>
                             </td>
                         </tr>
 
@@ -587,22 +343,23 @@
 
                             <td>pcs</td>
 
-                            <td class="inventory-stock-number">
-                                150
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                30
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                200
-                            </td>
+                            <td class="inventory-stock-number">150</td>
+                            <td class="inventory-stock-number">30</td>
+                            <td class="inventory-stock-number">200</td>
 
                             <td>
                                 <span class="stock-status safe">
                                     Aman
                                 </span>
+                            </td>
+
+                            <td>
+                                <a
+                                    href="/admin/inventory/material/Hanger/history"
+                                    class="history-button"
+                                >
+                                    Riwayat
+                                </a>
                             </td>
                         </tr>
 
@@ -621,22 +378,23 @@
 
                             <td>lt</td>
 
-                            <td class="inventory-stock-number low-stock">
-                                2
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                3
-                            </td>
-
-                            <td class="inventory-stock-number">
-                                15
-                            </td>
+                            <td class="inventory-stock-number low-stock">2</td>
+                            <td class="inventory-stock-number">3</td>
+                            <td class="inventory-stock-number">15</td>
 
                             <td>
                                 <span class="stock-status low">
                                     Rendah
                                 </span>
+                            </td>
+
+                            <td>
+                                <a
+                                    href="/admin/inventory/material/Cat%20Hitam/history"
+                                    class="history-button"
+                                >
+                                    Riwayat
+                                </a>
                             </td>
                         </tr>
 
@@ -650,7 +408,7 @@
 
 
         {{-- ========================================
-             TAB 3 — RIWAYAT
+             RIWAYAT GLOBAL
         ========================================= --}}
         <div
             class="inventory-tab-content"
@@ -660,13 +418,9 @@
             <div class="inventory-section-header">
                 <div>
                     <h2>Riwayat Pergerakan Stok</h2>
-
-                    <p>
-                        Catatan perubahan stok produk jadi dan bahan baku.
-                    </p>
+                    <p>Catatan perubahan stok produk jadi dan bahan baku.</p>
                 </div>
             </div>
-
 
             <div class="inventory-table-wrapper">
 
@@ -694,9 +448,7 @@
                                 </div>
                             </td>
 
-                            <td>
-                                Pesanan siap dikemas
-                            </td>
+                            <td>Pesanan siap dikemas</td>
 
                             <td>
                                 <span class="stock-change out">
@@ -704,9 +456,29 @@
                                 </span>
                             </td>
 
+                            <td>Order</td>
+                        </tr>
+
+
+                        <tr>
+                            <td>13 Okt 2026</td>
+
                             <td>
-                                Order
+                                <div class="history-item">
+                                    <strong>MDF</strong>
+                                    <span>Bahan Baku</span>
+                                </div>
                             </td>
+
+                            <td>Penerimaan bahan</td>
+
+                            <td>
+                                <span class="stock-change in">
+                                    +10 lembar
+                                </span>
+                            </td>
+
+                            <td>Procurement</td>
                         </tr>
 
 
@@ -720,9 +492,7 @@
                                 </div>
                             </td>
 
-                            <td>
-                                Produksi selesai
-                            </td>
+                            <td>Produksi selesai</td>
 
                             <td>
                                 <span class="stock-change in">
@@ -730,9 +500,7 @@
                                 </span>
                             </td>
 
-                            <td>
-                                Produksi
-                            </td>
+                            <td>Produksi</td>
                         </tr>
 
 
@@ -746,45 +514,15 @@
                                 </div>
                             </td>
 
-                            <td>
-                                Penerimaan bahan
-                            </td>
-
-                            <td>
-                                <span class="stock-change in">
-                                    +5 lembar
-                                </span>
-                            </td>
-
-                            <td>
-                                Procurement
-                            </td>
-                        </tr>
-
-
-                        <tr>
-                            <td>11 Okt 2026</td>
-
-                            <td>
-                                <div class="history-item">
-                                    <strong>D6A-2</strong>
-                                    <span>Dilarang Merokok</span>
-                                </div>
-                            </td>
-
-                            <td>
-                                Pesanan siap dikemas
-                            </td>
+                            <td>Pemakaian produksi</td>
 
                             <td>
                                 <span class="stock-change out">
-                                    −5 pcs
+                                    −3 lembar
                                 </span>
                             </td>
 
-                            <td>
-                                Order
-                            </td>
+                            <td>Produksi</td>
                         </tr>
 
                     </tbody>

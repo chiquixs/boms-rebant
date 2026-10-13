@@ -161,6 +161,12 @@ Route::middleware('auth')->group(function () {
                     'sku' => $sku,
                 ]);
             })->name('inventory.history');
+
+            Route::get('/inventory/material/{material}/history', function ($material) {
+                return view('admin.inventory.material-history', [
+                    'material' => $material,
+                ]);
+            })->name('inventory.material-history');
         });
 
 
