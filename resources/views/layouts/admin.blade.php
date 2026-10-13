@@ -13,7 +13,9 @@
         'resources/css/products.css',
         'resources/css/product-bom.css',
         'resources/css/categories.css',
-        'resources/css/materials.css'
+        'resources/css/materials.css',
+        'resources/css/inventory.css',
+        'resources/css/inventory-history.css'
     ])
 
     @stack('styles')
@@ -152,7 +154,10 @@
 
 
     {{-- Inventory --}}
-    <a href="#" class="nav-item">
+    <a
+    href="/admin/inventory"
+    class="nav-item {{ request()->is('admin/inventory*') ? 'active' : '' }}"
+>
 
         <svg width="20" height="20" viewBox="0 0 24 24"
              fill="none" stroke="currentColor" stroke-width="1.8">
