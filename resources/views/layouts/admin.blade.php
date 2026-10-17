@@ -79,23 +79,35 @@
     </a>
 
 
-    {{-- Master Produk & SKU --}}
+    {{-- ========================================
+    MASTER PRODUK & SKU
+======================================== --}}
 <div class="nav-group {{
     request()->is('admin/products*') ||
-    request()->is('admin/categories*') ||
-    request()->is('admin/materials*')
+    request()->is('admin/categories*')
         ? 'open'
         : ''
 }}">
+
     <div class="nav-parent">
 
         <a
             href="/admin/products"
-            class="nav-item nav-parent-link {{ request()->is('admin/products*') ? 'active' : '' }}"
+            class="nav-item nav-parent-link {{
+                request()->is('admin/products*')
+                    ? 'active'
+                    : ''
+            }}"
         >
 
-            <svg width="20" height="20" viewBox="0 0 24 24"
-                 fill="none" stroke="currentColor" stroke-width="1.8">
+            <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+            >
                 <path d="M21 8l-9 5-9-5"/>
                 <path d="M3 8l9-5 9 5v8l-9 5-9-5V8Z"/>
                 <path d="M12 13v8"/>
@@ -129,46 +141,103 @@
 
     <div class="nav-submenu">
 
-    {{-- Kategori --}}
-    <a
-        href="/admin/categories"
-        class="nav-subitem {{ request()->is('admin/categories*') ? 'active' : '' }}"
-    >
-        <span class="nav-subitem-dot"></span>
-        <span>Kategori</span>
-    </a>
+        {{-- Kategori --}}
+        <a
+            href="/admin/categories"
+            class="nav-subitem {{
+                request()->is('admin/categories*')
+                    ? 'active'
+                    : ''
+            }}"
+        >
+            <span class="nav-subitem-dot"></span>
+            <span>Kategori</span>
+        </a>
 
-
-    {{-- Bahan Mentah --}}
-    <a
-        href="/admin/materials"
-        class="nav-subitem {{ request()->is('admin/materials*') ? 'active' : '' }}"
-    >
-        <span class="nav-subitem-dot"></span>
-        <span>Bahan Mentah</span>
-    </a>
-
-</div>
+    </div>
 
 </div>
 
 
-    {{-- Inventory --}}
-    <a
-    href="/admin/inventory"
-    class="nav-item {{ request()->is('admin/inventory*') ? 'active' : '' }}"
->
 
-        <svg width="20" height="20" viewBox="0 0 24 24"
-             fill="none" stroke="currentColor" stroke-width="1.8">
-            <rect x="3" y="5" width="18" height="16" rx="2"/>
-            <path d="M3 10h18"/>
-            <path d="M9 14h6"/>
-        </svg>
+{{-- ========================================
+    INVENTORY
+======================================== --}}
+<div class="nav-group {{
+    request()->is('admin/inventory*') ||
+    request()->is('admin/materials*')
+        ? 'open'
+        : ''
+}}">
 
-        <span>Inventory</span>
-    </a>
+    <div class="nav-parent">
 
+        <a
+            href="/admin/inventory"
+            class="nav-item nav-parent-link {{
+                request()->is('admin/inventory*')
+                    ? 'active'
+                    : ''
+            }}"
+        >
+
+            <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+            >
+                <rect x="3" y="5" width="18" height="16" rx="2"/>
+                <path d="M3 10h18"/>
+                <path d="M9 14h6"/>
+            </svg>
+
+            <span>Inventory</span>
+
+        </a>
+
+
+        <button
+            type="button"
+            class="nav-toggle"
+            aria-label="Toggle submenu"
+        >
+            <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                class="nav-chevron"
+            >
+                <path d="m6 9 6 6 6-6"/>
+            </svg>
+        </button>
+
+    </div>
+
+
+    <div class="nav-submenu">
+
+        {{-- Bahan Mentah --}}
+        <a
+            href="/admin/materials"
+            class="nav-subitem {{
+                request()->is('admin/materials*')
+                    ? 'active'
+                    : ''
+            }}"
+        >
+            <span class="nav-subitem-dot"></span>
+            <span>Bahan Mentah</span>
+        </a>
+
+    </div>
+
+</div>
 
     {{-- Procurement --}}
     <a href="#" class="nav-item">
