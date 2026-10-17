@@ -1470,20 +1470,31 @@
 
 .variant-item {
     display: grid;
-
     grid-template-columns:
-        80px minmax(150px, 1fr) 80px 70px 80px;
-
+        36px          /* thumbnail */
+        110px         /* SKU */
+        minmax(150px, 1fr)  /* nama varian */
+        80px          /* Stock */
+        70px          /* Min */
+        80px          /* Target */
+        100px;        /* status */
     align-items: center;
-
     gap: 10px;
-
-    padding: 9px 10px;
-
+    padding: 20px 10px;
     border: 1px solid #ECEFE9;
     border-radius: 8px;
-
     background: var(--white);
+}
+
+.variant-item .sku-code {
+    justify-self: start;
+    white-space: nowrap;
+    margin-left: 20px;
+}
+
+.variant-item .stock-status {
+    justify-self: start;
+    white-space: nowrap;
 }
 
 .variant-item:hover {
@@ -1733,4 +1744,51 @@
     color: #C0392B;
     font-size: 12px;
     cursor: pointer;
+}
+
+.variant-thumb {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border: 1px solid #E2E5DF;
+    border-radius: 10px;
+    background: #FAF9F3;
+}
+
+.variant-thumb-empty {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #B3B5B0;
+}
+
+.low-stock-note {
+    margin-top: 10px;
+    padding: 9px 12px;
+    background: #FDECEA;
+    border: 1px solid #F3C4BE;
+    border-radius: 10px;
+    font-size: 12px;
+    color: #C0392B;
+}
+
+.low-stock-note-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.low-stock-note ul {
+    margin: 6px 0 0;
+    padding-left: 18px;
+}
+
+.low-stock-note li {
+    line-height: 1.6;
+}
+
+.low-stock-note li span {
+    color: #8A8D86;
 }

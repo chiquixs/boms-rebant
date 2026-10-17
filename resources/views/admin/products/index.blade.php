@@ -120,6 +120,9 @@
                             $status      = $group->stock_status;
                             $single = $group->products->count() === 1 ? $group->products->first() : null;
                             $hasBom      = $group->materials_count > 0;
+                            $lowVariants = $isMto
+                                            ? collect()
+                                            : $group->products->filter(fn ($p) => $p->stock_status === 'low');
                             $hasVariants = $group->products->whereNotNull('variant_name')->isNotEmpty();
                             $image = $group->image_url
                                     ?? $group->products->first(fn ($p) => $p->image_url)?->image_url
@@ -139,6 +142,31 @@
                                     </div>
 
                                 </div>
+
+                                @if ($lowVariants->isNotEmpty())
+                                    <div class="low-stock-note">
+
+                                        <div class="low-stock-note-title">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <path d="M12 9v4"/>
+                                                <path d="M12 17h.01"/>
+                                                <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/>
+                                            </svg>
+                                            {{ $lowVariants->count() }} varian low stock
+                                        </div>
+
+                                        <ul>
+                                            @foreach ($lowVariants as $low)
+                                                <li>
+                                                    {{ $low->variant_name ?: $low->sku }}
+                                                    <span>({{ $low->current_stock }} / min {{ $low->min_stock }})</span>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+
+                                    </div>
+                                @endif
                             </td>
 
                             <td>
@@ -221,8 +249,26 @@
 
                                             @foreach ($group->products as $variant)
                                                 <div class="variant-item">
+
+                                                    @if ($variant->image_url)
+                                                        <img src="{{ $variant->image_url }}"
+                                                            alt="{{ $variant->variant_name ?: $variant->sku }}"
+                                                            class="variant-thumb"
+                                                            loading="lazy">
+                                                    @else
+                                                        <span class="variant-thumb variant-thumb-empty" title="Belum ada foto">
+                                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor" stroke-width="1.8">
+                                                                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                                                <circle cx="9" cy="9" r="2"/>
+                                                                <path d="m21 15-5-5L5 21"/>
+                                                            </svg>
+                                                        </span>
+                                                    @endif
+
                                                     <span class="sku-code">{{ $variant->sku }}</span>
                                                     <strong>{{ $variant->variant_name ?: '—' }}</strong>
+
                                                     @unless ($isMto)
                                                         <span>Stock: {{ $variant->current_stock }}</span>
                                                         <span>Min: {{ $variant->min_stock ?? '—' }}</span>
@@ -232,6 +278,7 @@
                                                             {{ $variant->stock_status === 'low' ? 'Low Stock' : 'Aman' }}
                                                         </span>
                                                     @endunless
+
                                                 </div>
                                             @endforeach
 
