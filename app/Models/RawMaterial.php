@@ -22,4 +22,10 @@ class RawMaterial extends Model
     {
         return $this->sheet_length_cm > 0 && $this->sheet_width_cm > 0;
     }
+
+    // Tambahan: dipakai view & controller halaman Bahan Mentah
+    public function isSheet(): bool
+    {
+        return $this->material_type === 'SHEET';
+    }
 }

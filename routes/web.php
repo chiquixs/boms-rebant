@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\BomController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\MaterialController;
 
 /*
 |--------------------------------------------------------------------------
@@ -138,9 +139,10 @@ Route::middleware('auth')->group(function () {
             Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
             Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');        
 
-            Route::get('/materials', function () {
-                return view('admin.materials.index');
-            })->name('materials.index');
+            Route::get('/materials', [MaterialController::class, 'index'])->name('materials.index');
+            Route::post('/materials', [MaterialController::class, 'store'])->name('materials.store');
+            Route::put('/materials/{material}', [MaterialController::class, 'update'])->name('materials.update');
+            Route::delete('/materials/{material}', [MaterialController::class, 'destroy'])->name('materials.destroy');  
 
             Route::get('/inventory', function () {
                 return view('admin.inventory.index');
