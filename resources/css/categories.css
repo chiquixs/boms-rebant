@@ -577,3 +577,22 @@
     }
 
 }
+
+.category-alert {
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.category-alert.success {
+    background: #E8F5EC;
+    border: 1px solid #BFE3C9;
+    color: #1E7B3C;
+}
+
+.category-alert.error {
+    background: #FDECEA;
+    border: 1px solid #F3C4BE;
+    color: #C0392B;
+}
