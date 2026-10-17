@@ -525,3 +525,44 @@ button {
 .nav-subitem-dot {
     display: none;
 }
+.confirm-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 13px;
+}
+
+.confirm-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.confirm-row span {
+    color: #8A8D86;
+}
+
+.confirm-row strong {
+    text-align: right;
+}
+
+.confirm-items {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 4px 0;
+    padding: 12px 0;
+    border-top: 1px solid #E2E5DF;
+    border-bottom: 1px solid #E2E5DF;
+}
+
+.confirm-items div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.confirm-total strong {
+    color: #526A48;
+    font-size: 15px;
+}

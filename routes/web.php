@@ -1,7 +1,7 @@
-```php
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -98,18 +98,9 @@ Route::middleware('auth')->group(function () {
             |--------------------------------------------------------------------------
             */
 
-            Route::get('/orders', function () {
-
-                return view('admin.orders.index');
-            })->name('orders.index');
-
-
-            Route::get('/orders/{id}', function ($id) {
-
-                return view('admin.orders.show', [
-                    'orderId' => $id,
-                ]);
-            })->name('orders.show');
+                Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+                Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+                Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
 
             /*
