@@ -10,10 +10,19 @@
         PAGE HEADER
     ========================================================= --}}
     <div class="bom-page-header">
+        @if (session('success'))
+            <div style="margin-bottom:16px;padding:12px 14px;background:#E8F3E3;color:#2F5D24;border-radius:12px;font-size:13px;">
+                {{ session('success') }}
+            </div>
+        @endif
 
-        <a href="/admin/products" class="back-to-products">
-            ← Kembali ke Master Produk
-        </a>
+        @if ($errors->any())
+            <div style="margin-bottom:16px;padding:12px 14px;background:#FDECEA;color:#C0392B;border-radius:12px;font-size:13px;">
+                {{ $errors->first() }}
+            </div>
+        @endif
+
+        <a href="{{ route('admin.products.index') }}" class="back-to-products">
 
         <div class="bom-header-content">
 
@@ -42,59 +51,54 @@
         <div class="bom-product-info">
 
             <img
-                src="{{ asset('images/login-illustration.png') }}"
-                alt="Sign Peringatan Hitam"
+                src="{{ $group->image_url ?? $group->products->first(fn ($p) => $p->image_url)?->image_url ?? asset('images/login-illustration.png') }}"
+                alt="{{ $group->name }}"
                 class="bom-product-image"
             >
 
             <div class="bom-product-main">
 
-                <span class="bom-product-label">
-                    PRODUCT
-                </span>
+                <span class="bom-product-label">PRODUCT</span>
 
-                <h2>
-                    Sign Peringatan Hitam (9x30)
-                </h2>
+                <h2>{{ $group->name }}</h2>
 
                 <div class="bom-product-meta">
-
-                    <span class="bom-sku">
-                        {{ $sku }}
+                    <span class="bom-sku">{{ $group->code }}</span>
+                    <span class="production-badge {{ strtolower($group->production_method) }}">
+                        {{ strtoupper($group->production_method) }}
                     </span>
-
-                    <span class="production-badge mts">
-                        MTS
-                    </span>
-
                 </div>
 
             </div>
 
         </div>
 
-
         <div class="bom-product-summary">
 
             <div class="bom-summary-item">
                 <span>Kategori</span>
-                <strong>Sign Peringatan</strong>
+                <strong>{{ $group->category?->name ?? '—' }}</strong>
             </div>
 
             <div class="bom-summary-item">
                 <span>Ukuran</span>
-                <strong>9 × 30 cm</strong>
+                <strong>
+                    @if ($group->length_cm && $group->width_cm)
+                        {{ (float) $group->length_cm }} × {{ (float) $group->width_cm }} cm
+                    @else
+                        —
+                    @endif
+                </strong>
             </div>
 
             <div class="bom-summary-item">
                 <span>Jumlah Varian</span>
-                <strong>5 Varian</strong>
+                <strong>{{ $group->products->count() }} Varian</strong>
             </div>
 
         </div>
 
     </div>
-
 
     {{-- =========================================================
         MATERIAL TABLE
@@ -138,121 +142,75 @@
 
                 <tbody id="bomMaterialTableBody">
 
-                    {{-- =========================
-                        DUMMY MATERIAL - FIX
-                    ========================= --}}
-                    <tr>
+                    @php
+                        $fmt = fn ($n) => rtrim(rtrim(number_format((float) $n, 6, '.', ''), '0'), '.');
+                    @endphp
 
-                        <td>
-                            <div class="material-info">
-                                <strong>Hanger</strong>
-                                <span>Aksesoris produk</span>
-                            </div>
-                        </td>
+                    @forelse ($group->materials as $item)
 
-                        <td>
-                            <span class="bom-method-badge fix">
-                                Fix
-                            </span>
-                        </td>
+                        @php $isArea = $item->usage_method === 'AREA'; @endphp
 
-                        <td>
-                            <div class="fix-requirement">
-                                <strong>2</strong>
-                            </div>
-                        </td>
+                        <tr
+                            data-name="{{ $item->rawMaterial->name }}"
+                            data-material-id="{{ $item->raw_material_id }}"
+                            data-method="{{ $isArea ? 'area' : 'fix' }}"
+                            data-quantity="{{ $isArea ? '' : $fmt($item->qty_per_unit) }}"
+                            data-piece-length="{{ $isArea ? (float) $item->piece_length_cm : '' }}"
+                            data-piece-width="{{ $isArea ? (float) $item->piece_width_cm : '' }}"
+                            data-piece-count="{{ $isArea ? $item->piece_count : '' }}"
+                            data-waste-percent="{{ $isArea ? (float) $item->waste_percent : '' }}"
+                            data-update-url="{{ route('admin.products.bom.update', [$group->code, $item->id]) }}"
+                            data-delete-url="{{ route('admin.products.bom.destroy', [$group->code, $item->id]) }}"
+                        >
 
-                        <td>
-                            <span class="material-unit">
-                                pcs
-                            </span>
-                        </td>
+                            <td>
+                                <div class="material-info">
+                                    <strong>{{ $item->rawMaterial->name }}</strong>
+                                    <span>{{ $item->rawMaterial->code }}</span>
+                                </div>
+                            </td>
 
-                        <td>
-                            <div class="bom-actions">
-
-                                <button
-                                    type="button"
-                                    class="bom-action edit"
-                                >
-                                    Edit
-                                </button>
-
-                                <button
-                                    type="button"
-                                    class="bom-action delete"
-                                >
-                                    Hapus
-                                </button>
-
-                            </div>
-                        </td>
-
-                    </tr>
-
-
-                    {{-- =========================
-                        DUMMY MATERIAL - AREA
-                    ========================= --}}
-                    <tr>
-
-                        <td>
-                            <div class="material-info">
-                                <strong>MDF</strong>
-                                <span>Material utama</span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <span class="bom-method-badge area">
-                                Area
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="area-requirement">
-
-                                <strong>
-                                    30 × 9 cm
-                                </strong>
-
-                                <span>
-                                    2 potongan • Waste 10%
+                            <td>
+                                <span class="bom-method-badge {{ $isArea ? 'area' : 'fix' }}">
+                                    {{ $isArea ? 'Area' : 'Fix' }}
                                 </span>
+                            </td>
 
-                            </div>
-                        </td>
+                            <td>
+                                @if ($isArea)
+                                    <div class="area-requirement">
+                                        <strong>{{ (float) $item->piece_length_cm }} × {{ (float) $item->piece_width_cm }} cm</strong>
+                                        <span>{{ $item->piece_count }} potongan • Waste {{ (float) $item->waste_percent }}%</span>
+                                    </div>
+                                @else
+                                    <div class="fix-requirement">
+                                        <strong>{{ $fmt($item->qty_per_unit) }}</strong>
+                                    </div>
+                                @endif
+                            </td>
 
-                        <td>
-                            <span class="material-unit">
-                                lembar
-                            </span>
-                        </td>
+                            <td>
+                                <span class="material-unit">{{ $item->rawMaterial->unit }}</span>
+                            </td>
 
-                        <td>
-                            <div class="bom-actions">
+                            <td>
+                                <div class="bom-actions">
+                                    <button type="button" class="bom-action edit">Edit</button>
+                                    <button type="button" class="bom-action delete">Hapus</button>
+                                </div>
+                            </td>
 
-                                <button
-                                    type="button"
-                                    class="bom-action edit"
-                                >
-                                    Edit
-                                </button>
+                        </tr>
 
-                                <button
-                                    type="button"
-                                    class="bom-action delete"
-                                >
-                                    Hapus
-                                </button>
+                    @empty
+                        <tr>
+                            <td colspan="5" style="text-align:center;padding:30px;">
+                                BOM belum diisi. Klik "Tambah Bahan" untuk mulai.
+                            </td>
+                        </tr>
+                    @endforelse
 
-                            </div>
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
+                    </tbody>
             </table>
 
         </div>
@@ -293,6 +251,7 @@
 {{-- =========================================================
     ADD MATERIAL MODAL
 ========================================================= --}}
+
 <div
     class="material-modal-overlay"
     id="materialModal"
@@ -336,7 +295,10 @@
         {{-- =========================
             FORM
         ========================= --}}
-        <form id="materialForm">
+        <form id="materialForm" method="POST" action="{{ route('admin.products.bom.store', $group->code) }}"
+        data-store-url="{{ route('admin.products.bom.store', $group->code) }}">
+        @csrf
+        <input type="hidden" name="_method" value="PUT" id="materialMethodOverride" disabled>
 
             <div class="material-modal-body">
 
@@ -349,28 +311,17 @@
                         Bahan Mentah
                     </label>
 
-                    <select id="materialName">
-
-                        <option value="">
-                            Pilih bahan mentah
-                        </option>
-
-                        <option value="MDF">
-                            MDF
-                        </option>
-
-                        <option value="Hanger">
-                            Hanger
-                        </option>
-
-                        <option value="Cat Hitam">
-                            Cat Hitam
-                        </option>
-
-                        <option value="Lem Kayu">
-                            Lem Kayu
-                        </option>
-
+                    <select id="materialName" name="raw_material_id">
+                        <option value="">Pilih bahan mentah</option>
+                        @foreach ($rawMaterials as $raw)
+                            <option
+                                value="{{ $raw->id }}"
+                                data-unit="{{ $raw->unit }}"
+                                data-sheet="{{ $raw->has_sheet_size ? '1' : '0' }}"
+                            >
+                                {{ $raw->name }} ({{ $raw->code }})
+                            </option>
+                        @endforeach
                     </select>
 
                     <span class="material-field-helper">
@@ -416,12 +367,7 @@
 
                         <label class="material-method-option">
 
-                            <input
-                                type="radio"
-                                name="material_method"
-                                value="fix"
-                                checked
-                            >
+                            <input type="radio" name="usage_method" value="fix" checked>
 
                             <span class="material-method-card">
 
@@ -440,11 +386,7 @@
 
                         <label class="material-method-option">
 
-                            <input
-                                type="radio"
-                                name="material_method"
-                                value="area"
-                            >
+                            <input type="radio" name="usage_method" value="area">
 
                             <span class="material-method-card">
 
@@ -479,13 +421,7 @@
                             Quantity
                         </label>
 
-                        <input
-                            type="number"
-                            id="materialQuantity"
-                            min="0"
-                            step="0.01"
-                            placeholder="Contoh: 2"
-                        >
+                        <input type="number" id="materialQuantity" name="quantity" min="0" step="0.01" placeholder="Contoh: 2">
 
                         <span class="material-field-helper">
                             Jumlah bahan yang dibutuhkan untuk 1 unit produk.
@@ -512,13 +448,7 @@
                                 Panjang Potongan (cm)
                             </label>
 
-                            <input
-                                type="number"
-                                id="pieceLength"
-                                min="0"
-                                step="0.01"
-                                placeholder="Contoh: 30"
-                            >
+                            <input type="number" id="pieceLength"      name="piece_length_cm" min="0" step="0.01" placeholder="Contoh: 30">
 
                         </div>
 
@@ -529,13 +459,7 @@
                                 Lebar Potongan (cm)
                             </label>
 
-                            <input
-                                type="number"
-                                id="pieceWidth"
-                                min="0"
-                                step="0.01"
-                                placeholder="Contoh: 9"
-                            >
+                            <input type="number" id="pieceWidth"       name="piece_width_cm"  min="0" step="0.01" placeholder="Contoh: 9">
 
                         </div>
 
@@ -546,13 +470,7 @@
                                 Jumlah Potongan
                             </label>
 
-                            <input
-                                type="number"
-                                id="pieceCount"
-                                min="1"
-                                step="1"
-                                placeholder="Contoh: 2"
-                            >
+                            <input type="number" id="pieceCount"       name="piece_count"     min="1" step="1"    placeholder="Contoh: 2">
 
                         </div>
 
@@ -563,14 +481,7 @@
                                 Waste / Toleransi (%)
                             </label>
 
-                            <input
-                                type="number"
-                                id="wastePercent"
-                                min="0"
-                                max="100"
-                                step="0.01"
-                                placeholder="Contoh: 10"
-                            >
+                            <input type="number" id="wastePercent"     name="waste_percent"   min="0" max="100" step="0.01" placeholder="Contoh: 10">
 
                         </div>
 
@@ -640,1240 +551,195 @@
     </div>
 
 </div>
+<form id="deleteMaterialForm" method="POST" style="display:none;">
+    @csrf
+    @method('DELETE')
+</form>
 
 @endsection
 
 
-```blade
 @push('scripts')
 
 <script>
-
 document.addEventListener('DOMContentLoaded', function () {
 
-    /* =========================================================
-       DUMMY MASTER BAHAN MENTAH
-    ========================================================= */
-
-    const materialMaster = {
-
-        'MDF': {
-            unit: 'lembar'
-        },
-
-        'Hanger': {
-            unit: 'pcs'
-        },
-
-        'Cat Hitam': {
-            unit: 'ml'
-        },
-
-        'Lem Kayu': {
-            unit: 'ml'
-        }
-
-    };
-
-
-    /* =========================================================
-       ELEMENTS
-    ========================================================= */
-
-    const materialModal =
-        document.getElementById('materialModal');
-
-    const addMaterialButton =
-        document.getElementById('addMaterialButton');
-
-    const closeMaterialModal =
-        document.getElementById('closeMaterialModal');
-
-    const cancelMaterialModal =
-        document.getElementById('cancelMaterialModal');
-
-    const materialForm =
-        document.getElementById('materialForm');
-
-    const materialName =
-        document.getElementById('materialName');
-
-    const materialUnitPreview =
-        document.getElementById('materialUnitPreview');
-
-    const materialQuantity =
-        document.getElementById('materialQuantity');
-
-    const materialDescription =
-        document.getElementById('materialDescription');
-
-    const fixFields =
-        document.getElementById('fixFields');
-
-    const areaFields =
-        document.getElementById('areaFields');
-
-    const pieceLength =
-        document.getElementById('pieceLength');
-
-    const pieceWidth =
-        document.getElementById('pieceWidth');
-
-    const pieceCount =
-        document.getElementById('pieceCount');
-
-    const wastePercent =
-        document.getElementById('wastePercent');
-
-    const bomMaterialTableBody =
-        document.getElementById('bomMaterialTableBody');
-
-    const materialModalTitle =
-        document.getElementById('materialModalTitle');
-
-    const materialSaveButton =
-        materialForm.querySelector('.material-save-button');
-
-
-    /* =========================================================
-       EDIT STATE
-    ========================================================= */
-
-    let editingRow = null;
-
-
-    /* =========================================================
-       GET SELECTED METHOD
-    ========================================================= */
+    const materialModal = document.getElementById('materialModal');
+    const materialForm = document.getElementById('materialForm');
+    const methodOverride = document.getElementById('materialMethodOverride');
+    const materialName = document.getElementById('materialName');
+    const materialUnitPreview = document.getElementById('materialUnitPreview');
+    const materialQuantity = document.getElementById('materialQuantity');
+    const fixFields = document.getElementById('fixFields');
+    const areaFields = document.getElementById('areaFields');
+    const pieceLength = document.getElementById('pieceLength');
+    const pieceWidth = document.getElementById('pieceWidth');
+    const pieceCount = document.getElementById('pieceCount');
+    const wastePercent = document.getElementById('wastePercent');
+    const materialModalTitle = document.getElementById('materialModalTitle');
+    const materialSaveButton = materialForm.querySelector('.material-save-button');
+    const tableBody = document.getElementById('bomMaterialTableBody');
+    const deleteForm = document.getElementById('deleteMaterialForm');
 
     function getSelectedMethod() {
-
-        const selectedMethod =
-            document.querySelector(
-                'input[name="material_method"]:checked'
-            );
-
-        return selectedMethod
-            ? selectedMethod.value
-            : 'fix';
-
+        const selected = document.querySelector('input[name="usage_method"]:checked');
+        return selected ? selected.value : 'fix';
     }
-
-
-    /* =========================================================
-       MATERIAL UNIT
-    ========================================================= */
 
     function updateMaterialUnit() {
+        const option = materialName.options[materialName.selectedIndex];
 
-        const selectedMaterial =
-            materialName.value;
-
-        if (
-            selectedMaterial &&
-            materialMaster[selectedMaterial]
-        ) {
-
-            materialUnitPreview.textContent =
-                materialMaster[selectedMaterial].unit;
-
-            materialUnitPreview.classList.add(
-                'selected'
-            );
-
+        if (materialName.value && option) {
+            materialUnitPreview.textContent = option.dataset.unit;
+            materialUnitPreview.classList.add('selected');
         } else {
-
-            materialUnitPreview.textContent =
-                'Pilih bahan terlebih dahulu';
-
-            materialUnitPreview.classList.remove(
-                'selected'
-            );
-
+            materialUnitPreview.textContent = 'Pilih bahan terlebih dahulu';
+            materialUnitPreview.classList.remove('selected');
         }
-
     }
 
-
-    /* =========================================================
-       METHOD VISIBILITY
-    ========================================================= */
-
+    // Input yang disabled tidak ikut terkirim ke server
     function updateMaterialMethodFields() {
+        const isFix = getSelectedMethod() === 'fix';
 
-        const method =
-            getSelectedMethod();
+        fixFields.classList.toggle('hidden', !isFix);
+        areaFields.classList.toggle('hidden', isFix);
 
-        if (method === 'fix') {
-
-            fixFields.classList.remove('hidden');
-
-            areaFields.classList.add('hidden');
-
-            materialQuantity.disabled = false;
-
-            pieceLength.disabled = true;
-            pieceWidth.disabled = true;
-            pieceCount.disabled = true;
-            wastePercent.disabled = true;
-
-        } else {
-
-            fixFields.classList.add('hidden');
-
-            areaFields.classList.remove('hidden');
-
-            materialQuantity.disabled = true;
-
-            pieceLength.disabled = false;
-            pieceWidth.disabled = false;
-            pieceCount.disabled = false;
-            wastePercent.disabled = false;
-
-        }
-
+        materialQuantity.disabled = !isFix;
+        pieceLength.disabled = isFix;
+        pieceWidth.disabled = isFix;
+        pieceCount.disabled = isFix;
+        wastePercent.disabled = isFix;
     }
-
-
-    /* =========================================================
-       SET METHOD
-    ========================================================= */
 
     function setMaterialMethod(method) {
+        const radio = document.querySelector(
+            `input[name="usage_method"][value="${method}"]`
+        );
 
-        const methodRadio =
-            document.querySelector(
-                `input[name="material_method"][value="${method}"]`
-            );
-
-        if (methodRadio) {
-            methodRadio.checked = true;
+        if (radio) {
+            radio.checked = true;
         }
 
         updateMaterialMethodFields();
-
     }
 
-
-    /* =========================================================
-       RESET FORM
-    ========================================================= */
-
-    function resetMaterialForm() {
-
-        materialForm.reset();
-
-        editingRow = null;
-
-        setMaterialMethod('fix');
-
-        updateMaterialUnit();
-
-        materialModalTitle.textContent =
-            'Tambah Bahan Baku';
-
-        materialSaveButton.textContent =
-            'Simpan Bahan';
-
-    }
-
-
-    /* =========================================================
-       OPEN ADD MODAL
-    ========================================================= */
-
-    function openMaterialModal() {
-
-        resetMaterialForm();
-
+    function openModal() {
         materialModal.classList.add('active');
-
-        document.body.style.overflow =
-            'hidden';
-
-        setTimeout(function () {
-            materialName.focus();
-        }, 100);
-
+        document.body.style.overflow = 'hidden';
     }
-
-
-    /* =========================================================
-       OPEN EDIT MODAL
-    ========================================================= */
-
-    function openEditMaterialModal(row) {
-
-        editingRow = row;
-
-        const name =
-            row.dataset.name || '';
-
-        const description =
-            row.dataset.description || '';
-
-        const method =
-            row.dataset.method || 'fix';
-
-
-        /* =========================
-           COMMON DATA
-        ========================= */
-
-        materialName.value = name;
-
-        materialDescription.value =
-            description;
-
-        updateMaterialUnit();
-
-        setMaterialMethod(method);
-
-
-        /* =========================
-           FIX DATA
-        ========================= */
-
-        if (method === 'fix') {
-
-            materialQuantity.value =
-                row.dataset.quantity || '';
-
-            pieceLength.value = '';
-            pieceWidth.value = '';
-            pieceCount.value = '';
-            wastePercent.value = '';
-
-        }
-
-
-        /* =========================
-           AREA DATA
-        ========================= */
-
-        if (method === 'area') {
-
-            materialQuantity.value = '';
-
-            pieceLength.value =
-                row.dataset.pieceLength || '';
-
-            pieceWidth.value =
-                row.dataset.pieceWidth || '';
-
-            pieceCount.value =
-                row.dataset.pieceCount || '';
-
-            wastePercent.value =
-                row.dataset.wastePercent || '';
-
-        }
-
-
-        /* =========================
-           MODAL STATE
-        ========================= */
-
-        materialModalTitle.textContent =
-            'Edit Bahan Baku';
-
-        materialSaveButton.textContent =
-            'Simpan Perubahan';
-
-        materialModal.classList.add('active');
-
-        document.body.style.overflow =
-            'hidden';
-
-    }
-
-
-    /* =========================================================
-       CLOSE MODAL
-    ========================================================= */
 
     function closeModal() {
-
-        materialModal.classList.remove(
-            'active'
-        );
-
-        document.body.style.overflow =
-            '';
-
+        materialModal.classList.remove('active');
+        document.body.style.overflow = '';
     }
 
+    // MODE TAMBAH
+    function openAddModal() {
+        materialForm.reset();
+        materialForm.action = materialForm.dataset.storeUrl;
+        methodOverride.disabled = true;
 
-    /* =========================================================
-       BUILD FIX ROW CONTENT
-    ========================================================= */
+        setMaterialMethod('fix');
+        updateMaterialUnit();
 
-    function buildFixRowContent(
-        name,
-        description,
-        quantity,
-        unit
-    ) {
+        materialModalTitle.textContent = 'Tambah Bahan Baku';
+        materialSaveButton.textContent = 'Simpan Bahan';
 
-        return `
-            <td>
-
-                <div class="material-info">
-
-                    <strong>
-                        ${escapeHtml(name)}
-                    </strong>
-
-                    <span>
-                        ${
-                            description
-                                ? escapeHtml(description)
-                                : 'Tidak ada keterangan'
-                        }
-                    </span>
-
-                </div>
-
-            </td>
-
-
-            <td>
-
-                <span class="bom-method-badge fix">
-                    Fix
-                </span>
-
-            </td>
-
-
-            <td>
-
-                <div class="fix-requirement">
-
-                    <strong>
-                        ${escapeHtml(quantity)}
-                    </strong>
-
-                </div>
-
-            </td>
-
-
-            <td>
-
-                <span class="material-unit">
-                    ${escapeHtml(unit)}
-                </span>
-
-            </td>
-
-
-            <td>
-
-                <div class="bom-actions">
-
-                    <button
-                        type="button"
-                        class="bom-action edit"
-                    >
-                        Edit
-                    </button>
-
-                    <button
-                        type="button"
-                        class="bom-action delete"
-                    >
-                        Hapus
-                    </button>
-
-                </div>
-
-            </td>
-        `;
-
+        openModal();
     }
 
+    // MODE EDIT
+    function openEditModal(row) {
+        materialForm.reset();
+        materialForm.action = row.dataset.updateUrl;
+        methodOverride.disabled = false;
 
-    /* =========================================================
-       BUILD AREA ROW CONTENT
-    ========================================================= */
+        materialName.value = row.dataset.materialId;
+        updateMaterialUnit();
 
-    function buildAreaRowContent(
-        name,
-        description,
-        length,
-        width,
-        count,
-        waste,
-        unit
-    ) {
+        setMaterialMethod(row.dataset.method);
 
-        return `
-            <td>
+        if (row.dataset.method === 'fix') {
+            materialQuantity.value = row.dataset.quantity;
+        } else {
+            pieceLength.value = row.dataset.pieceLength;
+            pieceWidth.value = row.dataset.pieceWidth;
+            pieceCount.value = row.dataset.pieceCount;
+            wastePercent.value = row.dataset.wastePercent;
+        }
 
-                <div class="material-info">
+        materialModalTitle.textContent = 'Edit Bahan Baku';
+        materialSaveButton.textContent = 'Simpan Perubahan';
 
-                    <strong>
-                        ${escapeHtml(name)}
-                    </strong>
-
-                    <span>
-                        ${
-                            description
-                                ? escapeHtml(description)
-                                : 'Tidak ada keterangan'
-                        }
-                    </span>
-
-                </div>
-
-            </td>
-
-
-            <td>
-
-                <span class="bom-method-badge area">
-                    Area
-                </span>
-
-            </td>
-
-
-            <td>
-
-                <div class="area-requirement">
-
-                    <strong>
-                        ${escapeHtml(length)}
-                        ×
-                        ${escapeHtml(width)}
-                        cm
-                    </strong>
-
-                    <span>
-                        ${escapeHtml(count)}
-                        potongan
-                        •
-                        Waste
-                        ${escapeHtml(waste)}%
-                    </span>
-
-                </div>
-
-            </td>
-
-
-            <td>
-
-                <span class="material-unit">
-                    ${escapeHtml(unit)}
-                </span>
-
-            </td>
-
-
-            <td>
-
-                <div class="bom-actions">
-
-                    <button
-                        type="button"
-                        class="bom-action edit"
-                    >
-                        Edit
-                    </button>
-
-                    <button
-                        type="button"
-                        class="bom-action delete"
-                    >
-                        Hapus
-                    </button>
-
-                </div>
-
-            </td>
-        `;
-
+        openModal();
     }
 
+    document.getElementById('addMaterialButton').addEventListener('click', openAddModal);
+    document.getElementById('closeMaterialModal').addEventListener('click', closeModal);
+    document.getElementById('cancelMaterialModal').addEventListener('click', closeModal);
 
-    /* =========================================================
-       SET FIX ROW DATA
-    ========================================================= */
+    materialModal.addEventListener('click', function (event) {
+        if (event.target === materialModal) {
+            closeModal();
+        }
+    });
 
-    function setFixRowData(
-        row,
-        name,
-        description,
-        quantity,
-        unit
-    ) {
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && materialModal.classList.contains('active')) {
+            closeModal();
+        }
+    });
 
-        row.dataset.name =
-            name;
+    materialName.addEventListener('change', updateMaterialUnit);
 
-        row.dataset.description =
-            description;
+    document.querySelectorAll('input[name="usage_method"]').forEach(function (radio) {
+        radio.addEventListener('change', updateMaterialMethodFields);
+    });
 
-        row.dataset.method =
-            'fix';
+    // EDIT & HAPUS
+    tableBody.addEventListener('click', function (event) {
 
-        row.dataset.quantity =
-            quantity;
+        const row = event.target.closest('tr');
 
-        row.dataset.unit =
-            unit;
-
-
-        delete row.dataset.pieceLength;
-        delete row.dataset.pieceWidth;
-        delete row.dataset.pieceCount;
-        delete row.dataset.wastePercent;
-
-
-        row.innerHTML =
-            buildFixRowContent(
-                name,
-                description,
-                quantity,
-                unit
-            );
-
-    }
-
-
-    /* =========================================================
-       SET AREA ROW DATA
-    ========================================================= */
-
-    function setAreaRowData(
-        row,
-        name,
-        description,
-        length,
-        width,
-        count,
-        waste,
-        unit
-    ) {
-
-        row.dataset.name =
-            name;
-
-        row.dataset.description =
-            description;
-
-        row.dataset.method =
-            'area';
-
-        row.dataset.unit =
-            unit;
-
-        row.dataset.pieceLength =
-            length;
-
-        row.dataset.pieceWidth =
-            width;
-
-        row.dataset.pieceCount =
-            count;
-
-        row.dataset.wastePercent =
-            waste;
-
-
-        delete row.dataset.quantity;
-
-
-        row.innerHTML =
-            buildAreaRowContent(
-                name,
-                description,
-                length,
-                width,
-                count,
-                waste,
-                unit
-            );
-
-    }
-
-
-    /* =========================================================
-       PREPARE EXISTING DUMMY ROWS
-
-       Supaya Hanger dan MDF yang sudah ada dari Blade
-       juga bisa langsung diedit.
-    ========================================================= */
-
-    function prepareExistingRows() {
-
-        const rows =
-            bomMaterialTableBody.querySelectorAll(
-                'tr'
-            );
-
-
-        rows.forEach(function (row) {
-
-            const materialNameElement =
-                row.querySelector(
-                    '.material-info strong'
-                );
-
-            const descriptionElement =
-                row.querySelector(
-                    '.material-info span'
-                );
-
-            const methodBadge =
-                row.querySelector(
-                    '.bom-method-badge'
-                );
-
-            const unitElement =
-                row.querySelector(
-                    '.material-unit'
-                );
-
-
-            if (
-                !materialNameElement ||
-                !methodBadge
-            ) {
-                return;
-            }
-
-
-            const name =
-                materialNameElement.textContent.trim();
-
-            const description =
-                descriptionElement
-                    ? descriptionElement.textContent.trim()
-                    : '';
-
-            const unit =
-                unitElement
-                    ? unitElement.textContent.trim()
-                    : '';
-
-
-            /* =========================
-               FIX DUMMY ROW
-            ========================= */
-
-            if (
-                methodBadge.classList.contains(
-                    'fix'
-                )
-            ) {
-
-                const quantityElement =
-                    row.querySelector(
-                        '.fix-requirement strong'
-                    );
-
-                row.dataset.name =
-                    name;
-
-                row.dataset.description =
-                    description;
-
-                row.dataset.method =
-                    'fix';
-
-                row.dataset.quantity =
-                    quantityElement
-                        ? quantityElement.textContent.trim()
-                        : '';
-
-                row.dataset.unit =
-                    unit;
-
-            }
-
-
-            /* =========================
-               AREA DUMMY ROW
-            ========================= */
-
-            if (
-                methodBadge.classList.contains(
-                    'area'
-                )
-            ) {
-
-                row.dataset.name =
-                    name;
-
-                row.dataset.description =
-                    description;
-
-                row.dataset.method =
-                    'area';
-
-                row.dataset.unit =
-                    unit;
-
-
-                /*
-                    Untuk dummy MDF awal kita sudah tahu
-                    nilai Area-nya.
-
-                    Nantinya backend akan mengirim data ini
-                    langsung dari database.
-                */
-
-                if (name === 'MDF') {
-
-                    row.dataset.pieceLength =
-                        '30';
-
-                    row.dataset.pieceWidth =
-                        '9';
-
-                    row.dataset.pieceCount =
-                        '2';
-
-                    row.dataset.wastePercent =
-                        '10';
-
-                }
-
-            }
-
-        });
-
-    }
-
-
-    /* =========================================================
-       MATERIAL CHANGE
-    ========================================================= */
-
-    materialName.addEventListener(
-        'change',
-        updateMaterialUnit
-    );
-
-
-    /* =========================================================
-       METHOD CHANGE
-    ========================================================= */
-
-    document
-        .querySelectorAll(
-            'input[name="material_method"]'
-        )
-        .forEach(function (radio) {
-
-            radio.addEventListener(
-                'change',
-                updateMaterialMethodFields
-            );
-
-        });
-
-
-    /* =========================================================
-       ADD MATERIAL
-    ========================================================= */
-
-    addMaterialButton.addEventListener(
-        'click',
-        openMaterialModal
-    );
-
-
-    /* =========================================================
-   EDIT & DELETE MATERIAL
-========================================================= */
-
-bomMaterialTableBody.addEventListener(
-    'click',
-    function (event) {
-
-        /* =========================
-           EDIT
-        ========================= */
-
-        const editButton =
-            event.target.closest(
-                '.bom-action.edit'
-            );
-
-        if (editButton) {
-
-            const row =
-                editButton.closest('tr');
-
-            if (!row) {
-                return;
-            }
-
-            openEditMaterialModal(row);
-
+        if (!row || !row.dataset.updateUrl) {
             return;
         }
 
-
-        /* =========================
-           DELETE
-        ========================= */
-
-        const deleteButton =
-            event.target.closest(
-                '.bom-action.delete'
-            );
-
-        if (deleteButton) {
-
-            const row =
-                deleteButton.closest('tr');
-
-            if (!row) {
-                return;
-            }
-
-
-            const name =
-                row.dataset.name ||
-                row.querySelector(
-                    '.material-info strong'
-                )?.textContent.trim() ||
-                'bahan ini';
-
-
-            const confirmed =
-                confirm(
-                    `Yakin ingin menghapus ${name} dari BOM?`
-                );
-
-
-            if (!confirmed) {
-                return;
-            }
-
-
-            row.remove();
+        if (event.target.closest('.bom-action.edit')) {
+            openEditModal(row);
+            return;
         }
 
-    }
-);
-
-
-    /* =========================================================
-       CLOSE EVENTS
-    ========================================================= */
-
-    closeMaterialModal.addEventListener(
-        'click',
-        closeModal
-    );
-
-
-    cancelMaterialModal.addEventListener(
-        'click',
-        closeModal
-    );
-
-
-    materialModal.addEventListener(
-        'click',
-        function (event) {
-
-            if (
-                event.target === materialModal
-            ) {
-                closeModal();
+        if (event.target.closest('.bom-action.delete')) {
+            if (confirm(`Yakin ingin menghapus ${row.dataset.name} dari BOM?`)) {
+                deleteForm.action = row.dataset.deleteUrl;
+                deleteForm.submit();
             }
-
         }
-    );
+    });
 
+    // Validasi ringan sebelum kirim (validasi utama ada di server)
+    materialForm.addEventListener('submit', function (event) {
 
-    document.addEventListener(
-        'keydown',
-        function (event) {
-
-            if (
-                event.key === 'Escape' &&
-                materialModal.classList.contains(
-                    'active'
-                )
-            ) {
-                closeModal();
-            }
-
-        }
-    );
-
-
-    /* =========================================================
-       SAVE MATERIAL
-    ========================================================= */
-
-    materialForm.addEventListener(
-        'submit',
-        function (event) {
-
+        if (!materialName.value) {
             event.preventDefault();
-
-
-            /* =========================
-               COMMON DATA
-            ========================= */
-
-            const name =
-                materialName.value;
-
-            const description =
-                materialDescription.value.trim();
-
-            const method =
-                getSelectedMethod();
-
-            const unit =
-                materialMaster[name]
-                    ? materialMaster[name].unit
-                    : '';
-
-
-            /* =========================
-               MATERIAL VALIDATION
-            ========================= */
-
-            if (!name || !unit) {
-
-                alert(
-                    'Silakan pilih bahan mentah.'
-                );
-
-                materialName.focus();
-
-                return;
-
-            }
-
-
-            /* =================================================
-               FIX
-            ================================================= */
-
-            if (method === 'fix') {
-
-                const quantity =
-                    materialQuantity.value.trim();
-
-
-                if (
-                    !quantity ||
-                    Number(quantity) <= 0
-                ) {
-
-                    alert(
-                        'Quantity harus lebih dari 0.'
-                    );
-
-                    materialQuantity.focus();
-
-                    return;
-
-                }
-
-
-                /*
-                    Kalau sedang edit:
-                    gunakan row lama.
-
-                    Kalau sedang add:
-                    buat row baru.
-                */
-
-                const row =
-                    editingRow ||
-                    document.createElement('tr');
-
-
-                setFixRowData(
-                    row,
-                    name,
-                    description,
-                    quantity,
-                    unit
-                );
-
-
-                if (!editingRow) {
-
-                    bomMaterialTableBody.appendChild(
-                        row
-                    );
-
-                }
-
-            }
-
-
-            /* =================================================
-               AREA
-            ================================================= */
-
-            if (method === 'area') {
-
-                const length =
-                    pieceLength.value.trim();
-
-                const width =
-                    pieceWidth.value.trim();
-
-                const count =
-                    pieceCount.value.trim();
-
-                const waste =
-                    wastePercent.value.trim();
-
-
-                /* =========================
-                   AREA VALIDATION
-                ========================= */
-
-                if (
-                    !length ||
-                    Number(length) <= 0
-                ) {
-
-                    alert(
-                        'Panjang potongan harus lebih dari 0.'
-                    );
-
-                    pieceLength.focus();
-
-                    return;
-
-                }
-
-
-                if (
-                    !width ||
-                    Number(width) <= 0
-                ) {
-
-                    alert(
-                        'Lebar potongan harus lebih dari 0.'
-                    );
-
-                    pieceWidth.focus();
-
-                    return;
-
-                }
-
-
-                if (
-                    !count ||
-                    Number(count) <= 0
-                ) {
-
-                    alert(
-                        'Jumlah potongan harus lebih dari 0.'
-                    );
-
-                    pieceCount.focus();
-
-                    return;
-
-                }
-
-
-                if (
-                    waste === '' ||
-                    Number(waste) < 0 ||
-                    Number(waste) > 100
-                ) {
-
-                    alert(
-                        'Waste harus berada di antara 0 sampai 100%.'
-                    );
-
-                    wastePercent.focus();
-
-                    return;
-
-                }
-
-
-                const row =
-                    editingRow ||
-                    document.createElement('tr');
-
-
-                setAreaRowData(
-                    row,
-                    name,
-                    description,
-                    length,
-                    width,
-                    count,
-                    waste,
-                    unit
-                );
-
-
-                if (!editingRow) {
-
-                    bomMaterialTableBody.appendChild(
-                        row
-                    );
-
-                }
-
-            }
-
-
-            /* =========================
-               FINISH
-            ========================= */
-
-            resetMaterialForm();
-
-            closeModal();
-
+            alert('Silakan pilih bahan mentah.');
+            return;
         }
-    );
 
+        const option = materialName.options[materialName.selectedIndex];
 
-    /* =========================================================
-       ESCAPE HTML
-    ========================================================= */
-
-    function escapeHtml(value) {
-
-        const element =
-            document.createElement('div');
-
-        element.textContent =
-            value;
-
-        return element.innerHTML;
-
-    }
-
-
-    /* =========================================================
-       INITIAL STATE
-    ========================================================= */
-
-    prepareExistingRows();
+        if (getSelectedMethod() === 'area' && option.dataset.sheet !== '1') {
+            event.preventDefault();
+            alert('Metode Area hanya untuk bahan yang punya ukuran lembar. Lengkapi ukuran lembar di Master Bahan Mentah.');
+        }
+    });
 
     updateMaterialUnit();
-
     updateMaterialMethodFields();
 
 });
-
 </script>
 
 @endpush
