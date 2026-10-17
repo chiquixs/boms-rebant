@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -32,5 +31,15 @@ class Product extends Model
         }
 
         return rtrim($baseUrl, '/') . '/' . ltrim($this->image_path, '/');
+    }
+
+    // safe / low (per varian)
+    public function getStockStatusAttribute(): string
+    {
+        if ($this->min_stock !== null && $this->current_stock < $this->min_stock) {
+            return 'low';
+        }
+
+        return 'safe';
     }
 }

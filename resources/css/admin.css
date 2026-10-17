@@ -566,3 +566,17 @@ button {
     color: #526A48;
     font-size: 15px;
 }
+
+.product-action.bom.bom-empty {
+    background: #FDECEA;
+    color: #C0392B;
+    border-color: #F3C4BE;
+}
+.product-action.bom.bom-empty:hover { background: #FADBD8; }
+
+.product-action.bom.bom-filled {
+    background: #E8F3E3;
+    color: #2F5D24;
+    border-color: #C5DDBA;
+}
+.product-action.bom.bom-filled:hover { background: #D8EACF; }

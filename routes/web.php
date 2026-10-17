@@ -4,7 +4,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\BomController;
 
 /*
 |--------------------------------------------------------------------------
@@ -109,10 +110,8 @@ Route::middleware('auth')->group(function () {
             |--------------------------------------------------------------------------
             */
 
-            Route::get('/products', function () {
-
-                return view('admin.products.index');
-            })->name('products.index');
+            Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+            Route::post('/products', [ProductController::class, 'store'])->name('products.store');
 
 
             /*
@@ -121,12 +120,10 @@ Route::middleware('auth')->group(function () {
             |--------------------------------------------------------------------------
             */
 
-            Route::get('/products/{sku}/bom', function ($sku) {
-
-                return view('admin.products.bom', [
-                    'sku' => $sku,
-                ]);
-            })->name('products.bom');
+            Route::get('/products/{sku}/bom', [BomController::class, 'index'])->name('products.bom');
+            Route::post('/products/{sku}/bom', [BomController::class, 'store'])->name('products.bom.store');
+            Route::put('/products/{sku}/bom/{material}', [BomController::class, 'update'])->name('products.bom.update');
+            Route::delete('/products/{sku}/bom/{material}', [BomController::class, 'destroy'])->name('products.bom.destroy');
 
 
             /*
