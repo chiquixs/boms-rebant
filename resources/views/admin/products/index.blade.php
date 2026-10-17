@@ -33,6 +33,17 @@
         </button>
 
     </div>
+    @if (session('success'))
+        <div style="margin-bottom:16px;padding:12px 14px;background:#E8F3E3;color:#2F5D24;border-radius:12px;font-size:13px;">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div style="margin-bottom:16px;padding:12px 14px;background:#FDECEA;color:#C0392B;border-radius:12px;font-size:13px;">
+            {{ $errors->first() }}
+        </div>
+    @endif
 
 
     {{-- =========================
@@ -49,7 +60,9 @@
         <select name="category" class="product-filter-select" onchange="this.form.submit()">
             <option value="">Semua Kategori</option>
             @foreach ($categories as $category)
-                <option value="{{ $category }}" @selected(request('category') === $category)>{{ $category }}</option>
+                <option value="{{ $category->id }}" @selected(request('category') == $category->id)>
+                    {{ $category->name }}
+                </option>
             @endforeach
         </select>
 
@@ -251,7 +264,9 @@
 {{-- =========================================================
     ADD / EDIT PRODUCT MODAL
 ========================================================= --}}
-<div class="product-modal-overlay" id="productModal">
+<div class="product-modal-overlay" id="productModal"
+     data-has-errors="{{ $errors->any() ? '1' : '0' }}"
+     data-old-variants="{{ json_encode(old('variants', [])) }}">
 
     <div class="product-modal">
 
@@ -272,7 +287,9 @@
         </div>
 
         {{-- FORM (tampilan saja, belum menyimpan ke database) --}}
-        <form id="productForm" enctype="multipart/form-data" onsubmit="return false;">
+        <form id="productForm" method="POST" action="{{ route('admin.products.store') }}"
+        enctype="multipart/form-data">
+        @csrf
 
             <div class="product-modal-body">
 
@@ -288,12 +305,12 @@
 
                         <div class="product-form-group">
                             <label for="productSku">SKU Product</label>
-                            <input type="text" id="productSku" name="code" placeholder="Contoh: D6A">
+                            <input type="text" id="productSku" name="code" value="{{ old('code') }}" placeholder="Contoh: D6A">
                         </div>
 
                         <div class="product-form-group">
                             <label for="productName">Nama Produk</label>
-                            <input type="text" id="productName" name="name" placeholder="Masukkan nama produk">
+                            <input type="text" id="productName" name="name" value="{{ old('name') }}" placeholder="Masukkan nama produk">
                         </div>
 
                         <div class="product-form-group">
@@ -301,7 +318,7 @@
                             <select id="productCategory" name="category_id">
                                 <option value="">Pilih kategori</option>
                                 @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    <option value="{{ $category->id }}" @selected(old('category_id') == $category->id)>{{ $category->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -310,15 +327,14 @@
                             <label for="productPrice">Harga Jual / Unit</label>
                             <div class="price-input-wrapper">
                                 <span>Rp</span>
-                                <input type="number" id="productPrice" name="price" min="0" placeholder="0">
+                                <input type="number" id="productPrice" name="price" min="0" value="{{ old('price') }}" placeholder="0">
                             </div>
                         </div>
 
                         <div class="product-form-group">
                             <label for="productLength">Panjang Produk</label>
                             <div class="stock-input-wrapper">
-                                <input type="number" id="productLength" name="length_cm"
-                                       min="0" step="0.01" placeholder="Contoh: 30">
+                                <input type="number" id="productLength" name="length_cm" min="0" step="0.01" value="{{ old('length_cm') }}" placeholder="Contoh: 30">
                                 <span>cm</span>
                             </div>
                         </div>
@@ -326,8 +342,7 @@
                         <div class="product-form-group">
                             <label for="productWidth">Lebar Produk</label>
                             <div class="stock-input-wrapper">
-                                <input type="number" id="productWidth" name="width_cm"
-                                       min="0" step="0.01" placeholder="Contoh: 20">
+                                <input type="number" id="productWidth" name="width_cm" min="0" step="0.01" value="{{ old('width_cm') }}" placeholder="Contoh: 20">
                                 <span>cm</span>
                             </div>
                         </div>
@@ -347,16 +362,16 @@
 
                     <div class="production-method-options">
 
-                        <label class="production-method-card active">
-                            <input type="radio" name="production_method" value="mts" checked>
+                        <label class="production-method-card {{ old('production_method', 'mts') === 'mts' ? 'active' : '' }}">
+                            <input type="radio" name="production_method" value="mts" @checked(old('production_method', 'mts') === 'mts')>
                             <div>
                                 <strong>Make-to-Stock (MTS)</strong>
                                 <span>Produk disimpan sebagai stok barang jadi.</span>
                             </div>
                         </label>
 
-                        <label class="production-method-card">
-                            <input type="radio" name="production_method" value="mto">
+                        <label class="production-method-card {{ old('production_method') === 'mto' ? 'active' : '' }}">
+                            <input type="radio" name="production_method" value="mto" @checked(old('production_method') === 'mto')>
                             <div>
                                 <strong>Make-to-Order (MTO)</strong>
                                 <span>Produk dibuat saat ada pesanan masuk.</span>
@@ -428,6 +443,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const addVariantButton = document.getElementById('addVariantButton');
 
     let variantIndex = 0;
+    let isEditMode = false;
 
 
     /* =========================================================
@@ -569,6 +585,7 @@ document.addEventListener('DOMContentLoaded', function () {
         variantFormsContainer.appendChild(card);
 
         updateVariantStockVisibility();
+        return card;
     }
 
     function renumberVariants() {
@@ -578,7 +595,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    addVariantButton.addEventListener('click', addVariant);
+    addVariantButton.addEventListener('click', function () {
+        addVariant();
+    });
 
     // Hapus varian / hapus foto
     variantFormsContainer.addEventListener('click', function (event) {
@@ -650,7 +669,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ========================================================= */
 
     function resetProductForm() {
-
+        isEditMode = false;
         productForm.reset();
 
         productModalTitle.textContent = 'Tambah Produk Baru';
@@ -711,6 +730,7 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function () {
 
             resetProductForm();
+            isEditMode = true;
 
             productModalTitle.textContent = 'Edit Produk';
             productModalDescription.textContent = 'Perbarui informasi dan pengaturan produk.';
@@ -739,19 +759,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-       SUBMIT (belum menyimpan ke database)
+    SUBMIT
     ========================================================= */
 
     productForm.addEventListener('submit', function (event) {
 
-        event.preventDefault();
+        if (isEditMode) {
+            event.preventDefault();
+            alert('Penyimpanan edit produk belum tersedia.');
+            return;
+        }
 
         if (!productSku.value.trim() || !productName.value.trim()) {
+            event.preventDefault();
             alert('SKU Product dan Nama Produk wajib diisi.');
             return;
         }
 
         if (productPrice.value === '') {
+            event.preventDefault();
             alert('Harga jual wajib diisi.');
             return;
         }
@@ -760,13 +786,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         for (const input of skuInputs) {
             if (!input.value.trim()) {
+                event.preventDefault();
                 alert('SKU Variant wajib diisi di semua varian.');
                 input.focus();
                 return;
             }
         }
 
-        alert('Form sudah valid. Penyimpanan ke database belum diaktifkan.');
+        // Lolos: form dikirim ke server
     });
 
 
@@ -795,6 +822,33 @@ document.addEventListener('DOMContentLoaded', function () {
     ========================================================= */
 
     resetProductForm();
+    // Jika validasi server gagal: buka modal lagi dan isi ulang varian
+    if (productModal.dataset.hasErrors === '1') {
+
+        const oldVariants = Object.values(JSON.parse(productModal.dataset.oldVariants || '{}'));
+
+        if (oldVariants.length) {
+
+            variantFormsContainer.innerHTML = '';
+            variantIndex = 0;
+
+            oldVariants.forEach(function (v) {
+
+                const card = addVariant();
+
+                ['sku', 'variant_name', 'current_stock', 'min_stock', 'target_stock'].forEach(function (key) {
+                    const input = card.querySelector('[name$="[' + key + ']"]');
+
+                    if (input && v[key] !== undefined && v[key] !== null) {
+                        input.value = v[key];
+                    }
+                });
+            });
+        }
+
+        setActiveMethodCard();
+        showModal();
+    }
 
 });
 </script>

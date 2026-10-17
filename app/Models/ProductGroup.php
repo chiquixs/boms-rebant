@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Facades\Storage;
 
 class ProductGroup extends Model
 {
@@ -18,6 +20,7 @@ class ProductGroup extends Model
     {
         return ['is_active' => 'boolean'];
     }
+    
 
     public function category(): BelongsTo
     {
@@ -32,13 +35,14 @@ class ProductGroup extends Model
     // Aman walau bucket belum dibuat: hasilnya null
     public function getImageUrlAttribute(): ?string
     {
-        $baseUrl = config('filesystems.disks.supabase.url');
-
-        if (! $this->image_path || ! $baseUrl) {
+        if (! $this->image_path) {
             return null;
         }
 
-        return rtrim($baseUrl, '/') . '/' . ltrim($this->image_path, '/');
+        /** @var FilesystemAdapter $disk */
+        $disk = Storage::disk(config('filesystems.product_image_disk'));
+
+        return $disk->url($this->image_path);
     }
 
     // safe / low / mto
