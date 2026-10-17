@@ -35,6 +35,17 @@
 
 </div>
 
+@if (session('success'))
+    <div style="margin-bottom:16px;padding:12px 14px;background:#E8F3E3;color:#2F5D24;border-radius:12px;font-size:13px;">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if ($errors->any())
+    <div style="margin-bottom:16px;padding:12px 14px;background:#FDECEA;color:#C0392B;border-radius:12px;font-size:13px;">
+        {{ $errors->first() }}
+    </div>
+@endif
 
 {{-- =========================
     ORDER STATUS SUMMARY
@@ -59,7 +70,7 @@
 
         <div class="stat-content">
             <span>New</span>
-            <strong>12</strong>
+            <strong>{{ $counts['NEW'] ?? 0 }}</strong>                  {{-- New --}}
             <small>Pesanan baru masuk</small>
         </div>
 
@@ -82,7 +93,7 @@
 
         <div class="stat-content">
             <span>Waiting Production</span>
-            <strong>8</strong>
+            <strong>{{ $counts['WAITING_PRODUCTION'] ?? 0 }}</strong>   {{-- Waiting Production --}}
             <small>Menunggu proses produksi</small>
         </div>
 
@@ -106,7 +117,7 @@
 
         <div class="stat-content">
             <span>Ready to Pack</span>
-            <strong>6</strong>
+            <strong>{{ $counts['READY_TO_PACK'] ?? 0 }}</strong>        {{-- Ready to Pack --}}
             <small>Siap untuk dikemas</small>
         </div>
 
@@ -129,7 +140,7 @@
 
         <div class="stat-content">
             <span>Completed</span>
-            <strong>102</strong>
+            <strong>{{ $counts['COMPLETED'] ?? 0 }}</strong>            {{-- Completed --}}
             <small>Pesanan selesai</small>
         </div>
 
@@ -153,42 +164,49 @@
 
         <div class="order-tools">
 
-            {{-- SEARCH --}}
-            <div class="search-box">
+            <form method="GET" action="{{ route('admin.orders.index') }}" style="display: contents;">
 
-                <svg width="18" height="18"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="1.8">
-                    <circle cx="11" cy="11" r="7"/>
-                    <path d="m20 20-3.5-3.5"/>
-                </svg>
+                {{-- SEARCH --}}
+                <div class="search-box">
 
-                <input
-                    type="text"
-                    placeholder="Cari order ID..."
-                >
+                    <svg width="18" height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.8">
+                        <circle cx="11" cy="11" r="7"/>
+                        <path d="m20 20-3.5-3.5"/>
+                    </svg>
 
-            </div>
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        placeholder="Cari order ID..."
+                    >
 
+                </div>
 
-            {{-- PLATFORM FILTER --}}
-            <select class="platform-filter">
-                <option value="">Semua Platform</option>
-                <option value="tiktok">TikTok Shop</option>
-                <option value="shopee">Shopee</option>
-            </select>
+                {{-- PLATFORM FILTER --}}
+                <select name="platform" class="platform-filter" onchange="this.form.submit()">
+                    <option value="">Semua Platform</option>
+                    @foreach ($platforms as $platform)
+                        <option value="{{ $platform->id }}" @selected(request('platform') == $platform->id)>
+                            {{ $platform->name }}
+                        </option>
+                    @endforeach
+                </select>
 
+                {{-- STATUS FILTER --}}
+                <select name="status" class="status-filter" onchange="this.form.submit()">
+                    <option value="">Semua Status</option>
+                    <option value="NEW" @selected(request('status') === 'NEW')>New</option>
+                    <option value="WAITING_PRODUCTION" @selected(request('status') === 'WAITING_PRODUCTION')>Waiting Production</option>
+                    <option value="READY_TO_PACK" @selected(request('status') === 'READY_TO_PACK')>Ready to Pack</option>
+                    <option value="COMPLETED" @selected(request('status') === 'COMPLETED')>Completed</option>
+                </select>
 
-            {{-- STATUS FILTER --}}
-            <select class="status-filter">
-                <option value="">Semua Status</option>
-                <option value="new">New</option>
-                <option value="waiting-production">Waiting Production</option>
-                <option value="ready-to-pack">Ready to Pack</option>
-                <option value="completed">Completed</option>
-            </select>
+            </form>
 
         </div>
 
@@ -215,236 +233,36 @@
             </thead>
 
             <tbody>
-
-                {{-- ORDER 1 --}}
-                <tr>
-
-                    <td>
-                        <span class="order-id">#RB-1001</span>
-                    </td>
-
-                    <td>11 Oct 2026</td>
-
-                    <td>
-                        <span class="platform-badge tiktok">
-                            TikTok Shop
-                        </span>
-                    </td>
-
-                    <td>
-                        <strong>Rp350.000</strong>
-                    </td>
-
-                    <td>
-                        <span class="order-status new">
-                            <span></span>
-                            New
-                        </span>
-                    </td>
-
-                    <td>
-                        <a
-                            href="/admin/orders/1001"
-                            class="action-button"
-                            title="Lihat detail order"
-                        >
-                            <svg width="18" height="18"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="1.8">
-                                <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/>
-                                <circle cx="12" cy="12" r="2.5"/>
-                            </svg>
-                        </a>
-                    </td>
-
-                </tr>
-
-
-                {{-- ORDER 2 --}}
-                <tr>
-
-                    <td>
-                        <span class="order-id">#RB-1002</span>
-                    </td>
-
-                    <td>11 Oct 2026</td>
-
-                    <td>
-                        <span class="platform-badge shopee">
-                            Shopee
-                        </span>
-                    </td>
-
-                    <td>
-                        <strong>Rp275.000</strong>
-                    </td>
-
-                    <td>
-                        <span class="order-status waiting">
-                            <span></span>
-                            Waiting Production
-                        </span>
-                    </td>
-
-                    <td>
-                        <button
-                            type="button"
-                            class="action-button"
-                            title="Lihat detail order"
-                        >
-                            <svg width="18" height="18"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="1.8">
-                                <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/>
-                                <circle cx="12" cy="12" r="2.5"/>
-                            </svg>
-                        </button>
-                    </td>
-
-                </tr>
-
-
-                {{-- ORDER 3 --}}
-                <tr>
-
-                    <td>
-                        <span class="order-id">#RB-1003</span>
-                    </td>
-
-                    <td>10 Oct 2026</td>
-
-                    <td>
-                        <span class="platform-badge tiktok">
-                            TikTok Shop
-                        </span>
-                    </td>
-
-                    <td>
-                        <strong>Rp420.000</strong>
-                    </td>
-
-                    <td>
-                        <span class="order-status ready">
-                            <span></span>
-                            Ready to Pack
-                        </span>
-                    </td>
-
-                    <td>
-                        <button
-                            type="button"
-                            class="action-button"
-                            title="Lihat detail order"
-                        >
-                            <svg width="18" height="18"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="1.8">
-                                <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/>
-                                <circle cx="12" cy="12" r="2.5"/>
-                            </svg>
-                        </button>
-                    </td>
-
-                </tr>
-
-
-                {{-- ORDER 4 --}}
-                <tr>
-
-                    <td>
-                        <span class="order-id">#RB-1004</span>
-                    </td>
-
-                    <td>09 Oct 2026</td>
-
-                    <td>
-                        <span class="platform-badge shopee">
-                            Shopee
-                        </span>
-                    </td>
-
-                    <td>
-                        <strong>Rp180.000</strong>
-                    </td>
-
-                    <td>
-                        <span class="order-status completed">
-                            <span></span>
-                            Completed
-                        </span>
-                    </td>
-
-                    <td>
-                        <button
-                            type="button"
-                            class="action-button"
-                            title="Lihat detail order"
-                        >
-                            <svg width="18" height="18"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="1.8">
-                                <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/>
-                                <circle cx="12" cy="12" r="2.5"/>
-                            </svg>
-                        </button>
-                    </td>
-
-                </tr>
-
-
-                {{-- ORDER 5 --}}
-                <tr>
-
-                    <td>
-                        <span class="order-id">#RB-1005</span>
-                    </td>
-
-                    <td>09 Oct 2026</td>
-
-                    <td>
-                        <span class="platform-badge tiktok">
-                            TikTok Shop
-                        </span>
-                    </td>
-
-                    <td>
-                        <strong>Rp515.000</strong>
-                    </td>
-
-                    <td>
-                        <span class="order-status waiting">
-                            <span></span>
-                            Waiting Production
-                        </span>
-                    </td>
-
-                    <td>
-                        <button
-                            type="button"
-                            class="action-button"
-                            title="Lihat detail order"
-                        >
-                            <svg width="18" height="18"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="1.8">
-                                <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/>
-                                <circle cx="12" cy="12" r="2.5"/>
-                            </svg>
-                        </button>
-                    </td>
-
-                </tr>
-
+                @forelse ($orders as $order)
+                    <tr>
+                        <td><span class="order-id">{{ $order->platform_order_no }}</span></td>
+                        <td>{{ $order->order_date->format('d M Y') }}</td>
+                        <td>
+                            <span class="platform-badge {{ $order->platform->badge_class }}">
+                                {{ $order->platform->name }}
+                            </span>
+                        </td>
+                        <td><strong>Rp{{ number_format($order->total_amount, 0, ',', '.') }}</strong></td>
+                        <td>
+                            <span class="order-status {{ $order->status_class }}">
+                                <span></span>
+                                {{ $order->status_label }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ route('admin.orders.show', $order) }}" class="action-button" title="Lihat detail order">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                    <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/>
+                                    <circle cx="12" cy="12" r="2.5"/>
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" style="text-align:center;padding:30px;">Belum ada order.</td>
+                    </tr>
+                @endforelse
             </tbody>
 
         </table>
@@ -459,15 +277,25 @@
     <div class="table-footer">
 
         <span>
-            Menampilkan 1–5 dari 128 order
+            Menampilkan {{ $orders->firstItem() ?? 0 }}–{{ $orders->lastItem() ?? 0 }} dari {{ $orders->total() }} order
         </span>
 
         <div class="pagination">
-            <button type="button" disabled>‹</button>
-            <button type="button" class="active">1</button>
-            <button type="button">2</button>
-            <button type="button">3</button>
-            <button type="button">›</button>
+
+            <button type="button"
+                    @disabled($orders->onFirstPage())
+                    onclick="location.href='{{ $orders->previousPageUrl() }}'">‹</button>
+
+            @for ($page = max(1, $orders->currentPage() - 2); $page <= min($orders->lastPage(), $orders->currentPage() + 2); $page++)
+                <button type="button"
+                        class="{{ $page === $orders->currentPage() ? 'active' : '' }}"
+                        onclick="location.href='{{ $orders->url($page) }}'">{{ $page }}</button>
+            @endfor
+
+            <button type="button"
+                    @disabled(! $orders->hasMorePages())
+                    onclick="location.href='{{ $orders->nextPageUrl() }}'">›</button>
+
         </div>
 
     </div>
@@ -479,7 +307,12 @@
     ADD ORDER MODAL
 ========================= --}}
 
-<div class="modal-overlay" id="addOrderModal">
+<div
+    class="modal-overlay"
+    id="addOrderModal"
+    data-has-errors="{{ $errors->any() ? '1' : '0' }}"
+    data-catalog="{{ json_encode($catalog) }}"
+>
 
     <div class="order-modal">
 
@@ -511,7 +344,8 @@
 
 
         {{-- MODAL FORM --}}
-        <form id="addOrderForm" onsubmit="return false;">
+        <form id="addOrderForm" method="POST" action="{{ route('admin.orders.store') }}">
+        @csrf
 
             <div class="modal-body">
 
@@ -526,6 +360,8 @@
                     <input
                         type="text"
                         id="orderId"
+                        name="platform_order_no"
+                        value="{{ old('platform_order_no') }}"
                         placeholder="Contoh: #RB-1006"
                     >
 
@@ -544,6 +380,8 @@
                         <input
                             type="date"
                             id="orderDate"
+                            name="order_date"
+                            value="{{ old('order_date', now()->toDateString()) }}"
                         >
 
                     </div>
@@ -555,20 +393,13 @@
                             Platform
                         </label>
 
-                        <select id="orderPlatform">
-
-                            <option value="">
-                                Pilih platform
-                            </option>
-
-                            <option value="tiktok">
-                                TikTok Shop
-                            </option>
-
-                            <option value="shopee">
-                                Shopee
-                            </option>
-
+                        <select id="orderPlatform" name="platform_id">
+                            <option value="">Pilih platform</option>
+                            @foreach ($platforms as $platform)
+                                <option value="{{ $platform->id }}" @selected(old('platform_id') == $platform->id)>
+                                    {{ $platform->name }}
+                                </option>
+                            @endforeach
                         </select>
 
                     </div>
@@ -587,6 +418,7 @@
                         type="text"
                         id="customerName"
                         name="customer_name"
+                        value="{{ old('customer_name') }}"
                         placeholder="Masukkan nama pelanggan"
                     >
 
@@ -626,140 +458,20 @@
                     </div>
 
 
-                    {{-- PRODUCT ITEMS --}}
-                    <div class="order-items" id="orderItems">
-
-                        {{-- ITEM PERTAMA --}}
-                        <div class="order-item">
-
-                            {{-- PRODUCT --}}
-                            <div class="item-product">
-
-                                <label>Produk</label>
-
-                                <div class="product-select-wrapper">
-
-                                    <img
-                                        class="product-thumbnail"
-                                        src=""
-                                        alt="Product"
-                                    >
-
-                                    <select class="product-select">
-
-                                        <option value="">
-                                            Pilih produk
-                                        </option>
-
-                                        <option
-                                            value="D6A"
-                                            data-price="12000"
-                                            data-image="{{ asset('images/login-illustration.png') }}"
-                                        >
-                                            D6A — Sign Peringatan Hitam (9x30)
-                                        </option>
-
-                                        <option
-                                            value="RAK-MIN-002"
-                                            data-price="125000"
-                                            data-image="{{ asset('images/login-illustration.png') }}"
-                                        >
-                                            RAK-MIN-002 — Minimalist Wall Shelf
-                                        </option>
-
-                                        <option
-                                            value="VAS-NOR-004"
-                                            data-price="95000"
-                                            data-image="{{ asset('images/login-illustration.png') }}"
-                                        >
-                                            VAS-NOR-004 — Nordic Flower Vase
-                                        </option>
-
-                                    </select>
-
-                                </div>
-
-                            </div>
+                {{-- PRODUCT ITEMS --}}
+                <div class="order-items" id="orderItems"></div>
 
 
-                            {{-- VARIANT --}}
-                            <div class="item-variant">
+                {{-- TOTAL --}}
+                <div class="order-total">
 
-                                <label>Varian</label>
+                    <span>Total Nominal</span>
 
-                                <select
-                                    class="variant-select"
-                                    disabled
-                                >
-                                    <option value="">
-                                        Pilih produk terlebih dahulu
-                                    </option>
-                                </select>
+                    <strong id="orderTotal">
+                        Rp 0
+                    </strong>
 
-                            </div>
-
-
-                            {{-- QUANTITY --}}
-                            <div class="item-quantity">
-
-                                <label>Qty</label>
-
-                                <input
-                                    type="number"
-                                    class="quantity-input"
-                                    min="1"
-                                    value="1"
-                                >
-
-                            </div>
-
-
-                            {{-- PRICE --}}
-                            <div class="item-price">
-
-                                <label>Harga</label>
-
-                                <div class="price-display">
-                                    Rp 0
-                                </div>
-
-                            </div>
-
-
-                            {{-- REMOVE --}}
-                            <button
-                                type="button"
-                                class="remove-item-button"
-                                title="Hapus produk"
-                            >
-                                <svg width="17" height="17"
-                                     viewBox="0 0 24 24"
-                                     fill="none"
-                                     stroke="currentColor"
-                                     stroke-width="1.8">
-                                    <path d="M3 6h18"/>
-                                    <path d="M8 6V4h8v2"/>
-                                    <path d="M19 6l-1 14H6L5 6"/>
-                                    <path d="M10 11v5"/>
-                                    <path d="M14 11v5"/>
-                                </svg>
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    {{-- TOTAL --}}
-                    <div class="order-total">
-
-                        <span>Total Nominal</span>
-
-                        <strong id="orderTotal">
-                            Rp 0
-                        </strong>
-
-                    </div>
+                </div>
 
                 </div>
 
@@ -774,10 +486,10 @@
 
                     <textarea
                         id="customerNotes"
-                        name="customer_notes"
+                        name="notes"
                         rows="3"
                         placeholder="Contoh: Tolong packing lebih aman, warna sesuai pesanan, dll."
-                    ></textarea>
+                    >{{ old('notes') }}</textarea>
 
                 </div>
 
@@ -822,6 +534,75 @@
 
 </div>
 
+{{-- =========================
+    CONFIRM SAVE ORDER MODAL
+========================= --}}
+
+<div class="modal-overlay" id="confirmOrderModal" style="z-index: 1100;">
+
+    <div class="order-modal" style="max-width: 460px;">
+
+        <div class="modal-header">
+
+            <div>
+                <span class="modal-eyebrow">KONFIRMASI</span>
+                <h2>Pastikan isian order benar</h2>
+                <p>Harap cek kembali data order sebelum disimpan.</p>
+            </div>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="confirm-summary">
+
+                <div class="confirm-row">
+                    <span>Order ID</span>
+                    <strong id="confirmOrderNo">-</strong>
+                </div>
+
+                <div class="confirm-row">
+                    <span>Tanggal</span>
+                    <strong id="confirmDate">-</strong>
+                </div>
+
+                <div class="confirm-row">
+                    <span>Platform</span>
+                    <strong id="confirmPlatform">-</strong>
+                </div>
+
+                <div class="confirm-row">
+                    <span>Pelanggan</span>
+                    <strong id="confirmCustomer">-</strong>
+                </div>
+
+                <div class="confirm-items" id="confirmItems"></div>
+
+                <div class="confirm-row confirm-total">
+                    <span>Total Nominal</span>
+                    <strong id="confirmTotal">Rp 0</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button type="button" class="modal-cancel" id="cancelConfirm">
+                Batal
+            </button>
+
+            <button type="button" class="modal-save" id="confirmSave">
+                Save
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 @endsection
 
 
@@ -833,513 +614,357 @@
     // MODAL
     // ==========================
 
-    const addOrderModal =
-        document.getElementById('addOrderModal');
+    const addOrderModal = document.getElementById('addOrderModal');
+    const openAddOrderModal = document.getElementById('openAddOrderModal');
+    const closeAddOrderModal = document.getElementById('closeAddOrderModal');
+    const cancelAddOrder = document.getElementById('cancelAddOrder');
 
-    const openAddOrderModal =
-        document.getElementById('openAddOrderModal');
-
-    const closeAddOrderModal =
-        document.getElementById('closeAddOrderModal');
-
-    const cancelAddOrder =
-        document.getElementById('cancelAddOrder');
-
-
-    // Open modal
     openAddOrderModal.addEventListener('click', function () {
         addOrderModal.classList.add('active');
     });
 
-
-    // Close from X
     closeAddOrderModal.addEventListener('click', function () {
         addOrderModal.classList.remove('active');
     });
 
-
-    // Close from Cancel
     cancelAddOrder.addEventListener('click', function () {
         addOrderModal.classList.remove('active');
     });
 
-
-    // Close when clicking outside modal
     addOrderModal.addEventListener('click', function (event) {
-
         if (event.target === addOrderModal) {
             addOrderModal.classList.remove('active');
         }
-
     });
 
-
-    // Close with Escape
     document.addEventListener('keydown', function (event) {
-
         if (event.key === 'Escape') {
-            addOrderModal.classList.remove('active');
+            if (confirmOrderModal.classList.contains('active')) {
+                confirmOrderModal.classList.remove('active');
+            } else {
+                addOrderModal.classList.remove('active');
+            }
         }
-
     });
 
+    // Buka modal lagi jika validasi gagal
+    if (addOrderModal.dataset.hasErrors === '1') {
+        addOrderModal.classList.add('active');
+    }
 
 
     // ==========================
-    // ORDER ITEMS
+    // DATA KATALOG (dari database)
     // ==========================
 
-    const orderItems =
-        document.getElementById('orderItems');
+    const catalog = JSON.parse(addOrderModal.dataset.catalog || '[]');
 
-    const addProductButton =
-        document.getElementById('addProductButton');
-
-    const orderTotal =
-        document.getElementById('orderTotal');
+    const orderItems = document.getElementById('orderItems');
+    const addProductButton = document.getElementById('addProductButton');
+    const orderTotal = document.getElementById('orderTotal');
 
 
     // ==========================
-    // PRODUCT VARIANTS
-    // ==========================
-
-    const productVariants = {
-
-        'D6A': [
-            {
-                sku: 'D6A-1',
-                name: 'CCTV'
-            },
-            {
-                sku: 'D6A-2',
-                name: 'Dilarang Merokok'
-            },
-            {
-                sku: 'D6A-3',
-                name: 'Area Merokok'
-            },
-            {
-                sku: 'D6A-4',
-                name: 'Arah Kiblat'
-            },
-            {
-                sku: 'D6A-5',
-                name: 'Jagalah Kebersihan'
-            }
-        ],
-
-        'RAK-MIN-002': [
-            {
-                sku: 'RAK-MIN-002-1',
-                name: 'Natural'
-            },
-            {
-                sku: 'RAK-MIN-002-2',
-                name: 'Dark Brown'
-            }
-        ],
-
-        'VAS-NOR-004': [
-            {
-                sku: 'VAS-NOR-004-1',
-                name: 'White'
-            },
-            {
-                sku: 'VAS-NOR-004-2',
-                name: 'Cream'
-            }
-        ]
-
-    };
-
-
-
-    // ==========================
-    // FORMAT RUPIAH
+    // HELPER
     // ==========================
 
     function formatRupiah(number) {
-
         return new Intl.NumberFormat('id-ID', {
             style: 'currency',
             currency: 'IDR',
             minimumFractionDigits: 0
         }).format(number);
+    }
 
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function findGroup(id) {
+        return catalog.find(function (group) {
+            return String(group.id) === String(id);
+        });
+    }
+
+    const groupOptionsHtml =
+        '<option value="">Pilih produk</option>' +
+        catalog.map(function (group) {
+            return `<option value="${group.id}">${escapeHtml(group.name)}</option>`;
+        }).join('');
+
+
+    // ==========================
+    // BUAT BARIS PRODUK
+    // ==========================
+
+    function createItemRow() {
+
+        const item = document.createElement('div');
+        item.classList.add('order-item');
+
+        item.innerHTML = `
+            <div class="item-product">
+                <label>Produk</label>
+                <div class="product-select-wrapper">
+                    <img class="product-thumbnail" src="" alt="Product">
+                    <select class="product-select">${groupOptionsHtml}</select>
+                </div>
+            </div>
+
+            <div class="item-variant">
+                <label>Varian</label>
+                <select class="variant-select" disabled>
+                    <option value="">Pilih produk terlebih dahulu</option>
+                </select>
+            </div>
+
+            <div class="item-quantity">
+                <label>Qty</label>
+                <input type="number" class="quantity-input" min="1" value="1">
+            </div>
+
+            <div class="item-price">
+                <label>Harga</label>
+                <div class="price-display">Rp 0</div>
+            </div>
+
+            <button type="button" class="remove-item-button" title="Hapus produk">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="1.8">
+                    <path d="M3 6h18"/>
+                    <path d="M8 6V4h8v2"/>
+                    <path d="M19 6l-1 14H6L5 6"/>
+                    <path d="M10 11v5"/>
+                    <path d="M14 11v5"/>
+                </svg>
+            </button>
+        `;
+
+        orderItems.appendChild(item);
     }
 
 
-
     // ==========================
-    // UPDATE PRODUCT ITEM
+    // PRODUK DIPILIH -> ISI VARIAN
     // ==========================
 
-    function updateProductItem(item) {
+    function updateGroup(item) {
 
-        const product =
-            item.querySelector('.product-select');
+        const groupSelect = item.querySelector('.product-select');
+        const variantSelect = item.querySelector('.variant-select');
+        const priceDisplay = item.querySelector('.price-display');
+        const thumbnail = item.querySelector('.product-thumbnail');
 
-        const variant =
-            item.querySelector('.variant-select');
+        const group = findGroup(groupSelect.value);
 
-        const priceDisplay =
-            item.querySelector('.price-display');
+        // reset thumbnail
+        thumbnail.src = '';
+        thumbnail.classList.remove('active');
 
-        const thumbnail =
-            item.querySelector('.product-thumbnail');
-
-        const selectedOption =
-            product.options[product.selectedIndex];
-
-        const productSku =
-            product.value;
-
-
-        // ==========================
-        // RESET VARIANT
-        // ==========================
-
-        variant.innerHTML = '';
-
-
-        if (!productSku) {
-
-            variant.disabled = true;
-
-            variant.innerHTML = `
-                <option value="">
-                    Pilih produk terlebih dahulu
-                </option>
-            `;
-
-        } else {
-
-            variant.disabled = false;
-
-            variant.innerHTML = `
-                <option value="">
-                    Pilih varian
-                </option>
-            `;
-
-
-            const variants =
-                productVariants[productSku] || [];
-
-
-            variants.forEach(function (variantData) {
-
-                const option =
-                    document.createElement('option');
-
-                option.value =
-                    variantData.sku;
-
-                option.textContent =
-                    `${variantData.name} — ${variantData.sku}`;
-
-                variant.appendChild(option);
-
-            });
-
+        if (!group) {
+            variantSelect.disabled = true;
+            variantSelect.innerHTML =
+                '<option value="">Pilih produk terlebih dahulu</option>';
+            priceDisplay.textContent = formatRupiah(0);
+            return;
         }
 
+        variantSelect.disabled = false;
+        variantSelect.innerHTML =
+            '<option value="">Pilih varian</option>' +
+            group.variants.map(function (variant) {
+                return `<option value="${variant.id}">${escapeHtml(variant.name)} — ${escapeHtml(variant.sku)}</option>`;
+            }).join('');
 
-        // ==========================
-        // PRICE
-        // ==========================
-
-        const price =
-            Number(selectedOption.dataset.price) || 0;
-
-        priceDisplay.textContent =
-            formatRupiah(price);
+        priceDisplay.textContent = formatRupiah(group.price);
+    }
 
 
-        // ==========================
-        // THUMBNAIL
-        // ==========================
+    // ==========================
+    // VARIAN DIPILIH -> THUMBNAIL
+    // ==========================
 
-        if (
-            productSku &&
-            selectedOption.dataset.image
-        ) {
+    function updateVariant(item) {
 
-            thumbnail.src =
-                selectedOption.dataset.image;
+        const group = findGroup(item.querySelector('.product-select').value);
+        const variantId = item.querySelector('.variant-select').value;
+        const thumbnail = item.querySelector('.product-thumbnail');
 
+        const variant = group
+            ? group.variants.find(function (v) { return String(v.id) === String(variantId); })
+            : null;
+
+        if (variant && variant.image) {
+            thumbnail.src = variant.image;
             thumbnail.classList.add('active');
-
         } else {
-
             thumbnail.src = '';
-
             thumbnail.classList.remove('active');
-
         }
-
     }
 
 
-
     // ==========================
-    // CALCULATE TOTAL
+    // HITUNG TOTAL
     // ==========================
 
     function calculateOrderTotal() {
 
         let total = 0;
 
-        const items =
-            orderItems.querySelectorAll('.order-item');
+        orderItems.querySelectorAll('.order-item').forEach(function (item) {
 
+            const group = findGroup(item.querySelector('.product-select').value);
+            const qty = Number(item.querySelector('.quantity-input').value) || 0;
 
-        items.forEach(function (item) {
-
-            const product =
-                item.querySelector('.product-select');
-
-            const quantity =
-                item.querySelector('.quantity-input');
-
-            const selectedOption =
-                product.options[product.selectedIndex];
-
-            const price =
-                Number(selectedOption.dataset.price) || 0;
-
-            const qty =
-                Number(quantity.value) || 0;
-
-
-            total += price * qty;
-
+            if (group) {
+                total += group.price * qty;
+            }
         });
 
-
-        orderTotal.textContent =
-            formatRupiah(total);
-
+        orderTotal.textContent = formatRupiah(total);
     }
 
 
-
     // ==========================
-    // PRODUCT / QUANTITY CHANGE
+    // EVENT: PRODUK / VARIAN / QTY
     // ==========================
 
     orderItems.addEventListener('change', function (event) {
 
-        if (
-            event.target.classList.contains('product-select')
-        ) {
+        const item = event.target.closest('.order-item');
 
-            const item =
-                event.target.closest('.order-item');
-
-            updateProductItem(item);
-
+        if (event.target.classList.contains('product-select')) {
+            updateGroup(item);
             calculateOrderTotal();
-
         }
 
-
-        if (
-            event.target.classList.contains('quantity-input')
-        ) {
-
-            calculateOrderTotal();
-
+        if (event.target.classList.contains('variant-select')) {
+            updateVariant(item);
         }
 
+        if (event.target.classList.contains('quantity-input')) {
+            calculateOrderTotal();
+        }
     });
-
 
     orderItems.addEventListener('input', function (event) {
-
-        if (
-            event.target.classList.contains('quantity-input')
-        ) {
-
+        if (event.target.classList.contains('quantity-input')) {
             calculateOrderTotal();
-
         }
-
     });
-
 
 
     // ==========================
-    // ADD PRODUCT
+    // TAMBAH & HAPUS PRODUK
     // ==========================
 
     addProductButton.addEventListener('click', function () {
-
-        const newItem =
-            document.createElement('div');
-
-
-        newItem.classList.add('order-item');
-
-
-        newItem.innerHTML = `
-
-            <div class="item-product">
-
-                <label>Produk</label>
-
-                <div class="product-select-wrapper">
-
-                    <img
-                        class="product-thumbnail"
-                        src=""
-                        alt="Product"
-                    >
-
-                    <select class="product-select">
-
-                        <option value="">
-                            Pilih produk
-                        </option>
-
-                        <option
-                            value="D6A"
-                            data-price="12000"
-                            data-image="{{ asset('images/login-illustration.png') }}"
-                        >
-                            D6A — Sign Peringatan Hitam (9x30)
-                        </option>
-
-                        <option
-                            value="RAK-MIN-002"
-                            data-price="125000"
-                            data-image="{{ asset('images/login-illustration.png') }}"
-                        >
-                            RAK-MIN-002 — Minimalist Wall Shelf
-                        </option>
-
-                        <option
-                            value="VAS-NOR-004"
-                            data-price="95000"
-                            data-image="{{ asset('images/login-illustration.png') }}"
-                        >
-                            VAS-NOR-004 — Nordic Flower Vase
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-
-            <div class="item-variant">
-
-                <label>Varian</label>
-
-                <select
-                    class="variant-select"
-                    disabled
-                >
-                    <option value="">
-                        Pilih produk terlebih dahulu
-                    </option>
-                </select>
-
-            </div>
-
-
-            <div class="item-quantity">
-
-                <label>Qty</label>
-
-                <input
-                    type="number"
-                    class="quantity-input"
-                    min="1"
-                    value="1"
-                >
-
-            </div>
-
-
-            <div class="item-price">
-
-                <label>Harga</label>
-
-                <div class="price-display">
-                    Rp 0
-                </div>
-
-            </div>
-
-
-            <button
-                type="button"
-                class="remove-item-button"
-                title="Hapus produk"
-            >
-
-                <svg width="17" height="17"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="1.8">
-
-                    <path d="M3 6h18"/>
-                    <path d="M8 6V4h8v2"/>
-                    <path d="M19 6l-1 14H6L5 6"/>
-                    <path d="M10 11v5"/>
-                    <path d="M14 11v5"/>
-
-                </svg>
-
-            </button>
-
-        `;
-
-
-        orderItems.appendChild(newItem);
-
+        createItemRow();
     });
-
-
-
-    // ==========================
-    // REMOVE PRODUCT
-    // ==========================
 
     orderItems.addEventListener('click', function (event) {
 
-        const removeButton =
-            event.target.closest('.remove-item-button');
-
+        const removeButton = event.target.closest('.remove-item-button');
 
         if (!removeButton) {
             return;
         }
 
-
-        const items =
-            orderItems.querySelectorAll('.order-item');
-
-
         // Minimal harus ada satu produk
-        if (items.length <= 1) {
+        if (orderItems.querySelectorAll('.order-item').length <= 1) {
             return;
         }
 
-
-        const item =
-            removeButton.closest('.order-item');
-
-
-        item.remove();
-
-
+        removeButton.closest('.order-item').remove();
         calculateOrderTotal();
-
     });
+
+
+    // ==========================
+    // KONFIRMASI SEBELUM SIMPAN
+    // ==========================
+
+    const addOrderForm = document.getElementById('addOrderForm');
+    const confirmOrderModal = document.getElementById('confirmOrderModal');
+
+    function assignItemNames() {
+        orderItems.querySelectorAll('.order-item').forEach(function (item, index) {
+            item.querySelector('.variant-select').name = `items[${index}][product_id]`;
+            item.querySelector('.quantity-input').name = `items[${index}][qty]`;
+        });
+    }
+
+    function selectedText(select) {
+        return select.options[select.selectedIndex]?.textContent.trim() || '';
+    }
+
+    // Klik Save Order -> tampilkan konfirmasi (form belum dikirim)
+    addOrderForm.addEventListener('submit', function (event) {
+
+        event.preventDefault();
+
+        const orderNo  = document.getElementById('orderId').value.trim();
+        const date     = document.getElementById('orderDate').value;
+        const platform = document.getElementById('orderPlatform');
+        const customer = document.getElementById('customerName').value.trim();
+
+        // Cek isian wajib
+        if (!orderNo || !date || !platform.value || !customer) {
+            alert('Lengkapi Order ID, tanggal, platform, dan nama pelanggan.');
+            return;
+        }
+
+        const rows = Array.from(orderItems.querySelectorAll('.order-item'));
+
+        const incomplete = rows.some(function (row) {
+            return !row.querySelector('.variant-select').value;
+        });
+
+        if (incomplete) {
+            alert('Pilih produk dan varian di semua baris.');
+            return;
+        }
+
+        // Isi ringkasan
+        document.getElementById('confirmOrderNo').textContent  = orderNo;
+        document.getElementById('confirmDate').textContent     = date;
+        document.getElementById('confirmPlatform').textContent = selectedText(platform);
+        document.getElementById('confirmCustomer').textContent = customer;
+        document.getElementById('confirmTotal').textContent    = orderTotal.textContent;
+
+        document.getElementById('confirmItems').innerHTML = rows.map(function (row) {
+            const product = selectedText(row.querySelector('.product-select'));
+            const variant = selectedText(row.querySelector('.variant-select'));
+            const qty     = row.querySelector('.quantity-input').value;
+
+            return `<div>
+                        <span>${escapeHtml(product)} — ${escapeHtml(variant)}</span>
+                        <strong>x${escapeHtml(qty)}</strong>
+                    </div>`;
+        }).join('');
+
+        confirmOrderModal.classList.add('active');
+    });
+
+    // Batal -> tutup konfirmasi, kembali ke form
+    document.getElementById('cancelConfirm').addEventListener('click', function () {
+        confirmOrderModal.classList.remove('active');
+    });
+
+    // Save -> kirim form sungguhan
+    document.getElementById('confirmSave').addEventListener('click', function () {
+        assignItemNames();
+        addOrderForm.submit();
+    });
+
+    // ==========================
+    // BARIS PERTAMA
+    // ==========================
+
+    createItemRow();
 
 </script>
 

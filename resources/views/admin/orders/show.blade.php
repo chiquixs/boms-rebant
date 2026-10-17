@@ -4,6 +4,13 @@
 
 @section('content')
 
+@php
+    // Urutan status untuk progress bar
+    $steps = ['NEW', 'WAITING_PRODUCTION', 'READY_TO_PACK', 'COMPLETED'];
+    $currentStep = array_search($order->status, $steps);
+    $currentStep = $currentStep === false ? 0 : $currentStep;
+@endphp
+
 {{-- =========================
     PAGE HEADER
 ========================= --}}
@@ -12,7 +19,7 @@
 
     <div>
 
-        <a href="/admin/orders" class="back-to-orders">
+        <a href="{{ route('admin.orders.index') }}" class="back-to-orders">
 
             <svg width="15" height="15"
                  viewBox="0 0 24 24"
@@ -34,12 +41,12 @@
         <div class="detail-title-row">
 
             <h1>
-                #RB-{{ $orderId }}
+                {{ $order->platform_order_no }}
             </h1>
 
-            <span class="order-status new">
+            <span class="order-status {{ $order->status_class }}">
                 <span></span>
-                New
+                {{ $order->status_label }}
             </span>
 
         </div>
@@ -88,12 +95,12 @@
 
             <div class="detail-info-item">
                 <span>Order ID</span>
-                <strong>#RB-{{ $orderId }}</strong>
+                <strong>{{ $order->platform_order_no }}</strong>
             </div>
 
             <div class="detail-info-item">
                 <span>Tanggal Order</span>
-                <strong>11 Oct 2026</strong>
+                <strong>{{ $order->order_date->format('d M Y') }}</strong>
             </div>
 
             <div class="detail-info-item">
@@ -101,8 +108,8 @@
                 <span>Platform</span>
 
                 <strong>
-                    <span class="platform-badge tiktok">
-                        TikTok Shop
+                    <span class="platform-badge {{ $order->platform->badge_class }}">
+                        {{ $order->platform->name }}
                     </span>
                 </strong>
 
@@ -110,7 +117,7 @@
 
             <div class="detail-info-item">
                 <span>Total Nominal</span>
-                <strong>Rp350.000</strong>
+                <strong>Rp{{ number_format($order->total_amount, 0, ',', '.') }}</strong>
             </div>
 
         </div>
@@ -145,7 +152,7 @@
 
             <div class="detail-info-item">
                 <span>Nama Pelanggan</span>
-                <strong>Alya Putri</strong>
+                <strong>{{ $order->customer_name }}</strong>
             </div>
 
             <div class="detail-info-item detail-info-item-notes">
@@ -153,8 +160,7 @@
                 <span>Customer Notes</span>
 
                 <div class="customer-note">
-                    Tolong packing lebih aman dan pastikan produk
-                    tidak tergores.
+                    {{ $order->notes ?: '-' }}
                 </div>
 
             </div>
@@ -211,120 +217,66 @@
 
             <tbody>
 
-                {{-- ITEM 1 --}}
-                <tr>
+                @foreach ($order->items as $item)
 
-                    <td>
+                    <tr>
 
-                        <div class="detail-product">
+                        <td>
 
-                            <img
-                                src="{{ asset('images/login-illustration.png') }}"
-                                alt="Sign Peringatan Hitam"
-                                class="detail-product-image"
-                            >
+                            <div class="detail-product">
 
-                            <div>
-                                <strong>
-                                    Sign Peringatan Hitam (9x30)
-                                </strong>
+                                <img
+                                    src="{{ $item->product->image_url ?? asset('images/login-illustration.png') }}"
+                                    alt="{{ $item->product->group->name }}"
+                                    class="detail-product-image"
+                                >
 
-                                <span>
-                                    SKU Product: D6A
-                                </span>
+                                <div>
+                                    <strong>
+                                        {{ $item->product->group->name }}
+                                    </strong>
+
+                                    {{-- sesuaikan: kolom kode/SKU di product_groups jika ada --}}
+                                    <span>
+                                        SKU Product: {{ $item->product->group->sku ?? '-' }}
+                                    </span>
+                                </div>
+
                             </div>
 
-                        </div>
+                        </td>
 
-                    </td>
+                        <td>
+                            <span class="detail-variant-name">
+                                {{ $item->product->variant_name ?: '-' }}
+                            </span>
+                        </td>
 
-                    <td>
-                        <span class="detail-variant-name">
-                            CCTV
-                        </span>
-                    </td>
+                        <td>
+                            <span class="detail-variant-sku">
+                                {{ $item->product->sku }}
+                            </span>
+                        </td>
 
-                    <td>
-                        <span class="detail-variant-sku">
-                            D6A-1
-                        </span>
-                    </td>
+                        <td>
+                            Rp{{ number_format($item->unit_price, 0, ',', '.') }}
+                        </td>
 
-                    <td>
-                        Rp12.000
-                    </td>
+                        <td>
+                            <span class="detail-quantity">
+                                {{ $item->qty }}
+                            </span>
+                        </td>
 
-                    <td>
-                        <span class="detail-quantity">
-                            2
-                        </span>
-                    </td>
+                        <td>
+                            <strong>
+                                Rp{{ number_format($item->subtotal, 0, ',', '.') }}
+                            </strong>
+                        </td>
 
-                    <td>
-                        <strong>
-                            Rp24.000
-                        </strong>
-                    </td>
+                    </tr>
 
-                </tr>
-
-
-                {{-- ITEM 2 --}}
-                <tr>
-
-                    <td>
-
-                        <div class="detail-product">
-
-                            <img
-                                src="{{ asset('images/login-illustration.png') }}"
-                                alt="Minimalist Wall Shelf"
-                                class="detail-product-image"
-                            >
-
-                            <div>
-                                <strong>
-                                    Minimalist Wall Shelf
-                                </strong>
-
-                                <span>
-                                    SKU Product: RAK-MIN-002
-                                </span>
-                            </div>
-
-                        </div>
-
-                    </td>
-
-                    <td>
-                        <span class="detail-variant-name">
-                            Natural
-                        </span>
-                    </td>
-
-                    <td>
-                        <span class="detail-variant-sku">
-                            RAK-MIN-002-1
-                        </span>
-                    </td>
-
-                    <td>
-                        Rp163.000
-                    </td>
-
-                    <td>
-                        <span class="detail-quantity">
-                            2
-                        </span>
-                    </td>
-
-                    <td>
-                        <strong>
-                            Rp326.000
-                        </strong>
-                    </td>
-
-                </tr>
+                @endforeach
 
             </tbody>
 
@@ -339,7 +291,7 @@
         <span>Total Nominal</span>
 
         <strong>
-            Rp350.000
+            Rp{{ number_format($order->total_amount, 0, ',', '.') }}
         </strong>
 
     </div>
@@ -377,7 +329,7 @@
     <div class="status-progress">
 
         {{-- NEW --}}
-        <div class="status-step active">
+        <div class="status-step {{ $currentStep >= 0 ? 'active' : '' }}">
 
             <div class="status-step-marker">
                 <span>1</span>
@@ -395,7 +347,7 @@
 
 
         {{-- WAITING PRODUCTION --}}
-        <div class="status-step">
+        <div class="status-step {{ $currentStep >= 1 ? 'active' : '' }}">
 
             <div class="status-step-marker">
                 <span>2</span>
@@ -413,7 +365,7 @@
 
 
         {{-- READY TO PACK --}}
-        <div class="status-step">
+        <div class="status-step {{ $currentStep >= 2 ? 'active' : '' }}">
 
             <div class="status-step-marker">
                 <span>3</span>
@@ -431,7 +383,7 @@
 
 
         {{-- COMPLETED --}}
-        <div class="status-step">
+        <div class="status-step {{ $currentStep >= 3 ? 'active' : '' }}">
 
             <div class="status-step-marker">
                 <span>4</span>
