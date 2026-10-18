@@ -21,6 +21,7 @@ class ProductController extends Controller
         $groups = ProductGroup::with([
                 'category',
                 'products' => fn ($q) => $q->orderBy('variant_name'),
+                'materials.rawMaterial',
             ])
             ->withCount('materials')
             ->when($request->filled('search'), fn ($q) =>

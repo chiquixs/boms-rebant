@@ -1104,3 +1104,81 @@
     }
 
 }
+
+.bom-alert {
+    margin-bottom: 16px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+}
+.bom-alert-success { background: #E8F3E3; color: #2F5D24; }
+.bom-alert-error   { background: #FDECEA; color: #C0392B; }
+
+/* Header: link kembali di atas, judul di bawahnya */
+.bom-page-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+/* Kartu produk: info di atas, ringkasan di bawah */
+.bom-product-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+}
+
+.bom-product-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    width: 100%;
+}
+
+/* Semua section tersusun ke bawah */
+.bom-page {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+/* Form modal: pilihan metode dan kolom area tersusun ke bawah */
+.material-method-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.material-form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+
+@media (max-width: 600px) {
+    .bom-product-summary { grid-template-columns: 1fr; }
+}
+
+.material-name-line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.material-inactive-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 7px;
+    border: 1px solid #F0D3D0;
+    border-radius: 6px;
+    background: #FFF7F6;
+    color: #B85C55;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
