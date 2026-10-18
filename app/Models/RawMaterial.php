@@ -7,10 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class RawMaterial extends Model
 {
     protected $fillable = [
-        'code', 'name', 'unit', 'material_type',
-        'sheet_length_cm', 'sheet_width_cm',
-        'current_stock', 'safety_stock', 'target_stock',
-        'avg_daily_usage', 'reorder_point', 'is_active',
+        'code',
+        'name',
+        'unit',
+        'material_type',
+        'sheet_length_cm',
+        'sheet_width_cm',
+        'current_stock',
+        'safety_stock',
+        'target_stock',
+        'avg_daily_usage',
+        'reorder_point',
+        'is_active',
     ];
 
     protected function casts(): array
@@ -27,5 +35,10 @@ class RawMaterial extends Model
     public function isSheet(): bool
     {
         return $this->material_type === 'SHEET';
+    }
+
+    public function movements(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(RawMaterialMovement::class);
     }
 }

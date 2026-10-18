@@ -22,11 +22,10 @@
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="1.8"
-            >
-                <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z"/>
-                <path d="m4 7.5 8 4.5 8-4.5"/>
-                <path d="M12 12v9"/>
+                stroke-width="1.8">
+                <path d="M4 7.5 12 3l8 4.5v9L12 21l-8-4.5v-9Z" />
+                <path d="m4 7.5 8 4.5 8-4.5" />
+                <path d="M12 12v9" />
             </svg>
         </div>
     </div>
@@ -39,25 +38,25 @@
 
         <div class="inventory-summary-card">
             <div class="summary-label">SKU Stok Rendah</div>
-            <div class="summary-value danger">2</div>
+            <div class="summary-value danger">{{ $lowStockSkuCount }}</div>
             <div class="summary-caption">Variant di bawah safety stock</div>
         </div>
 
         <div class="inventory-summary-card">
             <div class="summary-label">Bahan Baku Menipis</div>
-            <div class="summary-value warning">1</div>
+            <div class="summary-value warning">{{ $lowStockMaterialsCount }}</div>
             <div class="summary-caption">Bahan di bawah safety stock</div>
         </div>
 
         <div class="inventory-summary-card">
             <div class="summary-label">Stok Masuk Hari Ini</div>
-            <div class="summary-value">12</div>
+            <div class="summary-value">{{ $todayInCount }}</div>
             <div class="summary-caption">Transaksi stok masuk</div>
         </div>
 
         <div class="inventory-summary-card">
             <div class="summary-label">Stok Keluar Hari Ini</div>
-            <div class="summary-value">8</div>
+            <div class="summary-value">{{ $todayOutCount }}</div>
             <div class="summary-caption">Transaksi stok keluar</div>
         </div>
 
@@ -75,24 +74,21 @@
             <button
                 type="button"
                 class="inventory-tab active"
-                data-tab="finishedGoods"
-            >
+                data-tab="finishedGoods">
                 Produk Jadi
             </button>
 
             <button
                 type="button"
                 class="inventory-tab"
-                data-tab="rawMaterials"
-            >
+                data-tab="rawMaterials">
                 Bahan Baku
             </button>
 
             <button
                 type="button"
                 class="inventory-tab"
-                data-tab="stockHistory"
-            >
+                data-tab="stockHistory">
                 Riwayat
             </button>
 
@@ -104,8 +100,7 @@
         ========================================= --}}
         <div
             class="inventory-tab-content active"
-            id="finishedGoods"
-        >
+            id="finishedGoods">
 
             <div class="inventory-section-header">
                 <div>
@@ -132,122 +127,55 @@
                     </thead>
 
                     <tbody>
+                        @forelse ($products as $product)
+                        @php
+                        $current = $product->current_stock;
+                        $safety = $product->min_stock;
 
-                        <tr>
+                        if ($safety === null) {
+                        $statusClass = 'safe'; $statusLabel = 'Aman';
+                        } elseif ($current < $safety) {
+                            $statusClass='low' ; $statusLabel='Rendah' ;
+                            } elseif ($current==$safety) {
+                            $statusClass='warning' ; $statusLabel='Perhatian' ;
+                            } else {
+                            $statusClass='safe' ; $statusLabel='Aman' ;
+                            }
+                            @endphp
+
+                            <tr>
                             <td>
                                 <div class="inventory-product-info">
-                                    <strong>Sign Peringatan Hitam (9x30)</strong>
-                                    <span>SKU Product: D6A</span>
+                                    <strong>{{ $product->group->name ?? '—' }}</strong>
+                                    <span>SKU Product: {{ $product->group->code ?? '—' }}</span>
                                 </div>
                             </td>
-                            <td>CCTV</td>
-                            <td><span class="inventory-sku">D6A-1</span></td>
-                            <td class="inventory-stock-number">50</td>
-                            <td class="inventory-stock-number">30</td>
-                            <td class="inventory-stock-number">80</td>
-                            <td><span class="stock-status safe">Aman</span></td>
+
+                            <td>{{ $product->variant_name ?? '—' }}</td>
+
+                            <td><span class="inventory-sku">{{ $product->sku }}</span></td>
+
+                            <td class="inventory-stock-number {{ $statusClass === 'low' ? 'low-stock' : '' }}">
+                                {{ $current }}
+                            </td>
+                            <td class="inventory-stock-number">{{ $safety ?? '—' }}</td>
+                            <td class="inventory-stock-number">{{ $product->target_stock ?? '—' }}</td>
+
+                            <td><span class="stock-status {{ $statusClass }}">{{ $statusLabel }}</span></td>
+
                             <td>
-                                <a
-                                    href="/admin/inventory/D6A-1/history"
-                                    class="history-button"
-                                >
+                                <a href="{{ route('admin.inventory.history', $product) }}" class="history-button">
                                     Riwayat
                                 </a>
                             </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="inventory-product-info">
-                                    <strong>Sign Peringatan Hitam (9x30)</strong>
-                                    <span>SKU Product: D6A</span>
-                                </div>
-                            </td>
-                            <td>Dilarang Merokok</td>
-                            <td><span class="inventory-sku">D6A-2</span></td>
-                            <td class="inventory-stock-number">75</td>
-                            <td class="inventory-stock-number">30</td>
-                            <td class="inventory-stock-number">80</td>
-                            <td><span class="stock-status safe">Aman</span></td>
-                            <td>
-                                <a
-                                    href="/admin/inventory/D6A-2/history"
-                                    class="history-button"
-                                >
-                                    Riwayat
-                                </a>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="inventory-product-info">
-                                    <strong>Sign Peringatan Hitam (9x30)</strong>
-                                    <span>SKU Product: D6A</span>
-                                </div>
-                            </td>
-                            <td>Area Merokok</td>
-                            <td><span class="inventory-sku">D6A-3</span></td>
-                            <td class="inventory-stock-number">30</td>
-                            <td class="inventory-stock-number">30</td>
-                            <td class="inventory-stock-number">80</td>
-                            <td><span class="stock-status warning">Perhatian</span></td>
-                            <td>
-                                <a
-                                    href="/admin/inventory/D6A-3/history"
-                                    class="history-button"
-                                >
-                                    Riwayat
-                                </a>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="inventory-product-info">
-                                    <strong>Sign Peringatan Hitam (9x30)</strong>
-                                    <span>SKU Product: D6A</span>
-                                </div>
-                            </td>
-                            <td>Arah Kiblat</td>
-                            <td><span class="inventory-sku">D6A-4</span></td>
-                            <td class="inventory-stock-number">34</td>
-                            <td class="inventory-stock-number">30</td>
-                            <td class="inventory-stock-number">80</td>
-                            <td><span class="stock-status safe">Aman</span></td>
-                            <td>
-                                <a
-                                    href="/admin/inventory/D6A-4/history"
-                                    class="history-button"
-                                >
-                                    Riwayat
-                                </a>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div class="inventory-product-info">
-                                    <strong>Sign Peringatan Hitam (9x30)</strong>
-                                    <span>SKU Product: D6A</span>
-                                </div>
-                            </td>
-                            <td>Jagalah Kebersihan</td>
-                            <td><span class="inventory-sku">D6A-5</span></td>
-                            <td class="inventory-stock-number low-stock">20</td>
-                            <td class="inventory-stock-number">30</td>
-                            <td class="inventory-stock-number">80</td>
-                            <td><span class="stock-status low">Rendah</span></td>
-                            <td>
-                                <a
-                                    href="/admin/inventory/D6A-5/history"
-                                    class="history-button"
-                                >
-                                    Riwayat
-                                </a>
-                            </td>
-                        </tr>
-
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="8" style="text-align:center; padding:24px;">
+                                    Belum ada produk jadi.
+                                </td>
+                            </tr>
+                            @endforelse
                     </tbody>
 
                 </table>
@@ -262,8 +190,7 @@
         ========================================= --}}
         <div
             class="inventory-tab-content"
-            id="rawMaterials"
-        >
+            id="rawMaterials">
 
             <div class="inventory-section-header">
                 <div>
@@ -290,114 +217,58 @@
                     </thead>
 
                     <tbody>
+                        @forelse ($rawMaterials as $material)
+                        @php
+                        $isLow = $material->current_stock < $material->safety_stock;
+                            @endphp
 
-                        {{-- MDF --}}
-                        <tr>
-                            <td>
-                                <div class="inventory-product-info">
-                                    <strong>MDF</strong>
-                                    <span>Ukuran: 120 × 240 cm</span>
-                                </div>
-                            </td>
+                            <tr>
+                                <td>
+                                    <div class="inventory-product-info">
+                                        <strong>{{ $material->name }}</strong>
+                                        @if ($material->isSheet())
+                                        <span>Ukuran: {{ rtrim(rtrim(number_format($material->sheet_length_cm, 2), '0'), '.') }} × {{ rtrim(rtrim(number_format($material->sheet_width_cm, 2), '0'), '.') }} cm</span>
+                                        @endif
+                                    </div>
+                                </td>
 
-                            <td>
-                                <span class="inventory-material-type sheet">
-                                    SHEET
-                                </span>
-                            </td>
+                                <td>
+                                    <span class="inventory-material-type {{ $material->isSheet() ? 'sheet' : 'non-sheet' }}">
+                                        {{ $material->isSheet() ? 'SHEET' : 'NON-SHEET' }}
+                                    </span>
+                                </td>
 
-                            <td>lembar</td>
+                                <td>{{ $material->unit }}</td>
 
-                            <td class="inventory-stock-number">20</td>
-                            <td class="inventory-stock-number">5</td>
-                            <td class="inventory-stock-number">30</td>
+                                <td class="inventory-stock-number {{ $isLow ? 'low-stock' : '' }}">
+                                    {{ rtrim(rtrim(number_format($material->current_stock, 3), '0'), '.') }}
+                                </td>
+                                <td class="inventory-stock-number">
+                                    {{ rtrim(rtrim(number_format($material->safety_stock, 3), '0'), '.') }}
+                                </td>
+                                <td class="inventory-stock-number">
+                                    {{ rtrim(rtrim(number_format($material->target_stock, 3), '0'), '.') }}
+                                </td>
 
-                            <td>
-                                <span class="stock-status safe">
-                                    Aman
-                                </span>
-                            </td>
+                                <td>
+                                    <span class="stock-status {{ $isLow ? 'low' : 'safe' }}">
+                                        {{ $isLow ? 'Rendah' : 'Aman' }}
+                                    </span>
+                                </td>
 
-                            <td>
-                                <a
-                                    href="/admin/inventory/material/MDF/history"
-                                    class="history-button"
-                                >
-                                    Riwayat
-                                </a>
-                            </td>
-                        </tr>
-
-
-                        {{-- HANGER --}}
-                        <tr>
-                            <td>
-                                <strong>Hanger</strong>
-                            </td>
-
-                            <td>
-                                <span class="inventory-material-type non-sheet">
-                                    NON-SHEET
-                                </span>
-                            </td>
-
-                            <td>pcs</td>
-
-                            <td class="inventory-stock-number">150</td>
-                            <td class="inventory-stock-number">30</td>
-                            <td class="inventory-stock-number">200</td>
-
-                            <td>
-                                <span class="stock-status safe">
-                                    Aman
-                                </span>
-                            </td>
-
-                            <td>
-                                <a
-                                    href="/admin/inventory/material/Hanger/history"
-                                    class="history-button"
-                                >
-                                    Riwayat
-                                </a>
-                            </td>
-                        </tr>
-
-
-                        {{-- CAT HITAM --}}
-                        <tr>
-                            <td>
-                                <strong>Cat Hitam</strong>
-                            </td>
-
-                            <td>
-                                <span class="inventory-material-type non-sheet">
-                                    NON-SHEET
-                                </span>
-                            </td>
-
-                            <td>lt</td>
-
-                            <td class="inventory-stock-number low-stock">2</td>
-                            <td class="inventory-stock-number">3</td>
-                            <td class="inventory-stock-number">15</td>
-
-                            <td>
-                                <span class="stock-status low">
-                                    Rendah
-                                </span>
-                            </td>
-
-                            <td>
-                                <a
-                                    href="/admin/inventory/material/Cat%20Hitam/history"
-                                    class="history-button"
-                                >
-                                    Riwayat
-                                </a>
-                            </td>
-                        </tr>
-
+                                <td>
+                                    <a href="{{ route('admin.inventory.material-history', $material) }}" class="history-button">
+                                        Riwayat
+                                    </a>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="8" style="text-align:center; padding:24px;">
+                                    Belum ada data bahan baku.
+                                </td>
+                            </tr>
+                            @endforelse
                     </tbody>
 
                 </table>
@@ -412,8 +283,7 @@
         ========================================= --}}
         <div
             class="inventory-tab-content"
-            id="stockHistory"
-        >
+            id="stockHistory">
 
             <div class="inventory-section-header">
                 <div>
@@ -437,96 +307,35 @@
                     </thead>
 
                     <tbody>
-
+                        @forelse ($recentHistory as $h)
                         <tr>
-                            <td>13 Okt 2026</td>
+                            <td>{{ $h->created_at->translatedFormat('d M Y') }}</td>
 
                             <td>
                                 <div class="history-item">
-                                    <strong>D6A-5</strong>
-                                    <span>Jagalah Kebersihan</span>
+                                    <strong>{{ $h->item_name }}</strong>
+                                    <span>{{ $h->item_sub }}</span>
                                 </div>
                             </td>
 
-                            <td>Pesanan siap dikemas</td>
+                            <td>{{ $h->activity }}</td>
 
                             <td>
-                                <span class="stock-change out">
-                                    −3 pcs
+                                <span class="stock-change {{ $h->direction === 'in' ? 'in' : 'out' }}">
+                                    {{ $h->direction === 'in' ? '+' : '−' }}{{ abs($h->delta) }} {{ $h->unit }}
                                 </span>
                             </td>
 
-                            <td>Order</td>
+                            <td>{{ $h->source }}</td>
                         </tr>
-
-
+                        @empty
                         <tr>
-                            <td>13 Okt 2026</td>
-
-                            <td>
-                                <div class="history-item">
-                                    <strong>MDF</strong>
-                                    <span>Bahan Baku</span>
-                                </div>
+                            <td colspan="5" style="text-align:center; padding:24px;">
+                                Belum ada riwayat pergerakan stok.
                             </td>
-
-                            <td>Penerimaan bahan</td>
-
-                            <td>
-                                <span class="stock-change in">
-                                    +10 lembar
-                                </span>
-                            </td>
-
-                            <td>Procurement</td>
                         </tr>
-
-
-                        <tr>
-                            <td>12 Okt 2026</td>
-
-                            <td>
-                                <div class="history-item">
-                                    <strong>D6A-1</strong>
-                                    <span>CCTV</span>
-                                </div>
-                            </td>
-
-                            <td>Produksi selesai</td>
-
-                            <td>
-                                <span class="stock-change in">
-                                    +10 pcs
-                                </span>
-                            </td>
-
-                            <td>Produksi</td>
-                        </tr>
-
-
-                        <tr>
-                            <td>12 Okt 2026</td>
-
-                            <td>
-                                <div class="history-item">
-                                    <strong>MDF</strong>
-                                    <span>Bahan Baku</span>
-                                </div>
-                            </td>
-
-                            <td>Pemakaian produksi</td>
-
-                            <td>
-                                <span class="stock-change out">
-                                    −3 lembar
-                                </span>
-                            </td>
-
-                            <td>Produksi</td>
-                        </tr>
-
+                        @endforelse
                     </tbody>
-
                 </table>
 
             </div>
@@ -543,49 +352,49 @@
 @push('scripts')
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
 
-    const tabs =
-        document.querySelectorAll('.inventory-tab');
+        const tabs =
+            document.querySelectorAll('.inventory-tab');
 
-    const tabContents =
-        document.querySelectorAll('.inventory-tab-content');
-
-
-    tabs.forEach(function (tab) {
-
-        tab.addEventListener('click', function () {
-
-            const targetId =
-                tab.dataset.tab;
+        const tabContents =
+            document.querySelectorAll('.inventory-tab-content');
 
 
-            tabs.forEach(function (item) {
-                item.classList.remove('active');
+        tabs.forEach(function(tab) {
+
+            tab.addEventListener('click', function() {
+
+                const targetId =
+                    tab.dataset.tab;
+
+
+                tabs.forEach(function(item) {
+                    item.classList.remove('active');
+                });
+
+
+                tabContents.forEach(function(content) {
+                    content.classList.remove('active');
+                });
+
+
+                tab.classList.add('active');
+
+
+                const targetContent =
+                    document.getElementById(targetId);
+
+
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+
             });
-
-
-            tabContents.forEach(function (content) {
-                content.classList.remove('active');
-            });
-
-
-            tab.classList.add('active');
-
-
-            const targetContent =
-                document.getElementById(targetId);
-
-
-            if (targetContent) {
-                targetContent.classList.add('active');
-            }
 
         });
 
     });
-
-});
 </script>
 
 @endpush

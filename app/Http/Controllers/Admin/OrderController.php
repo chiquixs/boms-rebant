@@ -10,9 +10,13 @@ use App\Models\Product;
 use App\Models\ProductGroup;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use App\Services\OrderStockService;
 
 class OrderController extends Controller
 {
+    public function __construct(
+        private readonly OrderStockService $stockService
+    ) {}
     // ========== TAHAP 1: BACA DATA ==========
     public function index(Request $request)
     {
@@ -132,6 +136,7 @@ class OrderController extends Controller
             ]);
 
             $order->items()->createMany($rows);
+            $this->stockService->allocateForNewOrder($order);
         });
 
         return redirect()->route('admin.orders.index')

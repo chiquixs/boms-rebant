@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\BomController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\MaterialController;
+use App\Http\Controllers\Admin\InventoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,9 +102,9 @@ Route::middleware('auth')->group(function () {
             |--------------------------------------------------------------------------
             */
 
-                Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-                Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
-                Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+            Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+            Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+            Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
 
             /*
@@ -139,28 +140,30 @@ Route::middleware('auth')->group(function () {
             Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
             Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
             Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
-            Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');        
+            Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
             Route::get('/materials', [MaterialController::class, 'index'])->name('materials.index');
             Route::post('/materials', [MaterialController::class, 'store'])->name('materials.store');
             Route::put('/materials/{material}', [MaterialController::class, 'update'])->name('materials.update');
-            Route::delete('/materials/{material}', [MaterialController::class, 'destroy'])->name('materials.destroy');  
+            Route::delete('/materials/{material}', [MaterialController::class, 'destroy'])->name('materials.destroy');
 
-            Route::get('/inventory', function () {
-                return view('admin.inventory.index');
-            })->name('inventory.index');
 
-            Route::get('/inventory/{sku}/history', function ($sku) {
-                return view('admin.inventory.history', [
-                    'sku' => $sku,
-                ]);
-            })->name('inventory.history');
+            Route::get('/inventory', [InventoryController::class, 'index'])
+                ->name('inventory.index');
 
-            Route::get('/inventory/material/{material}/history', function ($material) {
-                return view('admin.inventory.material-history', [
-                    'material' => $material,
-                ]);
-            })->name('inventory.material-history');
+            // Riwayat produk jadi: sementara tetap menggunakan closure lama
+
+            Route::get('/inventory/{product:sku}/history', [
+                InventoryController::class,
+                'productHistory',
+            ])->name('inventory.history');
+
+
+            // Riwayat bahan baku: menggunakan InventoryController
+            Route::get('/inventory/material/{material}/history', [
+                InventoryController::class,
+                'materialHistory',
+            ])->name('inventory.material-history');
         });
 
 
