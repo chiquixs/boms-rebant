@@ -1792,3 +1792,37 @@
 .low-stock-note li span {
     color: #8A8D86;
 }
+
+.inactive-material-note {
+    margin-top: 10px;
+    padding: 9px 12px;
+    background: #FFF8E1;
+    border: 1px solid #F0DFA8;
+    border-radius: 10px;
+    font-size: 12px;
+    color: #7A6728;
+}
+
+.inactive-material-note-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.inactive-material-note ul {
+    margin: 6px 0 0;
+    padding-left: 18px;
+}
+
+.inactive-material-note li {
+    line-height: 1.6;
+}
+
+.inactive-material-note li span {
+    color: #8A8D86;
+}
+
+.product-action.bom.bom-warning {
+    box-shadow: 0 0 0 2px #F0DFA8;
+}

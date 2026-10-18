@@ -9,38 +9,29 @@
     {{-- =========================================================
         PAGE HEADER
     ========================================================= --}}
-    <div class="bom-page-header">
         @if (session('success'))
-            <div style="margin-bottom:16px;padding:12px 14px;background:#E8F3E3;color:#2F5D24;border-radius:12px;font-size:13px;">
-                {{ session('success') }}
-            </div>
+            <div class="bom-alert bom-alert-success">{{ session('success') }}</div>
         @endif
 
         @if ($errors->any())
-            <div style="margin-bottom:16px;padding:12px 14px;background:#FDECEA;color:#C0392B;border-radius:12px;font-size:13px;">
-                {{ $errors->first() }}
-            </div>
+            <div class="bom-alert bom-alert-error">{{ $errors->first() }}</div>
         @endif
 
-        <a href="{{ route('admin.products.index') }}" class="back-to-products">
+        <div class="bom-page-header">
 
-        <div class="bom-header-content">
+            <a href="{{ route('admin.products.index') }}" class="back-to-products">
+                ← Kembali ke Master Produk
+            </a>
 
-            <div>
-                <span class="bom-eyebrow">
-                    BILL OF MATERIALS
-                </span>
-
-                <h1>Resep Produksi</h1>
-
-                <p>
-                    Kelola kebutuhan bahan baku untuk setiap unit produk.
-                </p>
+            <div class="bom-header-content">
+                <div>
+                    <span class="bom-eyebrow">BILL OF MATERIALS</span>
+                    <h1>Resep Produksi</h1>
+                    <p>Kelola kebutuhan bahan baku untuk setiap unit produk.</p>
+                </div>
             </div>
 
         </div>
-
-    </div>
 
 
     {{-- =========================================================
@@ -148,7 +139,10 @@
 
                     @forelse ($group->materials as $item)
 
-                        @php $isArea = $item->usage_method === 'AREA'; @endphp
+                       @php
+                            $isArea = $item->usage_method === 'AREA';
+                            $isInactive = ! $item->rawMaterial->is_active;
+                        @endphp
 
                         <tr
                             data-name="{{ $item->rawMaterial->name }}"
@@ -165,7 +159,16 @@
 
                             <td>
                                 <div class="material-info">
-                                    <strong>{{ $item->rawMaterial->name }}</strong>
+                                    <div class="material-name-line">
+                                        <strong>{{ $item->rawMaterial->name }}</strong>
+
+                                        @if ($isInactive)
+                                            <span class="material-inactive-badge" title="Bahan ini sudah dinonaktifkan di Master Bahan Mentah">
+                                                Nonaktif
+                                            </span>
+                                        @endif
+                                    </div>
+
                                     <span>{{ $item->rawMaterial->code }}</span>
                                 </div>
                             </td>
@@ -217,33 +220,6 @@
 
     </div>
 
-
-    {{-- =========================================================
-        PRODUCTION NOTES
-    ========================================================= --}}
-    <div class="bom-card">
-
-        <div class="bom-card-header">
-
-            <div>
-                <h2>Catatan Produksi</h2>
-
-                <p>
-                    Informasi tambahan untuk proses produksi produk.
-                </p>
-            </div>
-
-        </div>
-
-        <div class="production-note">
-
-            MDF dipotong sesuai ukuran produk,
-            kemudian dilakukan proses finishing
-            dan pemasangan desain sesuai varian pesanan.
-
-        </div>
-
-    </div>
 
 </div>
 
@@ -325,7 +301,7 @@
                     </select>
 
                     <span class="material-field-helper">
-                        Data bahan nantinya diambil dari Master Bahan Mentah.
+                        Data bahan diambil dari Master Bahan Mentah.
                     </span>
 
                 </div>
@@ -507,19 +483,6 @@
                 {{-- =========================
                     DESCRIPTION
                 ========================= --}}
-                <div class="material-form-group">
-
-                    <label for="materialDescription">
-                        Keterangan
-                    </label>
-
-                    <textarea
-                        id="materialDescription"
-                        rows="3"
-                        placeholder="Contoh: Material utama produk"
-                    ></textarea>
-
-                </div>
 
             </div>
 

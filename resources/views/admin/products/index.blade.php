@@ -122,6 +122,9 @@
 
                         @php
                             $method      = strtolower($group->production_method);
+                            $inactiveMaterials = $group->materials->filter(
+                                fn ($m) => $m->rawMaterial && ! $m->rawMaterial->is_active
+                            );
                             $isMto       = $method === 'mto';
                             $status      = $group->stock_status;
                             $single = $group->products->count() === 1 ? $group->products->first() : null;
@@ -173,6 +176,30 @@
 
                                     </div>
                                 @endif
+                                @if ($inactiveMaterials->isNotEmpty())
+                                    <div class="inactive-material-note">
+
+                                        <div class="inactive-material-note-title">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <path d="M12 9v4"/>
+                                                <path d="M12 17h.01"/>
+                                                <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/>
+                                            </svg>
+                                            {{ $inactiveMaterials->count() }} bahan mentah nonaktif
+                                        </div>
+
+                                        <ul>
+                                            @foreach ($inactiveMaterials as $item)
+                                                <li>
+                                                    {{ $item->rawMaterial->name }}
+                                                    <span>({{ $item->rawMaterial->code }})</span>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+
+                                    </div>
+                                @endif
                             </td>
 
                             <td>
@@ -200,10 +227,10 @@
                                 <div class="product-actions">
 
                                     <a href="{{ route('admin.products.bom', ['sku' => $group->code]) }}"
-                                        class="product-action bom {{ $hasBom ? 'bom-filled' : 'bom-empty' }}"
-                                        title="{{ $hasBom ? 'BOM sudah diisi' : 'BOM belum diisi' }}">
-                                            BOM
-                                        </a>
+                                    class="product-action bom {{ $hasBom ? 'bom-filled' : 'bom-empty' }} {{ $inactiveMaterials->isNotEmpty() ? 'bom-warning' : '' }}"
+                                    title="{{ $inactiveMaterials->isNotEmpty() ? 'Ada bahan mentah nonaktif di BOM' : ($hasBom ? 'BOM sudah diisi' : 'BOM belum diisi') }}">
+                                        BOM
+                                    </a>
 
                                     <button
                                         type="button"
