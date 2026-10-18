@@ -8,8 +8,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Product extends Model
 {
     protected $fillable = [
-        'group_id', 'sku', 'variant_name', 'image_path',
-        'current_stock', 'min_stock', 'target_stock', 'is_active',
+        'group_id',
+        'sku',
+        'variant_name',
+        'image_path',
+        'current_stock',
+        'min_stock',
+        'target_stock',
+        'is_active',
     ];
 
     protected function casts(): array
@@ -41,5 +47,10 @@ class Product extends Model
         }
 
         return 'safe';
+    }
+
+    public function movements(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ProductStockMovement::class);
     }
 }

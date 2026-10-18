@@ -583,5 +583,8 @@
     .finished-goods-table {
         min-width: 960px;
     }
+    .stock-history-empty.is-hidden {
+    display: none;
+}
 
 }

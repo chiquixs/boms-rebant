@@ -27,4 +27,14 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function allocation(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(OrderItemAllocation::class);
+    }
+
+    public function productionRequest(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(ProductionRequest::class);
+    }
 }
