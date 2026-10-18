@@ -114,6 +114,8 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/products', [ProductController::class, 'index'])->name('products.index');
             Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+            Route::put('/products/{group}', [ProductController::class, 'update'])->name('products.update');
+            Route::delete('/products/{group}', [ProductController::class, 'destroy'])->name('products.destroy');
 
 
             /*

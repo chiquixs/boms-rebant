@@ -45,6 +45,12 @@
         </div>
     @endif
 
+    @if (session('error'))
+        <div style="margin-bottom:16px;padding:12px 14px;background:#FDECEA;color:#C0392B;border-radius:12px;font-size:13px;">
+            {{ session('error') }}
+        </div>
+    @endif
+
 
     {{-- =========================
         SEARCH & FILTER
@@ -203,6 +209,7 @@
                                         type="button"
                                         class="product-action edit edit-product-button"
                                         title="Edit produk"
+                                        data-update-url="{{ route('admin.products.update', $group) }}"
                                         data-sku="{{ $group->code }}"
                                         data-name="{{ $group->name }}"
                                         data-category="{{ $group->category_id }}"
@@ -210,12 +217,26 @@
                                         data-length="{{ $group->length_cm }}"
                                         data-width="{{ $group->width_cm }}"
                                         data-method="{{ $method }}"
-                                        data-image="{{ $image }}"
+                                        data-variants="{{ json_encode($group->products->map(fn ($p) => [
+                                            'id'            => $p->id,
+                                            'sku'           => $p->sku,
+                                            'variant_name'  => $p->variant_name,
+                                            'current_stock' => $p->current_stock,
+                                            'min_stock'     => $p->min_stock,
+                                            'target_stock'  => $p->target_stock,
+                                            'image'         => $p->image_url,
+                                        ])->values()) }}"
                                     >
                                         Edit
                                     </button>
 
-                                    <button type="button" class="product-action delete" title="Hapus produk">
+                                    <button
+                                        type="button"
+                                        class="product-action delete delete-product-button"
+                                        title="Hapus produk"
+                                        data-delete-url="{{ route('admin.products.destroy', $group) }}"
+                                        data-name="{{ $group->name }}"
+                                    >
                                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
                                             stroke="currentColor" stroke-width="1.8">
                                             <path d="M3 6h18"/>
@@ -335,8 +356,10 @@
 
         {{-- FORM (tampilan saja, belum menyimpan ke database) --}}
         <form id="productForm" method="POST" action="{{ route('admin.products.store') }}"
-        enctype="multipart/form-data">
-        @csrf
+            data-store-url="{{ route('admin.products.store') }}"
+            enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="_method" value="PUT" id="productMethodOverride" disabled>
 
             <div class="product-modal-body">
 
@@ -459,7 +482,10 @@
     </div>
 
 </div>
-
+<form id="deleteProductForm" method="POST" style="display:none;">
+    @csrf
+    @method('DELETE')
+</form>
 @endsection
 
 @push('scripts')
@@ -469,6 +495,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const productModal = document.getElementById('productModal');
     const productForm = document.getElementById('productForm');
+    const methodOverride = document.getElementById('productMethodOverride');
+    const deleteForm = document.getElementById('deleteProductForm');
     const openProductModal = document.querySelector('.add-product-button');
     const closeProductModal = document.getElementById('closeProductModal');
     const cancelProductModal = document.getElementById('cancelProductModal');
@@ -489,8 +517,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const variantFormsContainer = document.getElementById('variantFormsContainer');
     const addVariantButton = document.getElementById('addVariantButton');
 
+    const PHOTO_HINT = 'JPG, PNG, atau WEBP. Maksimal 2 MB.';
+
     let variantIndex = 0;
-    let isEditMode = false;
+
+
+    function esc(value) {
+        const div = document.createElement('div');
+        div.textContent = value ?? '';
+        return div.innerHTML.replace(/"/g, '&quot;');
+    }
 
 
     /* =========================================================
@@ -502,7 +538,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return checked ? checked.value : 'mts';
     }
 
-    // MTO tidak punya stok: field disembunyikan
+    // MTO tidak punya stok: field disembunyikan dan tidak terkirim
     function updateVariantStockVisibility() {
 
         const isMto = currentMethod() === 'mto';
@@ -540,14 +576,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-       KARTU VARIAN
+       KARTU VARIAN (data = varian yang sudah ada, saat edit)
     ========================================================= */
 
-    function addVariant() {
+    function addVariant(data) {
+
+        const v = data || {};
+        const isExisting = !!v.id;
 
         const i = variantIndex++;
         const number = variantFormsContainer.children.length + 1;
-        const isFirst = number === 1;
+        const canRemove = isExisting || number > 1;
 
         const card = document.createElement('div');
         card.className = 'product-variant-form';
@@ -557,20 +596,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 <div>
                     <strong>Varian ${number}</strong>
-                    <span>${isFirst ? 'Varian utama produk' : 'Varian tambahan produk'}</span>
+                    <span>${number === 1 ? 'Varian utama produk' : 'Varian tambahan produk'}</span>
                 </div>
 
-                ${isFirst ? '' : '<button type="button" class="remove-variant-button">Hapus</button>'}
+                ${canRemove ? '<button type="button" class="remove-variant-button">Hapus</button>' : ''}
 
             </div>
+
+            ${isExisting ? `<input type="hidden" name="variants[${i}][id]" value="${v.id}">` : ''}
 
             <div class="variant-form-grid">
 
                 <div class="variant-photo">
 
-                    <label class="variant-photo-box" for="variantImage${i}">
+                    <label class="variant-photo-box ${v.image ? 'has-image' : ''}" for="variantImage${i}">
 
-                        <img src="" alt="Preview foto varian">
+                        <img src="${v.image ? esc(v.image) : ''}" alt="Foto varian">
 
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
                              stroke="currentColor" stroke-width="1.8">
@@ -583,8 +624,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     <div class="variant-photo-text">
                         <strong>Foto Varian</strong>
-                        <span class="variant-photo-name">JPG, PNG, atau WEBP.</span>
-                        <button type="button" class="variant-photo-remove" hidden>Hapus foto</button>
+                        <span class="variant-photo-name">${v.image ? 'Foto saat ini. Klik kotak untuk mengganti.' : PHOTO_HINT}</span>
+                        <button type="button" class="variant-photo-remove" hidden>Batalkan foto baru</button>
                     </div>
 
                     <input type="file" id="variantImage${i}" name="variants[${i}][image]"
@@ -594,18 +635,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 <div class="product-form-group">
                     <label>SKU Variant</label>
-                    <input type="text" name="variants[${i}][sku]" placeholder="Contoh: D6A-${number}">
+                    <input type="text" name="variants[${i}][sku]" value="${esc(v.sku)}" placeholder="Contoh: D6A-${number}">
                 </div>
 
                 <div class="product-form-group">
                     <label>Nama Variant</label>
-                    <input type="text" name="variants[${i}][variant_name]" placeholder="Contoh: CCTV">
+                    <input type="text" name="variants[${i}][variant_name]" value="${esc(v.variant_name)}" placeholder="Contoh: CCTV">
                 </div>
 
                 <div class="product-form-group variant-stock-field">
                     <label>Current Stock</label>
                     <div class="stock-input-wrapper">
-                        <input type="number" name="variants[${i}][current_stock]" min="0" placeholder="0">
+                        <input type="number" name="variants[${i}][current_stock]" min="0" value="${esc(v.current_stock)}" placeholder="0">
                         <span>pcs</span>
                     </div>
                 </div>
@@ -613,7 +654,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="product-form-group variant-stock-field">
                     <label>Minimum Stock</label>
                     <div class="stock-input-wrapper">
-                        <input type="number" name="variants[${i}][min_stock]" min="0" placeholder="30">
+                        <input type="number" name="variants[${i}][min_stock]" min="0" value="${esc(v.min_stock)}" placeholder="30">
                         <span>pcs</span>
                     </div>
                 </div>
@@ -621,7 +662,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="product-form-group variant-stock-field">
                     <label>Target Stock</label>
                     <div class="stock-input-wrapper">
-                        <input type="number" name="variants[${i}][target_stock]" min="0" placeholder="80">
+                        <input type="number" name="variants[${i}][target_stock]" min="0" value="${esc(v.target_stock)}" placeholder="80">
                         <span>pcs</span>
                     </div>
                 </div>
@@ -629,9 +670,13 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
         `;
 
+        // Simpan foto asli untuk dipulihkan jika foto baru dibatalkan
+        card.dataset.originalImage = v.image || '';
+
         variantFormsContainer.appendChild(card);
 
         updateVariantStockVisibility();
+
         return card;
     }
 
@@ -646,21 +691,26 @@ document.addEventListener('DOMContentLoaded', function () {
         addVariant();
     });
 
-    // Hapus varian / hapus foto
     variantFormsContainer.addEventListener('click', function (event) {
 
         const removeButton = event.target.closest('.remove-variant-button');
 
         if (removeButton) {
+
+            if (variantFormsContainer.children.length <= 1) {
+                alert('Minimal harus ada satu varian.');
+                return;
+            }
+
             removeButton.closest('.product-variant-form').remove();
             renumberVariants();
             return;
         }
 
-        const removePhoto = event.target.closest('.variant-photo-remove');
+        const cancelPhoto = event.target.closest('.variant-photo-remove');
 
-        if (removePhoto) {
-            clearVariantPhoto(removePhoto.closest('.variant-photo'));
+        if (cancelPhoto) {
+            resetVariantPhoto(cancelPhoto.closest('.product-variant-form'));
         }
     });
 
@@ -669,13 +719,18 @@ document.addEventListener('DOMContentLoaded', function () {
        FOTO VARIAN
     ========================================================= */
 
-    function clearVariantPhoto(wrapper) {
+    // Kembali ke foto asli (atau kosong jika varian baru)
+    function resetVariantPhoto(card) {
 
-        wrapper.querySelector('.variant-photo-input').value = '';
-        wrapper.querySelector('img').src = '';
-        wrapper.querySelector('.variant-photo-box').classList.remove('has-image');
-        wrapper.querySelector('.variant-photo-name').textContent = 'JPG, PNG, atau WEBP. Maksimal 2 MB.';
-        wrapper.querySelector('.variant-photo-remove').hidden = true;
+        const original = card.dataset.originalImage || '';
+        const box = card.querySelector('.variant-photo-box');
+
+        card.querySelector('.variant-photo-input').value = '';
+        card.querySelector('.variant-photo img').src = original;
+        box.classList.toggle('has-image', !!original);
+        card.querySelector('.variant-photo-name').textContent =
+            original ? 'Foto saat ini. Klik kotak untuk mengganti.' : PHOTO_HINT;
+        card.querySelector('.variant-photo-remove').hidden = true;
     }
 
     variantFormsContainer.addEventListener('change', function (event) {
@@ -685,7 +740,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const input = event.target;
-        const wrapper = input.closest('.variant-photo');
+        const card = input.closest('.product-variant-form');
         const file = input.files[0];
 
         if (!file) {
@@ -694,34 +749,49 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!file.type.startsWith('image/')) {
             alert('File harus berupa gambar.');
-            clearVariantPhoto(wrapper);
+            resetVariantPhoto(card);
             return;
         }
 
         if (file.size > 2 * 1024 * 1024) {
             alert('Ukuran foto maksimal 2 MB.');
-            clearVariantPhoto(wrapper);
+            resetVariantPhoto(card);
             return;
         }
 
-        wrapper.querySelector('img').src = URL.createObjectURL(file);
-        wrapper.querySelector('.variant-photo-box').classList.add('has-image');
-        wrapper.querySelector('.variant-photo-name').textContent = file.name;
-        wrapper.querySelector('.variant-photo-remove').hidden = false;
+        card.querySelector('.variant-photo img').src = URL.createObjectURL(file);
+        card.querySelector('.variant-photo-box').classList.add('has-image');
+        card.querySelector('.variant-photo-name').textContent = file.name;
+        card.querySelector('.variant-photo-remove').hidden = false;
     });
 
 
     /* =========================================================
-       RESET FORM
+       MODE FORM (TAMBAH / EDIT)
     ========================================================= */
 
-    function resetProductForm() {
-        isEditMode = false;
-        productForm.reset();
+    function setAddMode() {
+        productForm.action = productForm.dataset.storeUrl;
+        methodOverride.disabled = true;
 
         productModalTitle.textContent = 'Tambah Produk Baru';
         productModalDescription.textContent = 'Tambahkan informasi produk dan metode produksinya.';
         productSaveButton.textContent = 'Simpan Produk';
+    }
+
+    function setEditMode(updateUrl) {
+        productForm.action = updateUrl;
+        methodOverride.disabled = false;
+
+        productModalTitle.textContent = 'Edit Produk';
+        productModalDescription.textContent = 'Perbarui informasi, varian, dan foto produk.';
+        productSaveButton.textContent = 'Simpan Perubahan';
+    }
+
+    function resetProductForm() {
+
+        productForm.reset();
+        setAddMode();
 
         variantFormsContainer.innerHTML = '';
         variantIndex = 0;
@@ -769,7 +839,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-       EDIT (tampilan saja)
+       EDIT
     ========================================================= */
 
     document.querySelectorAll('.edit-product-button').forEach(function (button) {
@@ -777,11 +847,7 @@ document.addEventListener('DOMContentLoaded', function () {
         button.addEventListener('click', function () {
 
             resetProductForm();
-            isEditMode = true;
-
-            productModalTitle.textContent = 'Edit Produk';
-            productModalDescription.textContent = 'Perbarui informasi dan pengaturan produk.';
-            productSaveButton.textContent = 'Simpan Perubahan';
+            setEditMode(button.dataset.updateUrl);
 
             productSku.value = button.dataset.sku || '';
             productName.value = button.dataset.name || '';
@@ -798,6 +864,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 radio.checked = true;
             }
 
+            // Ganti kartu varian kosong dengan varian yang sudah ada
+            variantFormsContainer.innerHTML = '';
+            variantIndex = 0;
+
+            const variants = JSON.parse(button.dataset.variants || '[]');
+
+            if (variants.length) {
+                variants.forEach(function (v) {
+                    addVariant(v);
+                });
+            } else {
+                addVariant();
+            }
+
             setActiveMethodCard();
             showModal();
         });
@@ -806,16 +886,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     /* =========================================================
-    SUBMIT
+       HAPUS
+    ========================================================= */
+
+    document.querySelectorAll('.delete-product-button').forEach(function (button) {
+
+        button.addEventListener('click', function () {
+
+            const ok = confirm(
+                'Hapus produk "' + button.dataset.name + '"?\n\n' +
+                'Semua varian, foto, dan BOM produk ini ikut terhapus. ' +
+                'Tindakan ini tidak bisa dibatalkan.'
+            );
+
+            if (!ok) {
+                return;
+            }
+
+            deleteForm.action = button.dataset.deleteUrl;
+            deleteForm.submit();
+        });
+
+    });
+
+
+    /* =========================================================
+       SUBMIT
     ========================================================= */
 
     productForm.addEventListener('submit', function (event) {
-
-        if (isEditMode) {
-            event.preventDefault();
-            alert('Penyimpanan edit produk belum tersedia.');
-            return;
-        }
 
         if (!productSku.value.trim() || !productName.value.trim()) {
             event.preventDefault();
@@ -839,8 +938,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
         }
-
-        // Lolos: form dikirim ke server
     });
 
 
@@ -869,7 +966,8 @@ document.addEventListener('DOMContentLoaded', function () {
     ========================================================= */
 
     resetProductForm();
-    // Jika validasi server gagal: buka modal lagi dan isi ulang varian
+
+    // Jika validasi tambah produk gagal di server: buka lagi dan isi ulang varian
     if (productModal.dataset.hasErrors === '1') {
 
         const oldVariants = Object.values(JSON.parse(productModal.dataset.oldVariants || '{}'));
@@ -880,15 +978,12 @@ document.addEventListener('DOMContentLoaded', function () {
             variantIndex = 0;
 
             oldVariants.forEach(function (v) {
-
-                const card = addVariant();
-
-                ['sku', 'variant_name', 'current_stock', 'min_stock', 'target_stock'].forEach(function (key) {
-                    const input = card.querySelector('[name$="[' + key + ']"]');
-
-                    if (input && v[key] !== undefined && v[key] !== null) {
-                        input.value = v[key];
-                    }
+                addVariant({
+                    sku: v.sku,
+                    variant_name: v.variant_name,
+                    current_stock: v.current_stock,
+                    min_stock: v.min_stock,
+                    target_stock: v.target_stock,
                 });
             });
         }
