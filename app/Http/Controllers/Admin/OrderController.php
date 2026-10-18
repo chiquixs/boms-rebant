@@ -17,12 +17,12 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $orders = Order::with('platform')
-            ->when($request->filled('search'), fn ($q) =>
-                $q->where('platform_order_no', 'ilike', '%' . $request->search . '%'))
-            ->when($request->filled('platform'), fn ($q) =>
-                $q->where('platform_id', $request->platform))
-            ->when($request->filled('status'), fn ($q) =>
-                $q->where('status', $request->status))
+            ->when($request->filled('search'), fn($q) =>
+            $q->where('platform_order_no', 'ilike', '%' . $request->search . '%'))
+            ->when($request->filled('platform'), fn($q) =>
+            $q->where('platform_id', $request->platform))
+            ->when($request->filled('status'), fn($q) =>
+            $q->where('status', $request->status))
             ->orderByDesc('order_date')
             ->orderByDesc('id')
             ->paginate(10)
@@ -35,16 +35,16 @@ class OrderController extends Controller
 
         $platforms = Platform::orderBy('name')->get();
 
-        $catalog = ProductGroup::with(['products' => fn ($q) =>
-                $q->where('is_active', true)->orderBy('variant_name')])
+        $catalog = ProductGroup::with(['products' => fn($q) =>
+        $q->where('is_active', true)->orderBy('variant_name')])
             ->orderBy('name')                                   // <-- sesuaikan
             ->get()
-            ->filter(fn ($g) => $g->products->isNotEmpty())
-            ->map(fn ($g) => [
+            ->filter(fn($g) => $g->products->isNotEmpty())
+            ->map(fn($g) => [
                 'id'       => $g->id,
                 'name'     => $g->name,                         // <-- sesuaikan
                 'price'    => (float) $g->price,                // <-- sesuaikan
-                'variants' => $g->products->map(fn ($p) => [
+                'variants' => $g->products->map(fn($p) => [
                     'id'    => $p->id,
                     'sku'   => $p->sku,
                     'name'  => $p->variant_name ?: $p->sku,
@@ -68,15 +68,20 @@ class OrderController extends Controller
     {
         $data = $request->validate([
             'platform_id'       => ['required', 'exists:platforms,id'],
-            'platform_order_no' => ['required', 'max:100',
-                'unique:orders,platform_order_no,NULL,id,platform_id,' . $request->platform_id],
+            'platform_order_no' => [
+                'required',
+                'max:100',
+                'unique:orders,platform_order_no,NULL,id,platform_id,' . $request->platform_id
+            ],
             'customer_name'     => ['required', 'max:150'],
             'order_date'        => ['required', 'date'],
             'notes'             => ['nullable', 'string'],
 
             'items'              => ['required', 'array', 'min:1'],
-            'items.*.product_id' => ['required',
-                Rule::exists('products', 'id')->where('is_active', true)],
+            'items.*.product_id' => [
+                'required',
+                Rule::exists('products', 'id')->where('is_active', true)
+            ],
             'items.*.qty'        => ['required', 'integer', 'min:1'],
         ], [
             'items.required'              => 'Tambahkan minimal satu produk.',
@@ -96,15 +101,22 @@ class OrderController extends Controller
             $rows  = [];
 
             foreach ($data['items'] as $item) {
-                $price    = $products[$item['product_id']]->group->price;  // <-- sesuaikan
+                $product  = $products[$item['product_id']];
+                $price    = $product->group->price;
                 $subtotal = $price * $item['qty'];
                 $total   += $subtotal;
 
                 $rows[] = [
-                    'product_id' => $item['product_id'],
-                    'qty'        => $item['qty'],
-                    'unit_price' => $price,
-                    'subtotal'   => $subtotal,
+                    'product_id'            => $item['product_id'],
+                    'qty'                   => $item['qty'],
+                    'unit_price'            => $price,
+                    'subtotal'              => $subtotal,
+                    // Snapshot: histori pesanan tidak berubah saat master produk diedit
+                    'sku_snapshot'          => $product->sku,
+                    'product_name_snapshot' => $product->variant_name
+                        ? $product->group->name . ' - ' . $product->variant_name
+                        : $product->group->name,
+                    'production_method'     => strtoupper($product->group->production_method),
                 ];
             }
 

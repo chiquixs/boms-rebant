@@ -83,7 +83,7 @@ class BomController extends Controller
         if ($data['usage_method'] === 'fix') {
             return [
                 'raw_material_id' => $data['raw_material_id'],
-                'usage_method'    => 'FIX',
+                'usage_method'    => 'FIXED',
                 'qty_per_unit'    => $data['quantity'],
                 'waste_percent'   => 0,
                 'piece_length_cm' => null,
