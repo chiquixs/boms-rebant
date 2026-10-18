@@ -14,8 +14,16 @@ class Order extends Model
     public const STATUS_COMPLETED          = 'COMPLETED';
 
     protected $fillable = [
-        'platform_id', 'created_by', 'platform_order_no', 'customer_name',
-        'order_date', 'status', 'total_amount', 'notes',
+        'platform_id',
+        'created_by',
+        'platform_order_no',
+        'customer_name',
+        'order_date',
+        'status',
+        'total_amount',
+        'notes',
+        'ready_at',
+        'completed_at',
     ];
 
     protected function casts(): array
@@ -23,6 +31,8 @@ class Order extends Model
         return [
             'order_date'   => 'date',
             'total_amount' => 'decimal:2',
+            'ready_at'     => 'datetime',
+            'completed_at' => 'datetime',
         ];
     }
 
