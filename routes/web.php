@@ -75,7 +75,7 @@ Route::middleware('auth')->group(function () {
             redirect()->route('admin.orders.index'),
 
             'produksi' =>
-            redirect()->route('produksi.dashboard'),
+            redirect()->route('produksi.queue.index'),
 
             'bisnis owner' =>
             redirect()->route('owner.dashboard'),
@@ -224,6 +224,14 @@ Route::middleware('auth')->group(function () {
 
                 return 'Dashboard Produksi';
             })->name('dashboard');
+
+            Route::get('/queue', function () {
+                return view('produksi.queue.index');
+            })->name('queue.index');
+
+            Route::get('/shortage', function () {
+                return view('produksi.shortage.index');
+            })->name('shortage.index');
         });
 
 

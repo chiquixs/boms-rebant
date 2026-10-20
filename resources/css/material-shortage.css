@@ -1,0 +1,375 @@
+/* =========================
+   MATERIAL SHORTAGE
+   Class baru diawali "ms-". Kerangka halaman, tabel, badge, dan modal
+   memakai ulang class pq-* (production-queue.css) dan pe-*
+   (production-execution-modal.css) supaya tampilan konsisten.
+========================= */
+
+
+/* =========================
+   TOMBOL UTAMA HEADER
+========================= */
+
+.ms-primary {
+    height: 44px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    padding: 0 22px;
+
+    border: none;
+    border-radius: 11px;
+
+    background: var(--green-dark);
+    color: var(--white);
+
+    font-size: 12px;
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    transition: 0.2s ease;
+}
+
+.ms-primary:hover {
+    background: #465C3E;
+}
+
+.ms-primary:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* =========================
+   KARTU STATISTIK
+========================= */
+
+.pq-stat.critical .pq-stat-icon {
+    color: #FFFFFF;
+    background: #D9534F;
+}
+
+.pq-stat.critical .pq-stat-value {
+    color: #D9534F;
+}
+
+.ms-stat-note {
+    margin-top: -4px;
+    padding-left: 50px;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+}
+
+
+/* =========================
+   TABEL
+========================= */
+
+.ms-short {
+    color: var(--text);
+
+    font-weight: 600;
+}
+
+.ms-short.open {
+    color: #B5483E;
+}
+
+.ms-warn {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #B5701C;
+
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.ms-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+}
+
+.ms-action {
+    height: 32px;
+
+    padding: 0 14px;
+
+    border-radius: 9px;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    transition: 0.2s ease;
+}
+
+.ms-action.primary {
+    border: none;
+
+    background: var(--green-dark);
+    color: var(--white);
+}
+
+.ms-action.primary:hover {
+    background: #465C3E;
+}
+
+.ms-action.outline {
+    border: 1px solid var(--border);
+
+    background: var(--white);
+    color: var(--green-dark);
+}
+
+.ms-action.outline:hover {
+    border-color: #C8D7C0;
+
+    background: var(--green-light);
+}
+
+.ms-action:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* =========================
+   MODAL DETAIL
+========================= */
+
+.ms-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 18px 24px;
+}
+
+.ms-field span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+}
+
+.ms-field strong {
+    display: block;
+
+    color: var(--text);
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.ms-field small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #A0A39C;
+
+    font-size: 10px;
+}
+
+.ms-note {
+    margin-bottom: 18px;
+    padding: 12px 14px;
+
+    border-radius: 10px;
+
+    background: var(--green-light);
+    color: var(--green-dark);
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.ms-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.ms-footer .pe-btn {
+    min-width: 120px;
+}
+
+
+/* =========================
+   MODAL BUAT PO
+========================= */
+
+.ms-full {
+    width: 100%;
+}
+
+.ms-items {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.ms-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 14px;
+
+    padding: 12px 14px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: var(--white);
+
+    transition: 0.2s ease;
+}
+
+.ms-item.on {
+    border-color: #C8D7C0;
+
+    background: #F6FAF3;
+}
+
+.ms-item-main {
+    flex: 1;
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    cursor: pointer;
+}
+
+.ms-check {
+    width: 17px;
+    height: 17px;
+
+    flex-shrink: 0;
+
+    accent-color: var(--green-dark);
+}
+
+.ms-item-text strong {
+    display: block;
+
+    color: var(--text);
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.ms-item-text small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #A0A39C;
+
+    font-size: 10px;
+}
+
+.ms-item .pe-input-group {
+    width: 170px;
+
+    flex-shrink: 0;
+}
+
+.ms-item .pe-input-group input {
+    height: 38px;
+}
+
+.ms-item .pe-input-group input:disabled {
+    color: #A0A39C;
+}
+
+.ms-item .pe-input-group span {
+    width: 64px;
+}
+
+.ms-textarea {
+    width: 100%;
+
+    padding: 12px 14px;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    outline: none;
+
+    background: var(--white);
+    color: var(--text);
+
+    font-family: inherit;
+    font-size: 12px;
+
+    resize: vertical;
+}
+
+.ms-textarea:focus {
+    border-color: var(--green);
+
+    box-shadow:
+        0 0 0 3px rgba(157, 186, 140, 0.15);
+}
+
+.ms-confirm {
+    margin-bottom: 14px;
+    padding: 12px 14px;
+
+    border-radius: 10px;
+
+    background: #FFF8DC;
+    color: #8A6A12;
+
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.ms-confirm[hidden] {
+    display: none;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 700px) {
+
+    .ms-primary {
+        width: 100%;
+    }
+
+    .ms-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ms-item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ms-item .pe-input-group {
+        width: 100%;
+    }
+}
