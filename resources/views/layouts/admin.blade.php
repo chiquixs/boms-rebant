@@ -15,7 +15,10 @@
         'resources/css/categories.css',
         'resources/css/materials.css',
         'resources/css/inventory.css',
-        'resources/css/inventory-history.css'
+        'resources/css/inventory-history.css',
+        'resources/css/procurement.css',
+        'resources/css/procurement-detail.css',
+        'resources/css/suppliers.css'
     ])
 
     @stack('styles')
@@ -239,18 +242,95 @@
 
 </div>
 
-    {{-- Procurement --}}
-    <a href="#" class="nav-item">
+    {{-- PROCUREMENT --}}
+<div class="nav-group {{
+    request()->is('admin/procurement*')
+        ? 'open'
+        : ''
+}}">
 
-        <svg width="20" height="20" viewBox="0 0 24 24"
-             fill="none" stroke="currentColor" stroke-width="1.8">
-            <circle cx="9" cy="20" r="1"/>
-            <circle cx="18" cy="20" r="1"/>
-            <path d="M3 4h2l2.5 11h10l2-7H7"/>
-        </svg>
+    <div class="nav-parent">
 
-        <span>Procurement</span>
-    </a>
+        <a
+            href="/admin/procurement"
+            class="nav-item nav-parent-link {{
+                request()->is('admin/procurement') ||
+                (
+                    request()->is('admin/procurement/*') &&
+                    !request()->is('admin/procurement/suppliers')
+                )
+                    ? 'active'
+                    : ''
+            }}"
+        >
+
+            {{-- CART ICON --}}
+            <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <circle cx="9" cy="20" r="1"/>
+                <circle cx="19" cy="20" r="1"/>
+                <path d="M3 4h2l2.4 10.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 7H6"/>
+            </svg>
+
+            <span>Procurement</span>
+
+        </a>
+
+
+        {{-- CHEVRON --}}
+        <button
+            type="button"
+            class="nav-toggle"
+            aria-label="Toggle Procurement submenu"
+        >
+
+            <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <path d="m9 18 6-6-6-6"/>
+            </svg>
+
+        </button>
+
+    </div>
+
+
+    {{-- SUBMENU --}}
+    <div class="nav-submenu">
+
+        <a
+            href="/admin/procurement/suppliers"
+            class="nav-subitem {{
+                request()->is('admin/procurement/suppliers')
+                    ? 'active'
+                    : ''
+            }}"
+        >
+
+            <span class="nav-subitem-dot"></span>
+
+            <span>Supplier</span>
+
+        </a>
+
+    </div>
+
+</div>
 
 
     {{-- Log Aktivitas --}}

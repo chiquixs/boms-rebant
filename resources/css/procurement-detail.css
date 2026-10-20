@@ -1,0 +1,1157 @@
+/* ========================================
+   PROCUREMENT DETAIL
+======================================== */
+
+.procurement-detail-page {
+    width: 100%;
+}
+
+
+/* ========================================
+   BACK BUTTON
+======================================== */
+
+.procurement-detail-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 13px;
+    color: var(--text-muted);
+    font-size: 9px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.procurement-detail-back:hover {
+    color: var(--green-dark);
+}
+
+.procurement-detail-back svg {
+    flex-shrink: 0;
+}
+
+
+/* ========================================
+   HEADER
+======================================== */
+
+.procurement-detail-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 16px;
+}
+
+.procurement-detail-breadcrumb {
+    margin-bottom: 5px;
+    color: var(--text-muted);
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+.procurement-detail-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 4px;
+}
+
+.procurement-detail-title h1 {
+    margin: 0;
+    color: var(--text);
+    font-size: 22px;
+    line-height: 1.2;
+    font-weight: 700;
+}
+
+.procurement-detail-header > div > p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 9px;
+}
+
+
+/* ========================================
+   HEADER STATUS
+======================================== */
+
+.procurement-detail-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 7px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.procurement-detail-status.ordered {
+    background: var(--yellow-light);
+    color: #7A6728;
+}
+
+.procurement-detail-status.received {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+
+
+/* ========================================
+   RECEIVE BUTTON
+======================================== */
+
+.procurement-receive-button {
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 12px;
+    background: var(--green-dark);
+    border: 1px solid var(--green-dark);
+    border-radius: 7px;
+    color: var(--white);
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.1s ease;
+}
+
+.procurement-receive-button:hover {
+    background: #455C3D;
+    border-color: #455C3D;
+}
+
+.procurement-receive-button:active {
+    transform: translateY(1px);
+}
+
+
+/* ========================================
+   PROGRESS
+======================================== */
+
+.procurement-detail-progress {
+    display: flex;
+    align-items: center;
+    padding: 13px 16px;
+    margin-bottom: 14px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.procurement-progress-item {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.procurement-progress-icon {
+    width: 27px;
+    height: 27px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--white);
+    color: var(--text-muted);
+}
+
+.procurement-progress-item.completed .procurement-progress-icon {
+    background: var(--green-dark);
+    border-color: var(--green-dark);
+    color: var(--white);
+}
+
+.procurement-progress-item.pending .procurement-progress-icon {
+    background: #F7F8F5;
+    border-color: var(--border);
+}
+
+.procurement-progress-item.pending .procurement-progress-icon > span {
+    width: 6px;
+    height: 6px;
+    background: #C7CAC4;
+    border-radius: 50%;
+}
+
+.procurement-progress-item > div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.procurement-progress-item strong {
+    color: var(--text);
+    font-size: 8px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.procurement-progress-item span {
+    color: var(--text-muted);
+    font-size: 7px;
+    white-space: nowrap;
+}
+
+.procurement-progress-item.pending strong {
+    color: var(--text-muted);
+}
+
+.procurement-progress-line {
+    height: 1px;
+    min-width: 35px;
+    flex: 1;
+    margin: 0 12px;
+    background: #E1E3DE;
+}
+
+.procurement-progress-line.completed {
+    background: var(--green);
+}
+
+
+/* ========================================
+   MAIN GRID
+======================================== */
+
+.procurement-detail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 260px;
+    align-items: start;
+    gap: 14px;
+}
+
+.procurement-detail-main,
+.procurement-detail-sidebar {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+
+/* ========================================
+   CARD
+======================================== */
+
+.procurement-detail-card {
+    overflow: hidden;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.procurement-detail-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 13px 15px 10px;
+}
+
+.procurement-detail-card-header h2 {
+    margin: 0 0 3px;
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.procurement-detail-card-header p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 8px;
+    line-height: 1.5;
+}
+
+
+/* ========================================
+   ORDER TABLE
+======================================== */
+
+.procurement-detail-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border-top: 1px solid var(--border);
+}
+
+.procurement-detail-table {
+    width: 100%;
+    min-width: 620px;
+    border-collapse: collapse;
+}
+
+.procurement-detail-table thead {
+    background: #FAFBF9;
+}
+
+.procurement-detail-table th {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 7px;
+    font-weight: 700;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+}
+
+.procurement-detail-table td {
+    padding: 11px 12px;
+    border-bottom: 1px solid #EFF0ED;
+    color: var(--text);
+    font-size: 8px;
+    line-height: 1.5;
+    vertical-align: middle;
+}
+
+.procurement-detail-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* ========================================
+   MATERIAL
+======================================== */
+
+.procurement-detail-material {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.procurement-detail-material strong {
+    color: var(--text);
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.procurement-detail-material span {
+    color: var(--text-muted);
+    font-size: 7px;
+}
+
+
+/* ========================================
+   MATERIAL TYPE
+======================================== */
+
+.procurement-detail-material-type {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 7px;
+    border-radius: 5px;
+    font-size: 7px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.procurement-detail-material-type.sheet {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+
+.procurement-detail-material-type.non-sheet {
+    background: #F0F1EE;
+    color: #74786F;
+}
+
+
+/* ========================================
+   TOTAL
+======================================== */
+
+.procurement-detail-total {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 7px;
+    padding: 12px 15px 14px;
+    background: #FCFDFB;
+    border-top: 1px solid var(--border);
+}
+
+.procurement-detail-total > div {
+    width: 230px;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.procurement-detail-total span {
+    color: var(--text-muted);
+    font-size: 8px;
+}
+
+.procurement-detail-total strong {
+    color: var(--text);
+    font-size: 9px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.procurement-detail-total .grand-total {
+    padding-top: 7px;
+    border-top: 1px dashed var(--border);
+}
+
+.procurement-detail-total .grand-total span {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.procurement-detail-total .grand-total strong {
+    color: var(--green-dark);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* ========================================
+   NOTES
+======================================== */
+
+.procurement-detail-notes {
+    margin: 0 15px 14px;
+    padding: 10px 11px;
+    background: #F9FAF7;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: #666B63;
+    font-size: 8px;
+    line-height: 1.6;
+}
+
+.procurement-detail-notes span {
+    color: var(--text-muted);
+}
+
+
+/* ========================================
+   EMAIL HISTORY
+======================================== */
+
+.procurement-email-history {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 0 15px 14px;
+}
+
+.procurement-email-history-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+}
+
+.procurement-email-history-icon.success {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+
+.procurement-email-history-content {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.procurement-email-history-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.procurement-email-history-title strong {
+    color: var(--text);
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.procurement-email-history-content > span {
+    overflow-wrap: anywhere;
+    color: var(--text-muted);
+    font-size: 8px;
+}
+
+.procurement-email-history-content small {
+    color: #A0A39D;
+    font-size: 7px;
+}
+
+.procurement-email-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 6px;
+    background: var(--green-light);
+    border-radius: 20px;
+    color: var(--green-dark);
+    font-size: 6px;
+    font-weight: 700;
+}
+
+
+/* ========================================
+   SUPPLIER PROFILE
+======================================== */
+
+.procurement-supplier-profile {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 0 15px 13px;
+}
+
+.procurement-supplier-avatar {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--green-light);
+    border-radius: 8px;
+    color: var(--green-dark);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.procurement-supplier-name {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.procurement-supplier-name strong {
+    overflow: hidden;
+    color: var(--text);
+    font-size: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.procurement-supplier-name span {
+    color: var(--green-dark);
+    font-size: 7px;
+}
+
+
+/* ========================================
+   SUPPLIER DETAILS
+======================================== */
+
+.procurement-supplier-details {
+    padding: 0 15px 14px;
+}
+
+.procurement-supplier-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 8px 0;
+    border-top: 1px solid #EFF0ED;
+}
+
+.procurement-supplier-detail-item span {
+    color: var(--text-muted);
+    font-size: 7px;
+}
+
+.procurement-supplier-detail-item strong {
+    overflow-wrap: anywhere;
+    color: var(--text);
+    font-size: 8px;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+
+/* ========================================
+   PO INFORMATION
+======================================== */
+
+.procurement-po-information {
+    padding: 0 15px 13px;
+}
+
+.procurement-po-information > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-top: 1px solid #EFF0ED;
+}
+
+.procurement-po-information span {
+    color: var(--text-muted);
+    font-size: 7px;
+}
+
+.procurement-po-information strong {
+    color: var(--text);
+    font-size: 8px;
+    font-weight: 600;
+    text-align: right;
+}
+
+.po-info-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 7px;
+    border-radius: 20px;
+    font-size: 7px !important;
+    font-weight: 700 !important;
+}
+
+.po-info-status.ordered {
+    background: var(--yellow-light);
+    color: #7A6728;
+}
+
+.po-info-status.received {
+    background: var(--green-light);
+    color: var(--green-dark);
+}
+
+
+/* ========================================
+   INVENTORY INFORMATION
+======================================== */
+
+.procurement-inventory-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 11px 12px;
+    background: var(--yellow-light);
+    border: 1px solid #EFE2A8;
+    border-radius: 9px;
+}
+
+.procurement-inventory-info.received {
+    background: var(--green-light);
+    border-color: #D7E3D0;
+}
+
+.procurement-inventory-info-icon {
+    width: 29px;
+    height: 29px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    border-radius: 7px;
+    color: #806F31;
+}
+
+.procurement-inventory-info.received
+.procurement-inventory-info-icon {
+    color: var(--green-dark);
+}
+
+.procurement-inventory-info > div:last-child {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.procurement-inventory-info strong {
+    color: #6F612C;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.procurement-inventory-info.received strong {
+    color: var(--green-dark);
+}
+
+.procurement-inventory-info span {
+    color: #887A43;
+    font-size: 7px;
+    line-height: 1.5;
+}
+
+.procurement-inventory-info.received span {
+    color: #6E7D66;
+}
+
+
+/* ========================================
+   GENERAL DETAIL BUTTON
+======================================== */
+
+.procurement-detail-button {
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 12px;
+    border-radius: 7px;
+    font-family: inherit;
+    font-size: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.1s ease;
+}
+
+.procurement-detail-button:active {
+    transform: translateY(1px);
+}
+
+.procurement-detail-button.secondary {
+    background: var(--white);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+}
+
+.procurement-detail-button.secondary:hover {
+    background: #F5F6F3;
+    color: var(--text);
+}
+
+.procurement-detail-button.primary {
+    background: var(--green-dark);
+    border: 1px solid var(--green-dark);
+    color: var(--white);
+}
+
+.procurement-detail-button.primary:hover {
+    background: #455C3D;
+    border-color: #455C3D;
+}
+
+
+/* ========================================
+   RECEIVE MODAL OVERLAY
+======================================== */
+
+body.modal-open {
+    overflow: hidden;
+}
+
+.procurement-receive-modal-overlay {
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(30, 34, 28, 0.34);
+    backdrop-filter: blur(2px);
+}
+
+.procurement-receive-modal-overlay.show {
+    display: flex;
+}
+
+
+/* ========================================
+   RECEIVE MODAL
+======================================== */
+
+.procurement-receive-modal {
+    width: 100%;
+    max-width: 460px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 18px 55px rgba(39, 46, 35, 0.14);
+}
+
+
+/* ========================================
+   RECEIVE MODAL HEADER
+======================================== */
+
+.procurement-receive-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 16px 18px 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.procurement-receive-modal-header h2 {
+    margin: 0 0 3px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.procurement-receive-modal-header p {
+    max-width: 340px;
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 8px;
+    line-height: 1.55;
+}
+
+.procurement-receive-modal-close {
+    width: 29px;
+    height: 29px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.procurement-receive-modal-close:hover {
+    background: #F2F3F0;
+    color: var(--text);
+}
+
+
+/* ========================================
+   RECEIVE MODAL BODY
+======================================== */
+
+.procurement-receive-modal-body {
+    padding: 15px 18px;
+}
+
+
+/* ========================================
+   RECEIVE WARNING
+======================================== */
+
+.procurement-receive-warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 10px 11px;
+    margin-bottom: 13px;
+    background: var(--yellow-light);
+    border: 1px solid #EFE2A8;
+    border-radius: 8px;
+}
+
+.procurement-receive-warning-icon {
+    width: 29px;
+    height: 29px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    border-radius: 7px;
+    color: #806F31;
+}
+
+.procurement-receive-warning > div:last-child {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.procurement-receive-warning strong {
+    color: #6F612C;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.procurement-receive-warning span {
+    color: #887A43;
+    font-size: 7px;
+    line-height: 1.55;
+}
+
+
+/* ========================================
+   RECEIVE SUMMARY
+======================================== */
+
+.procurement-receive-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 13px;
+}
+
+.procurement-receive-summary > div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 9px 10px;
+    background: #F9FAF7;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+}
+
+.procurement-receive-summary span {
+    color: var(--text-muted);
+    font-size: 7px;
+}
+
+.procurement-receive-summary strong {
+    overflow: hidden;
+    color: var(--text);
+    font-size: 9px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+/* ========================================
+   RECEIVE ITEMS
+======================================== */
+
+.procurement-receive-items {
+    display: flex;
+    flex-direction: column;
+}
+
+.procurement-receive-items-label {
+    margin-bottom: 6px;
+    color: var(--text);
+    font-size: 8px;
+    font-weight: 600;
+}
+
+.procurement-receive-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 9px 10px;
+    background: var(--white);
+    border: 1px solid var(--border);
+}
+
+.procurement-receive-item:first-of-type {
+    border-radius: 7px 7px 0 0;
+}
+
+.procurement-receive-item:last-child {
+    border-radius: 0 0 7px 7px;
+}
+
+.procurement-receive-item:only-of-type {
+    border-radius: 7px;
+}
+
+.procurement-receive-item + .procurement-receive-item {
+    border-top: none;
+}
+
+.procurement-receive-item > div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.procurement-receive-item > div strong {
+    color: var(--text);
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.procurement-receive-item > div span {
+    color: var(--text-muted);
+    font-size: 7px;
+}
+
+.procurement-receive-item > strong {
+    color: var(--green-dark);
+    font-size: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   RECEIVE MODAL FOOTER
+======================================== */
+
+.procurement-receive-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 12px 18px;
+    background: #FCFDFB;
+    border-top: 1px solid var(--border);
+}
+
+
+/* ========================================
+   SCROLLBAR
+======================================== */
+
+.procurement-detail-table-wrapper::-webkit-scrollbar,
+.procurement-receive-modal::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+.procurement-detail-table-wrapper::-webkit-scrollbar-track,
+.procurement-receive-modal::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.procurement-detail-table-wrapper::-webkit-scrollbar-thumb,
+.procurement-receive-modal::-webkit-scrollbar-thumb {
+    background: #D7DAD3;
+    border-radius: 10px;
+}
+
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1050px) {
+
+    .procurement-detail-grid {
+        grid-template-columns: minmax(0, 1fr) 230px;
+    }
+
+}
+
+
+@media (max-width: 900px) {
+
+    .procurement-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .procurement-detail-sidebar {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .procurement-inventory-info {
+        grid-column: 1 / -1;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .procurement-detail-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .procurement-receive-button {
+        width: 100%;
+    }
+
+    .procurement-detail-progress {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .procurement-progress-line {
+        width: 1px;
+        min-width: 1px;
+        height: 22px;
+        flex: none;
+        margin: 3px 0 3px 13px;
+    }
+
+    .procurement-progress-item {
+        width: 100%;
+    }
+
+}
+
+
+@media (max-width: 560px) {
+
+    .procurement-detail-title {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .procurement-detail-sidebar {
+        display: flex;
+    }
+
+    .procurement-detail-total {
+        align-items: stretch;
+    }
+
+    .procurement-detail-total > div {
+        width: 100%;
+    }
+
+    .procurement-receive-modal-overlay {
+        padding: 10px;
+    }
+
+    .procurement-receive-modal-header,
+    .procurement-receive-modal-body,
+    .procurement-receive-modal-footer {
+        padding-right: 14px;
+        padding-left: 14px;
+    }
+
+    .procurement-receive-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .procurement-receive-modal-footer {
+        flex-direction: column-reverse;
+    }
+
+    .procurement-receive-modal-footer
+    .procurement-detail-button {
+        width: 100%;
+    }
+
+}
