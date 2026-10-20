@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\MaterialController;
 use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Admin\ActivityLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -204,9 +205,7 @@ Route::middleware('auth')->group(function () {
             |--------------------------------------------------------------------------
             */
 
-            Route::get('/activity-logs', function () {
-                return view('admin.activity-logs.index');
-            })->name('activity-logs.index');
+            Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
         });
 
 

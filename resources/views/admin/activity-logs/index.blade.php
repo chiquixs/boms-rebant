@@ -52,12 +52,7 @@
                     Total Aktivitas
                 </span>
 
-                <strong
-                    class="activity-summary-value"
-                    id="totalActivities"
-                >
-                    10
-                </strong>
+                <strong class="activity-summary-value" id="totalActivities">{{ $summary['total'] }}</strong>
 
                 <span class="activity-summary-caption">
                     aktivitas tercatat
@@ -100,9 +95,7 @@
                     Aktivitas Hari Ini
                 </span>
 
-                <strong class="activity-summary-value">
-                    5
-                </strong>
+                <strong class="activity-summary-value">{{ $summary['today'] }}</strong>
 
                 <span class="activity-summary-caption">
                     aktivitas hari ini
@@ -136,9 +129,7 @@
                     Aktivitas Admin
                 </span>
 
-                <strong class="activity-summary-value">
-                    8
-                </strong>
+                <strong class="activity-summary-value">{{ $summary['admin'] }}</strong>
 
                 <span class="activity-summary-caption">
                     dilakukan oleh admin
@@ -174,9 +165,7 @@
                     Aktivitas Produksi
                 </span>
 
-                <strong class="activity-summary-value">
-                    2
-                </strong>
+                <strong class="activity-summary-value">{{ $summary['production'] }}</strong>
 
                 <span class="activity-summary-caption">
                     dilakukan oleh produksi
@@ -210,121 +199,45 @@
         {{-- ========================================
             FILTERS
         ========================================= --}}
-        <div class="activity-logs-toolbar">
+        <form method="GET" action="{{ route('admin.activity-logs.index') }}" class="activity-logs-toolbar">
 
-            {{-- SEARCH --}}
+            {{-- SEARCH (tekan Enter untuk mencari) --}}
             <div class="activity-logs-search">
-
-                <svg
-                    width="17"
-                    height="17"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                >
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.8">
                     <circle cx="11" cy="11" r="7"/>
                     <path d="m20 20-3.5-3.5"/>
                 </svg>
 
-                <input
-                    type="text"
-                    id="activitySearch"
-                    placeholder="Cari aktivitas..."
-                >
-
+                <input type="text" id="activitySearch" name="search"
+                    value="{{ request('search') }}" placeholder="Cari aktivitas...">
             </div>
-
 
             <div class="activity-logs-filters">
 
-                {{-- MODULE FILTER --}}
-                <select
-                    class="activity-logs-filter"
-                    id="moduleFilter"
-                >
-                    <option value="all">
-                        Semua Modul
-                    </option>
-
-                    <option value="order">
-                        Order
-                    </option>
-
-                    <option value="product">
-                        Produk
-                    </option>
-
-                    <option value="category">
-                        Kategori
-                    </option>
-
-                    <option value="inventory">
-                        Inventory
-                    </option>
-
-                    <option value="material">
-                        Bahan Mentah
-                    </option>
-
-                    <option value="procurement">
-                        Procurement
-                    </option>
-
-                    <option value="supplier">
-                        Supplier
-                    </option>
-
-                    <option value="production">
-                        Produksi
-                    </option>
+                <select class="activity-logs-filter" name="module" onchange="this.form.submit()">
+                    <option value="all">Semua Modul</option>
+                    @foreach (\App\Models\ActivityLog::MODULES as $value => $label)
+                        <option value="{{ $value }}" @selected(request('module') === $value)>{{ $label }}</option>
+                    @endforeach
                 </select>
 
-
-                {{-- USER FILTER --}}
-                <select
-                    class="activity-logs-filter"
-                    id="userFilter"
-                >
-                    <option value="all">
-                        Semua User
-                    </option>
-
-                    <option value="admin">
-                        Admin
-                    </option>
-
-                    <option value="production">
-                        Produksi
-                    </option>
+                <select class="activity-logs-filter" name="user" onchange="this.form.submit()">
+                    <option value="all">Semua User</option>
+                    <option value="admin" @selected(request('user') === 'admin')>Admin</option>
+                    <option value="production" @selected(request('user') === 'production')>Produksi</option>
                 </select>
 
-
-                {{-- PERIOD FILTER --}}
-                <select
-                    class="activity-logs-filter"
-                    id="periodFilter"
-                >
-                    <option value="all">
-                        Semua Periode
-                    </option>
-
-                    <option value="today">
-                        Hari Ini
-                    </option>
-
-                    <option value="7days">
-                        7 Hari Terakhir
-                    </option>
-
-                    <option value="30days">
-                        30 Hari Terakhir
-                    </option>
+                <select class="activity-logs-filter" name="period" onchange="this.form.submit()">
+                    <option value="all">Semua Periode</option>
+                    <option value="today" @selected(request('period') === 'today')>Hari Ini</option>
+                    <option value="7days" @selected(request('period') === '7days')>7 Hari Terakhir</option>
+                    <option value="30days" @selected(request('period') === '30days')>30 Hari Terakhir</option>
                 </select>
 
             </div>
 
-        </div>
+        </form>
 
 
         {{-- ========================================
@@ -347,556 +260,57 @@
 
                 <tbody id="activityTableBody">
 
-                    {{-- ========================================
-                        1 - PROCUREMENT
-                    ========================================= --}}
-                    <tr
-                        data-module="procurement"
-                        data-user="admin"
-                        data-period="today"
-                        data-search="admin mengirim purchase order procurement po-0012 pt kayu jaya"
-                    >
-                        <td>
-                            <div class="activity-time">
-                                <strong>18 Okt 2026</strong>
-                                <span>10:32</span>
-                            </div>
-                        </td>
+                    @foreach ($logs as $log)
+                        <tr>
 
-                        <td>
-                            <div class="activity-user">
-
-                                <div class="activity-user-avatar admin">
-                                    A
+                            <td>
+                                <div class="activity-time">
+                                    <strong>{{ $log->created_at->translatedFormat('d M Y') }}</strong>
+                                    <span>{{ $log->created_at->format('H:i') }}</span>
                                 </div>
+                            </td>
 
-                                <div>
-                                    <strong>Admin</strong>
-                                    <span>Administrator</span>
+                            <td>
+                                <div class="activity-user">
+
+                                    <div class="activity-user-avatar {{ $log->user_class }}">
+                                        {{ strtoupper(mb_substr($log->user?->name ?? 'S', 0, 1)) }}
+                                    </div>
+
+                                    <div>
+                                        <strong>{{ $log->user?->name ?? 'Sistem' }}</strong>
+                                        <span>{{ $log->user?->role?->name ? ucfirst($log->user->role->name) : 'Sistem' }}</span>
+                                    </div>
+
                                 </div>
+                            </td>
 
-                            </div>
-                        </td>
+                            <td>
+                                <div class="activity-description">
+                                    <strong>{{ $log->title }}</strong>
+                                    <span>{{ $log->description ?: '—' }}</span>
+                                </div>
+                            </td>
 
-                        <td>
-                            <div class="activity-description">
-                                <strong>Mengirim Purchase Order</strong>
-                                <span>
-                                    Purchase Order berhasil dikirim ke supplier.
+                            <td>
+                                <span class="activity-module {{ $log->entity_type }}">
+                                    {{ $log->module_label }}
                                 </span>
-                            </div>
-                        </td>
+                            </td>
 
-                        <td>
-                            <span class="activity-module procurement">
-                                Procurement
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="activity-detail">
-                                <strong>PO-0012</strong>
-                                <span>PT Kayu Jaya</span>
-                            </div>
-                        </td>
-                    </tr>
-
-
-                    {{-- ========================================
-                        2 - PRODUCT
-                    ========================================= --}}
-                    <tr
-                        data-module="product"
-                        data-user="admin"
-                        data-period="today"
-                        data-search="admin mengubah data produk d6a sign peringatan hitam 9x30"
-                    >
-                        <td>
-                            <div class="activity-time">
-                                <strong>18 Okt 2026</strong>
-                                <span>10:05</span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-user">
-
-                                <div class="activity-user-avatar admin">
-                                    A
+                            <td>
+                                <div class="activity-detail">
+                                    <strong>{{ $log->detail_title }}</strong>
+                                    @if ($log->detail_subtitle)
+                                        <span>{{ $log->detail_subtitle }}</span>
+                                    @endif
                                 </div>
+                            </td>
 
-                                <div>
-                                    <strong>Admin</strong>
-                                    <span>Administrator</span>
-                                </div>
+                        </tr>
+                    @endforeach
 
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-description">
-                                <strong>Mengubah Data Produk</strong>
-                                <span>
-                                    Informasi produk berhasil diperbarui.
-                                </span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <span class="activity-module product">
-                                Produk
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="activity-detail">
-                                <strong>D6A</strong>
-                                <span>Sign Peringatan Hitam (9x30)</span>
-                            </div>
-                        </td>
-                    </tr>
-
-
-                    {{-- ========================================
-                        3 - PRODUCTION
-                    ========================================= --}}
-                    <tr
-                        data-module="production"
-                        data-user="production"
-                        data-period="today"
-                        data-search="produksi konfirmasi produksi selesai order ord-001"
-                    >
-                        <td>
-                            <div class="activity-time">
-                                <strong>18 Okt 2026</strong>
-                                <span>09:20</span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-user">
-
-                                <div class="activity-user-avatar production">
-                                    P
-                                </div>
-
-                                <div>
-                                    <strong>Produksi</strong>
-                                    <span>Tim Produksi</span>
-                                </div>
-
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-description">
-                                <strong>Konfirmasi Produksi Selesai</strong>
-                                <span>
-                                    Pesanan selesai diproduksi dan siap dikemas.
-                                </span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <span class="activity-module production">
-                                Produksi
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="activity-detail">
-                                <strong>ORD-001</strong>
-                                <span>Status menjadi Ready to Pack</span>
-                            </div>
-                        </td>
-                    </tr>
-
-
-                    {{-- ========================================
-                        4 - INVENTORY
-                    ========================================= --}}
-                    <tr
-                        data-module="inventory"
-                        data-user="admin"
-                        data-period="today"
-                        data-search="admin penyesuaian stok inventory d6a-1 cctv"
-                    >
-                        <td>
-                            <div class="activity-time">
-                                <strong>18 Okt 2026</strong>
-                                <span>08:45</span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-user">
-
-                                <div class="activity-user-avatar admin">
-                                    A
-                                </div>
-
-                                <div>
-                                    <strong>Admin</strong>
-                                    <span>Administrator</span>
-                                </div>
-
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-description">
-                                <strong>Penyesuaian Stok</strong>
-                                <span>
-                                    Stok produk jadi diperbarui melalui penyesuaian.
-                                </span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <span class="activity-module inventory">
-                                Inventory
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="activity-detail">
-                                <strong>D6A-1</strong>
-                                <span>CCTV</span>
-                            </div>
-                        </td>
-                    </tr>
-
-
-                    {{-- ========================================
-                        5 - ORDER
-                    ========================================= --}}
-                    <tr
-                        data-module="order"
-                        data-user="admin"
-                        data-period="today"
-                        data-search="admin menyelesaikan order order management ord-002 completed"
-                    >
-                        <td>
-                            <div class="activity-time">
-                                <strong>18 Okt 2026</strong>
-                                <span>08:15</span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-user">
-
-                                <div class="activity-user-avatar admin">
-                                    A
-                                </div>
-
-                                <div>
-                                    <strong>Admin</strong>
-                                    <span>Administrator</span>
-                                </div>
-
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-description">
-                                <strong>Menyelesaikan Order</strong>
-                                <span>
-                                    Pesanan dikonfirmasi selesai oleh admin.
-                                </span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <span class="activity-module order">
-                                Order
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="activity-detail">
-                                <strong>ORD-002</strong>
-                                <span>Status menjadi Completed</span>
-                            </div>
-                        </td>
-                    </tr>
-
-
-                    {{-- ========================================
-                        6 - PROCUREMENT RECEIVED
-                    ========================================= --}}
-                    <tr
-                        data-module="procurement"
-                        data-user="admin"
-                        data-period="7days"
-                        data-search="admin menerima barang procurement po-0011 cv mdf malang"
-                    >
-                        <td>
-                            <div class="activity-time">
-                                <strong>17 Okt 2026</strong>
-                                <span>16:10</span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-user">
-
-                                <div class="activity-user-avatar admin">
-                                    A
-                                </div>
-
-                                <div>
-                                    <strong>Admin</strong>
-                                    <span>Administrator</span>
-                                </div>
-
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-description">
-                                <strong>Menerima Barang</strong>
-                                <span>
-                                    Barang dari supplier dikonfirmasi telah diterima.
-                                </span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <span class="activity-module procurement">
-                                Procurement
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="activity-detail">
-                                <strong>PO-0011</strong>
-                                <span>CV MDF Malang</span>
-                            </div>
-                        </td>
-                    </tr>
-
-
-                    {{-- ========================================
-                        7 - SUPPLIER
-                    ========================================= --}}
-                    <tr
-                        data-module="supplier"
-                        data-user="admin"
-                        data-period="7days"
-                        data-search="admin menambah supplier pt warna nusantara supplier"
-                    >
-                        <td>
-                            <div class="activity-time">
-                                <strong>17 Okt 2026</strong>
-                                <span>14:05</span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-user">
-
-                                <div class="activity-user-avatar admin">
-                                    A
-                                </div>
-
-                                <div>
-                                    <strong>Admin</strong>
-                                    <span>Administrator</span>
-                                </div>
-
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-description">
-                                <strong>Menambah Supplier</strong>
-                                <span>
-                                    Supplier baru ditambahkan ke master supplier.
-                                </span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <span class="activity-module supplier">
-                                Supplier
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="activity-detail">
-                                <strong>PT Warna Nusantara</strong>
-                                <span>Supplier Cat Hitam</span>
-                            </div>
-                        </td>
-                    </tr>
-
-
-                    {{-- ========================================
-                        8 - MATERIAL
-                    ========================================= --}}
-                    <tr
-                        data-module="material"
-                        data-user="admin"
-                        data-period="7days"
-                        data-search="admin mengubah bahan mentah cat hitam safety stock target stock"
-                    >
-                        <td>
-                            <div class="activity-time">
-                                <strong>16 Okt 2026</strong>
-                                <span>13:42</span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-user">
-
-                                <div class="activity-user-avatar admin">
-                                    A
-                                </div>
-
-                                <div>
-                                    <strong>Admin</strong>
-                                    <span>Administrator</span>
-                                </div>
-
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-description">
-                                <strong>Mengubah Bahan Mentah</strong>
-                                <span>
-                                    Data safety stock dan target stock diperbarui.
-                                </span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <span class="activity-module material">
-                                Bahan Mentah
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="activity-detail">
-                                <strong>Cat Hitam</strong>
-                                <span>Safety 3 lt · Target 15 lt</span>
-                            </div>
-                        </td>
-                    </tr>
-
-
-                    {{-- ========================================
-                        9 - CATEGORY
-                    ========================================= --}}
-                    <tr
-                        data-module="category"
-                        data-user="admin"
-                        data-period="30days"
-                        data-search="admin menambah kategori sign peringatan kategori"
-                    >
-                        <td>
-                            <div class="activity-time">
-                                <strong>14 Okt 2026</strong>
-                                <span>11:20</span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-user">
-
-                                <div class="activity-user-avatar admin">
-                                    A
-                                </div>
-
-                                <div>
-                                    <strong>Admin</strong>
-                                    <span>Administrator</span>
-                                </div>
-
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-description">
-                                <strong>Menambah Kategori</strong>
-                                <span>
-                                    Kategori produk baru berhasil ditambahkan.
-                                </span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <span class="activity-module category">
-                                Kategori
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="activity-detail">
-                                <strong>SIGN PERINGATAN</strong>
-                                <span>Kategori produk</span>
-                            </div>
-                        </td>
-                    </tr>
-
-
-                    {{-- ========================================
-                        10 - PRODUCTION
-                    ========================================= --}}
-                    <tr
-                        data-module="production"
-                        data-user="production"
-                        data-period="30days"
-                        data-search="produksi memulai produksi ord-003 waiting production"
-                    >
-                        <td>
-                            <div class="activity-time">
-                                <strong>13 Okt 2026</strong>
-                                <span>09:15</span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-user">
-
-                                <div class="activity-user-avatar production">
-                                    P
-                                </div>
-
-                                <div>
-                                    <strong>Produksi</strong>
-                                    <span>Tim Produksi</span>
-                                </div>
-
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="activity-description">
-                                <strong>Memproses Produksi</strong>
-                                <span>
-                                    Pesanan mulai diproses oleh tim produksi.
-                                </span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <span class="activity-module production">
-                                Produksi
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="activity-detail">
-                                <strong>ORD-003</strong>
-                                <span>Waiting Production</span>
-                            </div>
-                        </td>
-                    </tr>
-
-                </tbody>
+                    </tbody>
 
             </table>
 
@@ -906,30 +320,54 @@
         {{-- ========================================
             EMPTY STATE
         ========================================= --}}
-        <div
-            class="activity-logs-empty"
-            id="activityEmpty"
-        >
-            <svg
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
+        @if ($logs->isEmpty())
+            <div
+                class="activity-logs-empty"
+                id="activityEmpty"
             >
-                <circle cx="11" cy="11" r="7"/>
-                <path d="m20 20-3.5-3.5"/>
-            </svg>
+                <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.6"
+                >
+                    <circle cx="11" cy="11" r="7"/>
+                    <path d="m20 20-3.5-3.5"/>
+                </svg>
 
-            <strong>
-                Aktivitas tidak ditemukan
-            </strong>
+                <strong>
+                    Aktivitas tidak ditemukan
+                </strong>
 
-            <span>
-                Tidak ada aktivitas yang sesuai dengan pencarian atau filter.
-            </span>
-        </div>
+                <span>
+                    Tidak ada aktivitas yang sesuai dengan pencarian atau filter.
+                </span>
+            </div>
+        @endif
+
+        @if ($logs->hasPages())
+            <div class="activity-pagination">
+                <span>
+                    Menampilkan {{ $logs->firstItem() }}–{{ $logs->lastItem() }} dari {{ $logs->total() }} aktivitas
+                </span>
+
+                <div>
+                    @if ($logs->onFirstPage())
+                        <span class="disabled">‹ Sebelumnya</span>
+                    @else
+                        <a href="{{ $logs->previousPageUrl() }}">‹ Sebelumnya</a>
+                    @endif
+
+                    @if ($logs->hasMorePages())
+                        <a href="{{ $logs->nextPageUrl() }}">Berikutnya ›</a>
+                    @else
+                        <span class="disabled">Berikutnya ›</span>
+                    @endif
+                </div>
+            </div>
+        @endif
 
     </div>
 
@@ -937,231 +375,3 @@
 
 @endsection
 
-
-@push('scripts')
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    /*
-    |--------------------------------------------------------------------------
-    | Elements
-    |--------------------------------------------------------------------------
-    */
-
-    const activitySearch =
-        document.getElementById('activitySearch');
-
-    const moduleFilter =
-        document.getElementById('moduleFilter');
-
-    const userFilter =
-        document.getElementById('userFilter');
-
-    const periodFilter =
-        document.getElementById('periodFilter');
-
-    const activityTableBody =
-        document.getElementById('activityTableBody');
-
-    const activityEmpty =
-        document.getElementById('activityEmpty');
-
-    const totalActivities =
-        document.getElementById('totalActivities');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Filter Activity Logs
-    |--------------------------------------------------------------------------
-    */
-
-    function filterActivities() {
-
-        const keyword =
-            activitySearch.value
-                .toLowerCase()
-                .trim();
-
-        const selectedModule =
-            moduleFilter.value;
-
-        const selectedUser =
-            userFilter.value;
-
-        const selectedPeriod =
-            periodFilter.value;
-
-
-        const rows =
-            activityTableBody.querySelectorAll('tr');
-
-
-        let visibleRows = 0;
-
-
-        rows.forEach(function (row) {
-
-            /*
-            | Search
-            */
-
-            const searchableText =
-                (
-                    row.dataset.search ||
-                    row.textContent
-                )
-                .toLowerCase();
-
-
-            const searchMatch =
-                searchableText.includes(keyword);
-
-
-            /*
-            | Module
-            */
-
-            const moduleMatch =
-                selectedModule === 'all' ||
-                row.dataset.module === selectedModule;
-
-
-            /*
-            | User
-            */
-
-            const userMatch =
-                selectedUser === 'all' ||
-                row.dataset.user === selectedUser;
-
-
-            /*
-            | Period
-            |
-            | Dummy frontend:
-            | today  -> hanya data today
-            | 7days  -> today + 7days
-            | 30days -> semua data dalam contoh ini
-            */
-
-            let periodMatch = true;
-
-
-            if (selectedPeriod === 'today') {
-
-                periodMatch =
-                    row.dataset.period === 'today';
-
-            }
-
-
-            if (selectedPeriod === '7days') {
-
-                periodMatch =
-                    row.dataset.period === 'today' ||
-                    row.dataset.period === '7days';
-
-            }
-
-
-            if (selectedPeriod === '30days') {
-
-                periodMatch =
-                    row.dataset.period === 'today' ||
-                    row.dataset.period === '7days' ||
-                    row.dataset.period === '30days';
-
-            }
-
-
-            /*
-            | Final
-            */
-
-            const show =
-                searchMatch &&
-                moduleMatch &&
-                userMatch &&
-                periodMatch;
-
-
-            row.style.display =
-                show ? '' : 'none';
-
-
-            if (show) {
-                visibleRows++;
-            }
-
-        });
-
-
-        /*
-        | Empty State
-        */
-
-        activityEmpty.style.display =
-            visibleRows === 0
-                ? 'flex'
-                : 'none';
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Event Listeners
-    |--------------------------------------------------------------------------
-    */
-
-    activitySearch.addEventListener(
-        'input',
-        filterActivities
-    );
-
-
-    moduleFilter.addEventListener(
-        'change',
-        filterActivities
-    );
-
-
-    userFilter.addEventListener(
-        'change',
-        filterActivities
-    );
-
-
-    periodFilter.addEventListener(
-        'change',
-        filterActivities
-    );
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Initial Summary
-    |--------------------------------------------------------------------------
-    */
-
-    const totalRows =
-        activityTableBody.querySelectorAll('tr').length;
-
-    totalActivities.textContent =
-        totalRows;
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Initial Filter
-    |--------------------------------------------------------------------------
-    */
-
-    filterActivities();
-
-});
-</script>
-
-@endpush

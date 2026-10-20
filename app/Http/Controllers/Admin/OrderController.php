@@ -11,6 +11,7 @@ use App\Models\ProductGroup;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use App\Services\OrderStockService;
+use App\Models\ActivityLog;
 
 class OrderController extends Controller
 {
@@ -136,6 +137,10 @@ class OrderController extends Controller
             ]);
 
             $order->items()->createMany($rows);
+            ActivityLog::record('create', 'order', $order->id, 'Order baru ditambahkan.', [
+            'title'    => $order->platform_order_no,
+            'subtitle' => 'Status New',
+        ]);
             $this->stockService->allocateForNewOrder($order);
         });
 

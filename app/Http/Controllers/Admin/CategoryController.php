@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\Category;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -26,7 +27,12 @@ class CategoryController extends Controller
             'name' => ['required', 'string', 'max:100', Rule::unique('categories', 'name')],
         ], $this->messages());
 
-        Category::create($data);
+        $category = Category::create($data);
+
+        ActivityLog::record('create', 'category', $category->id, 'Kategori produk baru ditambahkan.', [
+            'title'    => $category->name,
+            'subtitle' => 'Kategori produk',
+        ]);
 
         return redirect()
             ->route('admin.categories.index')
@@ -44,7 +50,14 @@ class CategoryController extends Controller
             ],
         ], $this->messages());
 
+        $oldName = $category->name;
+
         $category->update($data);
+
+        ActivityLog::record('update', 'category', $category->id, 'Nama kategori diperbarui.', [
+            'title'    => $category->name,
+            'subtitle' => $oldName !== $category->name ? 'Sebelumnya: ' . $oldName : 'Kategori produk',
+        ]);
 
         return redirect()
             ->route('admin.categories.index')
@@ -53,14 +66,21 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        $id   = $category->id;
+        $name = $category->name;
+
         try {
             $category->delete();
         } catch (QueryException $e) {
-            // Biasanya karena kategori masih dipakai produk (foreign key)
             return redirect()
                 ->route('admin.categories.index')
                 ->with('error', 'Kategori tidak bisa dihapus karena masih digunakan.');
         }
+
+        ActivityLog::record('delete', 'category', $id, 'Kategori produk dihapus.', [
+            'title'    => $name,
+            'subtitle' => 'Kategori produk',
+        ]);
 
         return redirect()
             ->route('admin.categories.index')

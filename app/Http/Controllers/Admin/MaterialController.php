@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\RawMaterial;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -21,7 +22,12 @@ class MaterialController extends Controller
         $data = $this->validated($request);
         $data['code'] = $this->generateCode();
 
-        RawMaterial::create($data);
+        $material = RawMaterial::create($data);
+
+        ActivityLog::record('create', 'material', $material->id, 'Bahan mentah baru ditambahkan.', [
+            'title'    => $material->name,
+            'subtitle' => $material->code . ' · ' . $material->unit,
+        ]);
 
         return redirect()
             ->route('admin.materials.index')
@@ -32,6 +38,12 @@ class MaterialController extends Controller
     {
         $material->update($this->validated($request));
 
+        ActivityLog::record('update', 'material', $material->id, 'Data bahan mentah diperbarui.', [
+            'title'    => $material->name,
+            'subtitle' => 'Safety ' . (float) $material->safety_stock . ' ' . $material->unit
+                        . ' · Target ' . (float) $material->target_stock . ' ' . $material->unit,
+        ]);
+
         return redirect()
             ->route('admin.materials.index')
             ->with('success', 'Bahan mentah berhasil diperbarui.');
@@ -39,14 +51,22 @@ class MaterialController extends Controller
 
     public function destroy(RawMaterial $material)
     {
+        $id       = $material->id;
+        $name     = $material->name;
+        $subtitle = $material->code . ' · ' . $material->unit;
+
         try {
             $material->delete();
         } catch (QueryException $e) {
-            // Biasanya karena bahan masih dipakai di BOM / riwayat stok (foreign key)
             return redirect()
                 ->route('admin.materials.index')
                 ->with('error', 'Bahan mentah tidak bisa dihapus karena masih digunakan.');
         }
+
+        ActivityLog::record('delete', 'material', $id, 'Bahan mentah dihapus.', [
+            'title'    => $name,
+            'subtitle' => $subtitle,
+        ]);
 
         return redirect()
             ->route('admin.materials.index')
@@ -66,13 +86,13 @@ class MaterialController extends Controller
             'safety_stock'    => ['required', 'numeric', 'min:0', 'max:999999999.999'],
             'target_stock'    => ['required', 'numeric', 'min:0', 'max:999999999.999'],
         ], [
-            'required'             => ':attribute wajib diisi.',
-            'required_if'          => ':attribute wajib diisi untuk material SHEET.',
-            'numeric'              => ':attribute harus berupa angka.',
-            'min'                  => ':attribute tidak boleh negatif.',
-            'gt'                   => ':attribute harus lebih dari 0.',
-            'max'                  => ':attribute terlalu besar.',
-            'in'                   => ':attribute tidak valid.',
+            'required'    => ':attribute wajib diisi.',
+            'required_if' => ':attribute wajib diisi untuk material SHEET.',
+            'numeric'     => ':attribute harus berupa angka.',
+            'min'         => ':attribute tidak boleh negatif.',
+            'gt'          => ':attribute harus lebih dari 0.',
+            'max'         => ':attribute terlalu besar.',
+            'in'          => ':attribute tidak valid.',
         ], [
             'name'            => 'Nama bahan',
             'unit'            => 'Satuan',
@@ -88,7 +108,6 @@ class MaterialController extends Controller
         $data['name']      = trim(preg_replace('/\s+/', ' ', $data['name']));
         $data['is_active'] = (bool) $data['is_active'];
 
-        // Bahan NON_SHEET tidak punya ukuran sheet
         if ($data['material_type'] !== 'SHEET') {
             $data['sheet_length_cm'] = null;
             $data['sheet_width_cm']  = null;
