@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\ProductGroup;
 use App\Models\ProductMaterial;
 use App\Models\RawMaterial;
@@ -17,21 +18,38 @@ class BomController extends Controller
         return ProductGroup::where('code', $sku)->firstOrFail();
     }
 
+    private function log(ProductGroup $group, string $action, string $activity, string $description, ?string $material = null): void
+    {
+        ActivityLog::record($action, 'product', $group->id, $description, [
+            'activity' => $activity,
+            'title'    => $group->code,
+            'subtitle' => $material ? $group->name . ' · ' . $material : $group->name,
+        ]);
+    }
+
     public function index(string $sku)
     {
         $group = ProductGroup::with(['category', 'products', 'materials.rawMaterial'])
             ->where('code', $sku)->firstOrFail();
 
-        $rawMaterials = RawMaterial::where('is_active', true)->orderBy('name')->get();
+        $usedIds = $group->materials->pluck('raw_material_id');
+
+        // Bahan yang sudah dipakai di BOM tetap muncul walau sudah dinonaktifkan
+        $rawMaterials = RawMaterial::where('is_active', true)
+            ->orWhereIn('id', $usedIds)
+            ->orderBy('name')
+            ->get();
 
         return view('admin.products.bom', compact('group', 'rawMaterials'));
     }
 
     public function store(Request $request, string $sku)
     {
-        $group = $this->group($sku);
+        $group    = $this->group($sku);
+        $material = $group->materials()->create($this->payload($request, $group));
+        $material->load('rawMaterial');
 
-        $group->materials()->create($this->payload($request, $group));
+        $this->log($group, 'create', 'Menambah Bahan BOM', 'Bahan ditambahkan ke BOM.', $material->rawMaterial->name);
 
         return redirect()->route('admin.products.bom', $group->code)
             ->with('success', 'Bahan berhasil ditambahkan ke BOM.');
@@ -43,6 +61,9 @@ class BomController extends Controller
         abort_unless($material->group_id === $group->id, 404);
 
         $material->update($this->payload($request, $group, $material));
+        $material->load('rawMaterial');
+
+        $this->log($group, 'update', 'Mengubah Bahan BOM', 'Bahan di BOM diperbarui.', $material->rawMaterial->name);
 
         return redirect()->route('admin.products.bom', $group->code)
             ->with('success', 'Bahan di BOM berhasil diperbarui.');
@@ -53,7 +74,11 @@ class BomController extends Controller
         $group = $this->group($sku);
         abort_unless($material->group_id === $group->id, 404);
 
+        $name = $material->rawMaterial?->name;
+
         $material->delete();
+
+        $this->log($group, 'delete', 'Menghapus Bahan BOM', 'Bahan dihapus dari BOM.', $name);
 
         return redirect()->route('admin.products.bom', $group->code)
             ->with('success', 'Bahan dihapus dari BOM.');
@@ -79,7 +104,6 @@ class BomController extends Controller
             'raw_material_id.unique' => 'Bahan ini sudah ada di BOM produk tersebut.',
         ]);
 
-        // Kebutuhan FIX
         if ($data['usage_method'] === 'fix') {
             return [
                 'raw_material_id' => $data['raw_material_id'],
@@ -92,7 +116,6 @@ class BomController extends Controller
             ];
         }
 
-        // Kebutuhan AREA: dihitung dari ukuran lembar bahan
         $material = RawMaterial::findOrFail($data['raw_material_id']);
 
         if (! $material->has_sheet_size) {

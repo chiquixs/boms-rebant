@@ -3,16 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ActivityLog;
 use App\Models\Category;
+use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\ProductGroup;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\ValidationException;
-use App\Models\Product;
-use App\Models\OrderItem;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
 {
@@ -21,7 +22,6 @@ class ProductController extends Controller
         $groups = ProductGroup::with([
                 'category',
                 'products' => fn ($q) => $q->orderBy('variant_name'),
-                'materials.rawMaterial',
             ])
             ->withCount('materials')
             ->when($request->filled('search'), fn ($q) =>
@@ -35,7 +35,6 @@ class ProductController extends Controller
             ->orderBy('name')
             ->get();
 
-        // Status stok dihitung dari varian, jadi difilter setelah data diambil
         if ($request->filled('status')) {
             $groups = $groups->filter(fn ($g) => $g->stock_status === $request->status)->values();
         }
@@ -74,7 +73,6 @@ class ProductController extends Controller
         $variants = array_values($data['variants']);
         $isMto    = $data['production_method'] === 'mto';
 
-        // Nama varian tidak boleh kembar dalam satu produk (yang kosong diabaikan)
         $names = collect($variants)->pluck('variant_name')->filter()->map(fn ($n) => mb_strtolower($n));
 
         if ($names->count() !== $names->unique()->count()) {
@@ -83,7 +81,6 @@ class ProductController extends Controller
             ]);
         }
 
-        // Sesuai constraint database: target harus lebih besar dari minimum
         if (! $isMto) {
             foreach ($variants as $v) {
                 $min    = $v['min_stock'] ?? null;
@@ -120,7 +117,6 @@ class ProductController extends Controller
                     $file      = $request->file("variants")[array_keys($data['variants'])[$i]]['image'] ?? null;
 
                     if ($file) {
-                        // hasil: variants/D6A-1/namaacak.jpg
                         $imagePath  = $file->store('variants/' . $v['sku'], $disk);
                         $uploaded[] = $imagePath;
                     }
@@ -136,14 +132,17 @@ class ProductController extends Controller
                         'is_active'     => true,
                     ]);
 
-                    // Foto varian pertama dipakai sebagai foto produk induk
                     if ($i === 0 && $imagePath) {
                         $group->update(['image_path' => $imagePath]);
                     }
                 }
+
+                ActivityLog::record('create', 'product', $group->id, 'Produk baru ditambahkan.', [
+                    'title'    => $group->code,
+                    'subtitle' => $group->name,
+                ]);
             });
         } catch (\Throwable $e) {
-            // Hapus foto yang sudah terupload jika penyimpanan gagal
             foreach ($uploaded as $path) {
                 Storage::disk($disk)->delete($path);
             }
@@ -156,172 +155,170 @@ class ProductController extends Controller
     }
 
     public function update(Request $request, ProductGroup $group)
-{
-    $rules = [
-        'code'              => ['required', 'max:50', Rule::unique('product_groups', 'code')->ignore($group->id)],
-        'name'              => ['required', 'max:150'],
-        'category_id'       => ['nullable', 'exists:categories,id'],
-        'price'             => ['required', 'numeric', 'min:0'],
-        'length_cm'         => ['nullable', 'numeric', 'min:0'],
-        'width_cm'          => ['nullable', 'numeric', 'min:0'],
-        'production_method' => ['required', 'in:mts,mto'],
+    {
+        $rules = [
+            'code'              => ['required', 'max:50', Rule::unique('product_groups', 'code')->ignore($group->id)],
+            'name'              => ['required', 'max:150'],
+            'category_id'       => ['nullable', 'exists:categories,id'],
+            'price'             => ['required', 'numeric', 'min:0'],
+            'length_cm'         => ['nullable', 'numeric', 'min:0'],
+            'width_cm'          => ['nullable', 'numeric', 'min:0'],
+            'production_method' => ['required', 'in:mts,mto'],
 
-        'variants'                 => ['required', 'array', 'min:1'],
-        'variants.*.id'            => ['nullable', 'integer'],
-        'variants.*.variant_name'  => ['nullable', 'max:100'],
-        'variants.*.current_stock' => ['nullable', 'integer', 'min:0'],
-        'variants.*.min_stock'     => ['nullable', 'integer', 'min:0'],
-        'variants.*.target_stock'  => ['nullable', 'integer', 'min:0'],
-        'variants.*.image'         => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-    ];
-
-    // SKU varian harus unik, kecuali terhadap varian milik produk ini
-    // (pertukaran antar varian dalam produk yang sama diperbolehkan)
-    $ownIds = $group->products()->pluck('id')->all();
-
-    foreach (array_keys($request->input('variants', [])) as $k) {
-        $rules["variants.$k.sku"] = [
-            'required', 'max:50', 'distinct',
-            Rule::unique('products', 'sku')->whereNotIn('id', $ownIds),
+            'variants'                 => ['required', 'array', 'min:1'],
+            'variants.*.id'            => ['nullable', 'integer'],
+            'variants.*.variant_name'  => ['nullable', 'max:100'],
+            'variants.*.current_stock' => ['nullable', 'integer', 'min:0'],
+            'variants.*.min_stock'     => ['nullable', 'integer', 'min:0'],
+            'variants.*.target_stock'  => ['nullable', 'integer', 'min:0'],
+            'variants.*.image'         => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ];
-    }
 
-    $validator = Validator::make($request->all(), $rules, [
-        'code.unique'             => 'SKU Product sudah dipakai.',
-        'variants.*.sku.required' => 'SKU Variant wajib diisi di semua varian.',
-        'variants.*.sku.unique'   => 'Ada SKU Variant yang sudah dipakai.',
-        'variants.*.sku.distinct' => 'SKU Variant tidak boleh sama dalam satu produk.',
-        'variants.*.image.max'    => 'Ukuran foto varian maksimal 2 MB.',
-    ]);
+        $ownIds = $group->products()->pluck('id')->all();
 
-    if ($validator->fails()) {
-        return back()->with('error', $validator->errors()->first());
-    }
+        foreach (array_keys($request->input('variants', [])) as $k) {
+            $rules["variants.$k.sku"] = [
+                'required', 'max:50', 'distinct',
+                Rule::unique('products', 'sku')->whereNotIn('id', $ownIds),
+            ];
+        }
 
-    $data     = $validator->validated();
-    $variants = $data['variants'];
-    $isMto    = $data['production_method'] === 'mto';
+        $validator = Validator::make($request->all(), $rules, [
+            'code.unique'             => 'SKU Product sudah dipakai.',
+            'variants.*.sku.required' => 'SKU Variant wajib diisi di semua varian.',
+            'variants.*.sku.unique'   => 'Ada SKU Variant yang sudah dipakai.',
+            'variants.*.sku.distinct' => 'SKU Variant tidak boleh sama dalam satu produk.',
+            'variants.*.image.max'    => 'Ukuran foto varian maksimal 2 MB.',
+        ]);
 
-    // Nama varian tidak boleh kembar dalam satu produk
-    $names = collect($variants)->pluck('variant_name')->filter()->map(fn ($n) => mb_strtolower($n));
+        if ($validator->fails()) {
+            return back()->with('error', $validator->errors()->first());
+        }
 
-    if ($names->count() !== $names->unique()->count()) {
-        return back()->with('error', 'Nama varian tidak boleh sama dalam satu produk.');
-    }
+        $data     = $validator->validated();
+        $variants = $data['variants'];
+        $isMto    = $data['production_method'] === 'mto';
 
-    // Target harus lebih besar dari minimum (sesuai constraint database)
-    if (! $isMto) {
-        foreach ($variants as $v) {
-            $min = $v['min_stock'] ?? null;
-            $target = $v['target_stock'] ?? null;
+        $names = collect($variants)->pluck('variant_name')->filter()->map(fn ($n) => mb_strtolower($n));
 
-            if ($min !== null && $target !== null && (int) $target <= (int) $min) {
-                return back()->with('error', 'Target stock harus lebih besar dari minimum stock.');
+        if ($names->count() !== $names->unique()->count()) {
+            return back()->with('error', 'Nama varian tidak boleh sama dalam satu produk.');
+        }
+
+        if (! $isMto) {
+            foreach ($variants as $v) {
+                $min    = $v['min_stock'] ?? null;
+                $target = $v['target_stock'] ?? null;
+
+                if ($min !== null && $target !== null && (int) $target <= (int) $min) {
+                    return back()->with('error', 'Target stock harus lebih besar dari minimum stock.');
+                }
             }
         }
-    }
 
-    $existing     = $group->products()->get()->keyBy('id');
-    $submittedIds = collect($variants)->pluck('id')->filter()->map(fn ($id) => (int) $id);
+        $existing     = $group->products()->get()->keyBy('id');
+        $submittedIds = collect($variants)->pluck('id')->filter()->map(fn ($id) => (int) $id);
 
-    // Id yang dikirim harus milik produk ini
-    if ($submittedIds->contains(fn ($id) => ! $existing->has($id))) {
-        return back()->with('error', 'Data varian tidak valid.');
-    }
+        if ($submittedIds->contains(fn ($id) => ! $existing->has($id))) {
+            return back()->with('error', 'Data varian tidak valid.');
+        }
 
-    // Varian yang dihapus tidak boleh sudah dipakai di order
-    $removed = $existing->keys()->diff($submittedIds);
+        $removed = $existing->keys()->diff($submittedIds);
 
-    if ($removed->isNotEmpty() && OrderItem::whereIn('product_id', $removed)->exists()) {
-        return back()->with('error', 'Ada varian yang sudah dipakai di order, sehingga tidak bisa dihapus.');
-    }
+        if ($removed->isNotEmpty() && OrderItem::whereIn('product_id', $removed)->exists()) {
+            return back()->with('error', 'Ada varian yang sudah dipakai di order, sehingga tidak bisa dihapus.');
+        }
 
-    $disk     = config('filesystems.product_image_disk');
-    $uploaded = [];
-    $oldFiles = [];
+        $disk     = config('filesystems.product_image_disk');
+        $uploaded = [];
+        $oldFiles = [];
 
-    try {
-        DB::transaction(function () use ($request, $group, $data, $variants, $isMto, $existing, $removed, $disk, &$uploaded, &$oldFiles) {
+        try {
+            DB::transaction(function () use ($request, $group, $data, $variants, $isMto, $existing, $removed, $disk, &$uploaded, &$oldFiles) {
 
-            // 1. Hapus varian yang dibuang
-            foreach ($removed as $id) {
-                if ($existing[$id]->image_path) {
-                    $oldFiles[] = $existing[$id]->image_path;
-                }
-            }
-            if ($removed->isNotEmpty()) {
-                Product::whereIn('id', $removed)->delete();
-            }
-
-            // 2. Update atau tambah varian
-            $firstImage = null;
-            // Tahap sementara: ubah SKU varian yang ada ke nilai unik sementara,
-            // supaya pertukaran SKU tidak bentrok dengan constraint unik di database
-            foreach ($existing as $row) {
-                if (! $removed->contains($row->id)) {
-                    $row->forceFill([
-                        'sku'          => 'TMP-' . $row->id . '-' . uniqid(),
-                        'variant_name' => $row->variant_name ? 'TMP-' . uniqid() : null,
-                    ])->saveQuietly();
-                }
-            }
-
-            foreach ($variants as $k => $v) {
-
-                $product = ! empty($v['id']) ? $existing[(int) $v['id']] : new Product(['group_id' => $group->id]);
-                $imagePath = $product->image_path;
-
-                $file = $request->file("variants.$k.image");
-
-                if ($file) {
-                    if ($imagePath) {
-                        $oldFiles[] = $imagePath;
+                // 1. Hapus varian yang dibuang
+                foreach ($removed as $id) {
+                    if ($existing[$id]->image_path) {
+                        $oldFiles[] = $existing[$id]->image_path;
                     }
-                    $imagePath  = $file->store('variants/' . $v['sku'], $disk);
-                    $uploaded[] = $imagePath;
+                }
+                if ($removed->isNotEmpty()) {
+                    Product::whereIn('id', $removed)->delete();
                 }
 
-                $product->fill([
-                    'sku'           => $v['sku'],
-                    'variant_name'  => $v['variant_name'] ?? null,
-                    'image_path'    => $imagePath,
-                    'current_stock' => $isMto ? 0 : (int) ($v['current_stock'] ?? 0),
-                    'min_stock'     => $isMto ? null : ($v['min_stock'] ?? null),
-                    'target_stock'  => $isMto ? null : ($v['target_stock'] ?? null),
-                    'is_active'     => true,
-                ])->save();
+                // 2. SKU/nama sementara agar pertukaran tidak bentrok constraint unik
+                foreach ($existing as $row) {
+                    if (! $removed->contains($row->id)) {
+                        $row->forceFill([
+                            'sku'          => 'TMP-' . $row->id . '-' . uniqid(),
+                            'variant_name' => $row->variant_name ? 'TMP-' . uniqid() : null,
+                        ])->saveQuietly();
+                    }
+                }
 
-                $firstImage ??= $imagePath;
+                // 3. Update atau tambah varian
+                $firstImage = null;
+
+                foreach ($variants as $k => $v) {
+
+                    $product   = ! empty($v['id']) ? $existing[(int) $v['id']] : new Product(['group_id' => $group->id]);
+                    $imagePath = $product->image_path;
+
+                    $file = $request->file("variants.$k.image");
+
+                    if ($file) {
+                        if ($imagePath) {
+                            $oldFiles[] = $imagePath;
+                        }
+                        $imagePath  = $file->store('variants/' . $v['sku'], $disk);
+                        $uploaded[] = $imagePath;
+                    }
+
+                    $product->fill([
+                        'sku'           => $v['sku'],
+                        'variant_name'  => $v['variant_name'] ?? null,
+                        'image_path'    => $imagePath,
+                        'current_stock' => $isMto ? 0 : (int) ($v['current_stock'] ?? 0),
+                        'min_stock'     => $isMto ? null : ($v['min_stock'] ?? null),
+                        'target_stock'  => $isMto ? null : ($v['target_stock'] ?? null),
+                        'is_active'     => true,
+                    ])->save();
+
+                    $firstImage ??= $imagePath;
+                }
+
+                // 4. Update produk induk
+                $group->update([
+                    'code'              => $data['code'],
+                    'name'              => $data['name'],
+                    'category_id'       => $data['category_id'] ?? null,
+                    'price'             => $data['price'],
+                    'length_cm'         => $data['length_cm'] ?? null,
+                    'width_cm'          => $data['width_cm'] ?? null,
+                    'production_method' => strtoupper($data['production_method']),
+                    'image_path'        => $firstImage,
+                ]);
+
+                ActivityLog::record('update', 'product', $group->id, 'Informasi produk diperbarui.', [
+                    'title'    => $group->code,
+                    'subtitle' => $group->name,
+                ]);
+            });
+        } catch (\Throwable $e) {
+            foreach ($uploaded as $path) {
+                Storage::disk($disk)->delete($path);
             }
 
-            // 3. Update produk induk
-            $group->update([
-                'code'              => $data['code'],
-                'name'              => $data['name'],
-                'category_id'       => $data['category_id'] ?? null,
-                'price'             => $data['price'],
-                'length_cm'         => $data['length_cm'] ?? null,
-                'width_cm'          => $data['width_cm'] ?? null,
-                'production_method' => strtoupper($data['production_method']),
-                'image_path'        => $firstImage,
-            ]);
-        });
-    } catch (\Throwable $e) {
-        foreach ($uploaded as $path) {
+            throw $e;
+        }
+
+        foreach (array_unique($oldFiles) as $path) {
             Storage::disk($disk)->delete($path);
         }
 
-        throw $e;
+        return redirect()->route('admin.products.index')
+            ->with('success', 'Produk berhasil diperbarui.');
     }
-
-    // Foto lama dihapus setelah database berhasil diperbarui
-    foreach (array_unique($oldFiles) as $path) {
-        Storage::disk($disk)->delete($path);
-    }
-
-    return redirect()->route('admin.products.index')
-        ->with('success', 'Produk berhasil diperbarui.');
-}
 
     public function destroy(ProductGroup $group)
     {
@@ -334,9 +331,18 @@ class ProductController extends Controller
         $paths = $group->products()->pluck('image_path')
             ->push($group->image_path)->filter()->unique();
 
-        DB::transaction(function () use ($group) {
+        $code = $group->code;
+        $name = $group->name;
+        $id   = $group->id;
+
+        DB::transaction(function () use ($group, $id, $code, $name) {
             $group->products()->delete();
-            $group->delete(); // product_materials (BOM) ikut terhapus lewat cascade
+            $group->delete(); // BOM ikut terhapus lewat cascade
+
+            ActivityLog::record('delete', 'product', $id, 'Produk dihapus.', [
+                'title'    => $code,
+                'subtitle' => $name,
+            ]);
         });
 
         $disk = config('filesystems.product_image_disk');

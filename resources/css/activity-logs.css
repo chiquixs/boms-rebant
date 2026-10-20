@@ -698,3 +698,30 @@
     }
 
 }
+
+.activity-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 4px 0;
+    font-size: 13px;
+    color: #8A8D86;
+}
+
+.activity-pagination > div {
+    display: flex;
+    gap: 8px;
+}
+
+.activity-pagination a,
+.activity-pagination .disabled {
+    padding: 7px 12px;
+    border: 1px solid #E2E5DF;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #242722;
+}
+
+.activity-pagination a:hover { border-color: #9DBA8C; }
+.activity-pagination .disabled { color: #B3B5B0; }
