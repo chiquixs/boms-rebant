@@ -164,6 +164,28 @@ Route::middleware('auth')->group(function () {
                 InventoryController::class,
                 'materialHistory',
             ])->name('inventory.material-history');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Procurement
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get('/procurement', function () {
+                return view('admin.procurement.index');
+            })->name('procurement.index');
+
+
+            Route::get('/procurement/suppliers', function () {
+                return view('admin.procurement.suppliers');
+            })->name('procurement.suppliers');
+
+
+            Route::get('/procurement/{po}', function ($po) {
+                return view('admin.procurement.show', [
+                    'po' => $po,
+                ]);
+            })->name('procurement.show');
         });
 
 
