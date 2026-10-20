@@ -186,6 +186,16 @@ Route::middleware('auth')->group(function () {
                     'po' => $po,
                 ]);
             })->name('procurement.show');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Activity Logs
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get('/activity-logs', function () {
+                return view('admin.activity-logs.index');
+            })->name('activity-logs.index');
         });
 
 
