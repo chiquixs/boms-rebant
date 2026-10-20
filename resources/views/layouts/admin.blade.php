@@ -19,7 +19,8 @@
         'resources/css/procurement.css',
         'resources/css/procurement-detail.css',
         'resources/css/suppliers.css',
-        'resources/css/activity-logs.css'
+        'resources/css/activity-logs.css',
+        'resources/css/dashboard.css'
     ])
 
     @stack('styles')
@@ -51,20 +52,33 @@
         {{-- Navigation --}}
         <nav class="sidebar-nav">
 
-    {{-- Dashboard --}}
-    <a href="#"
-       class="nav-item {{ request()->is('admin/dashboard') ? 'active' : '' }}">
+    {{-- DASHBOARD --}}
+<a
+    href="/admin/dashboard"
+    class="nav-item {{
+        request()->is('admin/dashboard')
+            ? 'active'
+            : ''
+    }}"
+>
+    <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+    >
+        <rect x="3" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/>
+        <rect x="14" y="14" width="7" height="7" rx="1"/>
+    </svg>
 
-        <svg width="20" height="20" viewBox="0 0 24 24"
-             fill="none" stroke="currentColor" stroke-width="1.8">
-            <rect x="3" y="3" width="7" height="7" rx="2"/>
-            <rect x="14" y="3" width="7" height="7" rx="2"/>
-            <rect x="3" y="14" width="7" height="7" rx="2"/>
-            <rect x="14" y="14" width="7" height="7" rx="2"/>
-        </svg>
-
-        <span>Dashboard</span>
-    </a>
+    <span>Dashboard</span>
+</a>
 
 
     {{-- Order Management --}}
