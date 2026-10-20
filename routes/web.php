@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\BomController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\MaterialController;
 use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\SupplierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -185,9 +186,10 @@ Route::middleware('auth')->group(function () {
             })->name('procurement.index');
 
 
-            Route::get('/procurement/suppliers', function () {
-                return view('admin.procurement.suppliers');
-            })->name('procurement.suppliers');
+            Route::get('/procurement/suppliers', [SupplierController::class, 'index'])->name('procurement.suppliers');
+            Route::post('/procurement/suppliers', [SupplierController::class, 'store'])->name('procurement.suppliers.store');
+            Route::put('/procurement/suppliers/{supplier}', [SupplierController::class, 'update'])->name('procurement.suppliers.update');
+            Route::delete('/procurement/suppliers/{supplier}', [SupplierController::class, 'destroy'])->name('procurement.suppliers.destroy');
 
 
             Route::get('/procurement/{po}', function ($po) {
