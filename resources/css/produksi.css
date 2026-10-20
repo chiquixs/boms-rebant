@@ -1,0 +1,44 @@
+/* =========================
+   LAYOUT PRODUKSI
+   Pelengkap admin.css untuk layout role Production
+   (tombol logout di user sidebar).
+========================= */
+
+.sidebar-user .user-info {
+    flex: 1;
+}
+
+.sidebar-logout-form {
+    margin-left: auto;
+}
+
+.sidebar-logout {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: var(--text-muted);
+
+    transition: 0.2s ease;
+}
+
+.sidebar-logout:hover {
+    color: #B5483E;
+
+    background: #FDF1EF;
+}
+
+@media (max-width: 900px) {
+
+    .sidebar-logout-form {
+        display: none;
+    }
+}

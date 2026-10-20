@@ -1,0 +1,940 @@
+/* =========================
+   MODAL EKSEKUSI PRODUKSI & MATERIAL USAGE
+   Semua class diawali "pe-". Badge memakai
+   class "pq-badge" dari production-queue.css.
+========================= */
+
+
+/* =========================
+   OVERLAY + MODAL
+========================= */
+
+.pe-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 24px 16px;
+
+    background: rgba(37, 40, 35, 0.45);
+
+    z-index: 400;
+}
+
+.pe-overlay[hidden] {
+    display: none;
+}
+
+.pe-modal {
+    width: 100%;
+    max-width: 680px;
+    max-height: calc(100vh - 48px);
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: var(--white);
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 24px 60px rgba(37, 40, 35, 0.22);
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.pe-header {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 22px 26px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.pe-header-icon {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: var(--green-light);
+
+    color: var(--green-dark);
+}
+
+.pe-header-text {
+    flex: 1;
+
+    min-width: 0;
+}
+
+.pe-header-text h2 {
+    margin-bottom: 4px;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    letter-spacing: -0.3px;
+}
+
+.pe-header-text p {
+    color: var(--text-muted);
+
+    font-size: 11px;
+}
+
+.pe-header-text strong {
+    margin-left: 4px;
+
+    color: var(--text);
+
+    font-weight: 600;
+}
+
+.pe-close {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: var(--text-muted);
+
+    transition: 0.2s ease;
+}
+
+.pe-close:hover {
+    background: #F3F4F0;
+
+    color: var(--text);
+}
+
+
+/* =========================
+   BODY
+========================= */
+
+.pe-body {
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: 22px 26px 8px;
+}
+
+
+/* =========================
+   INFO PRODUK
+========================= */
+
+.pe-product {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    margin-bottom: 20px;
+}
+
+.pe-product-thumb {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    background: #F3F4F0;
+
+    color: #A3A69F;
+}
+
+.pe-product-info {
+    flex: 1;
+
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.pe-product-info strong {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.pe-product-info span {
+    margin-top: 3px;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+}
+
+.pe-product-badges {
+    display: flex;
+
+    gap: 8px;
+}
+
+
+/* =========================
+   LOADING + ERROR
+========================= */
+
+.pe-skel {
+    margin-bottom: 14px;
+
+    height: 40px;
+
+    border-radius: 12px;
+}
+
+.pe-skel.short {
+    width: 60%;
+}
+
+.pe-error-box {
+    padding: 28px 20px;
+
+    border-radius: 14px;
+
+    background: #FDF1EF;
+
+    text-align: center;
+}
+
+.pe-error-box[hidden] {
+    display: none;
+}
+
+.pe-error-box strong {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #B5483E;
+
+    font-size: 13px;
+}
+
+.pe-error-box p {
+    margin-bottom: 16px;
+
+    color: var(--text-muted);
+
+    font-size: 11px;
+}
+
+
+/* =========================
+   SECTION
+========================= */
+
+.pe-section {
+    margin-bottom: 18px;
+
+    padding: 20px;
+
+    background: #FAFBF8;
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.pe-section h3 {
+    margin-bottom: 5px;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.pe-section h3 span {
+    margin-right: 4px;
+
+    color: var(--green-dark);
+}
+
+.pe-section-desc {
+    margin-bottom: 16px;
+
+    color: var(--text-muted);
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================
+   TABEL CEK MATERIAL
+========================= */
+
+.pe-table-wrap {
+    overflow-x: auto;
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.pe-table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+.pe-table th {
+    padding: 11px 14px;
+
+    background: #F3F5F0;
+
+    color: #8A8D86;
+
+    text-align: left;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 0.4px;
+
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+.pe-table td {
+    padding: 12px 14px;
+
+    border-top: 1px solid #F0F1EE;
+
+    color: #686B65;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+}
+
+.pe-col-no {
+    width: 44px;
+
+    text-align: center !important;
+}
+
+.pe-col-status {
+    text-align: center !important;
+}
+
+.pe-status {
+    display: inline-flex;
+
+    padding: 4px 11px;
+
+    border-radius: 20px;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.pe-status.ok {
+    color: #58754E;
+
+    background: #E3EFE0;
+}
+
+.pe-status.low {
+    color: #B5483E;
+
+    background: #FDE6E3;
+}
+
+
+/* =========================
+   SHORTAGE
+========================= */
+
+.pe-shortage {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 14px;
+
+    padding: 14px 16px;
+
+    background: #FDF1EF;
+
+    border: 1px solid #F5D3CD;
+    border-radius: 12px;
+}
+
+.pe-shortage[hidden] {
+    display: none;
+}
+
+.pe-shortage-icon {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: #FBDCD7;
+
+    color: #B5483E;
+}
+
+.pe-shortage-text {
+    flex: 1;
+
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.pe-shortage-text strong {
+    color: #B5483E;
+
+    font-size: 12px;
+}
+
+.pe-shortage-text span {
+    color: #7A5550;
+
+    font-size: 10px;
+
+    line-height: 1.5;
+}
+
+.pe-note {
+    margin-top: 10px;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+}
+
+.pe-note[hidden] {
+    display: none;
+}
+
+
+/* =========================
+   PEMAKAIAN AKTUAL + INPUT
+========================= */
+
+.pe-usage-head {
+    display: grid;
+
+    grid-template-columns: 1fr 1.4fr;
+
+    gap: 16px;
+
+    margin-bottom: 10px;
+
+    color: #8A8D86;
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.pe-usage-row {
+    display: grid;
+
+    grid-template-columns: 1fr 1.4fr;
+
+    gap: 16px;
+
+    align-items: start;
+
+    margin-bottom: 14px;
+}
+
+.pe-usage-row > label {
+    padding-top: 11px;
+
+    font-size: 12px;
+}
+
+.pe-input-group {
+    display: flex;
+
+    overflow: hidden;
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    transition: 0.2s ease;
+}
+
+.pe-input-group:focus-within {
+    border-color: var(--green);
+
+    box-shadow:
+        0 0 0 3px rgba(157, 186, 140, 0.15);
+}
+
+.pe-input-group.invalid {
+    border-color: #D98C7A;
+
+    box-shadow:
+        0 0 0 3px rgba(217, 140, 122, 0.12);
+}
+
+.pe-input-group input {
+    flex: 1;
+
+    min-width: 0;
+    height: 40px;
+
+    padding: 0 14px;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: var(--text);
+
+    font-size: 12px;
+}
+
+.pe-input-group span {
+    width: 86px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-left: 1px solid var(--border);
+
+    background: #F6F7F3;
+
+    color: #6E716B;
+
+    font-size: 11px;
+}
+
+.pe-progress {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 10px;
+
+    margin-bottom: 16px;
+}
+
+.pe-progress > div {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+    padding: 11px 14px;
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+}
+
+.pe-progress span {
+    color: var(--text-muted);
+
+    font-size: 10px;
+}
+
+.pe-progress strong {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.pe-progress .accent {
+    background: var(--green-light);
+
+    border-color: transparent;
+}
+
+.pe-progress .accent strong {
+    color: var(--green-dark);
+}
+
+.pe-label {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #6E716B;
+
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.pe-hint {
+    display: block;
+
+    margin-top: 6px;
+
+    color: #A0A39C;
+
+    font-size: 10px;
+}
+
+.pe-field-error {
+    display: block;
+
+    margin-top: 6px;
+
+    color: #B5483E;
+
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.pe-field-error[hidden] {
+    display: none;
+}
+
+.pe-form-error {
+    margin-bottom: 14px;
+
+    padding: 12px 14px;
+
+    border-radius: 10px;
+
+    background: #FDF1EF;
+
+    color: #B5483E;
+
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.pe-form-error[hidden] {
+    display: none;
+}
+
+
+/* =========================
+   FOOTER + TOMBOL
+========================= */
+
+.pe-footer {
+    display: grid;
+
+    grid-template-columns: 0.8fr 1fr 1.2fr;
+
+    gap: 12px;
+
+    padding: 16px 26px 22px;
+
+    border-top: 1px solid var(--border);
+}
+
+.pe-btn {
+    height: 44px;
+
+    padding: 0 18px;
+
+    border-radius: 11px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+.pe-btn:disabled {
+    opacity: 0.55;
+
+    cursor: default;
+}
+
+.pe-btn-primary {
+    border: none;
+
+    background: var(--green-dark);
+    color: var(--white);
+}
+
+.pe-btn-primary:hover:not(:disabled) {
+    background: #465C3E;
+}
+
+.pe-btn-outline {
+    border: 1px solid var(--green-dark);
+
+    background: var(--white);
+
+    color: var(--green-dark);
+}
+
+.pe-btn-outline:hover:not(:disabled) {
+    background: var(--green-light);
+}
+
+.pe-btn-secondary {
+    border: 1px solid var(--border);
+
+    background: var(--white);
+
+    color: #6E716B;
+}
+
+.pe-btn-secondary:hover:not(:disabled) {
+    background: #F8F9F6;
+}
+
+.pe-btn-danger-outline {
+    height: 36px;
+
+    flex-shrink: 0;
+
+    border: 1px solid #E8B5AD;
+
+    background: var(--white);
+
+    color: #B5483E;
+
+    font-size: 11px;
+}
+
+.pe-btn-danger-outline:hover:not(:disabled) {
+    background: #FDF1EF;
+}
+
+.pe-btn:focus-visible,
+.pe-close:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 600px) {
+
+    .pe-header,
+    .pe-body,
+    .pe-footer {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .pe-product {
+        flex-wrap: wrap;
+    }
+
+    .pe-product-badges {
+        width: 100%;
+    }
+
+    .pe-usage-head {
+        display: none;
+    }
+
+    .pe-usage-row {
+        grid-template-columns: 1fr;
+
+        gap: 6px;
+    }
+
+    .pe-usage-row > label {
+        padding-top: 0;
+    }
+
+    .pe-shortage {
+        flex-wrap: wrap;
+    }
+
+    .pe-progress {
+        grid-template-columns: 1fr;
+    }
+
+    .pe-footer {
+        grid-template-columns: 1fr;
+    }
+
+    /* =========================
+   MODAL DETAIL PRODUKSI (pd-)
+   Memakai class pe-* untuk kerangka modal.
+========================= */
+
+.pe-footer.single {
+    grid-template-columns: 1fr;
+}
+
+.pd-bar {
+    height: 8px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background: #E7EAE2;
+}
+
+.pd-bar span {
+    display: block;
+
+    height: 100%;
+
+    border-radius: 20px;
+
+    background: var(--green-dark);
+}
+
+.pd-log-title {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 18px !important;
+}
+
+.pd-log-title svg {
+    color: var(--text-muted);
+}
+
+.pd-log {
+    margin: 0;
+    padding: 0 0 0 4px;
+
+    list-style: none;
+}
+
+.pd-log li {
+    position: relative;
+
+    padding: 0 0 20px 28px;
+}
+
+.pd-log li:last-child {
+    padding-bottom: 0;
+}
+
+.pd-log li::before {
+    content: "";
+
+    position: absolute;
+
+    left: 9px;
+    top: 14px;
+    bottom: -2px;
+
+    width: 2px;
+
+    background: #CFE0C8;
+}
+
+.pd-log li:last-child::before {
+    display: none;
+}
+
+.pd-log-dot {
+    position: absolute;
+
+    left: 4px;
+    top: 3px;
+
+    width: 12px;
+    height: 12px;
+
+    border-radius: 50%;
+
+    background: var(--green-dark);
+
+    box-shadow: 0 0 0 3px var(--green-light);
+}
+
+.pd-log time {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+}
+
+.pd-log p {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.pd-diff {
+    display: inline-flex;
+
+    padding: 4px 11px;
+
+    border-radius: 20px;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.pd-diff.same {
+    color: #58754E;
+
+    background: #E3EFE0;
+}
+
+.pd-diff.over {
+    color: #B5483E;
+
+    background: #FDE6E3;
+}
+
+.pd-diff.under {
+    color: #3F6A8C;
+
+    background: #E2EEF7;
+}
+
+}
