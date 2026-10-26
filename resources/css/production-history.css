@@ -1,0 +1,466 @@
+/* =========================
+   RIWAYAT PRODUKSI
+   Class baru diawali "ph-". Kerangka halaman, tabel, badge, dan modal
+   memakai ulang class pq-* (production-queue.css) dan pe-*
+   (production-execution-modal.css) supaya tampilan konsisten.
+========================= */
+
+
+/* =========================
+   BANNER DATA DEMONSTRASI
+========================= */
+
+.ph-demo {
+    margin-bottom: 20px;
+    padding: 11px 16px;
+
+    border-radius: 11px;
+
+    background: #FFF8DC;
+    color: #8A6A12;
+
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+.ph-demo[hidden] {
+    display: none;
+}
+
+.ph-stat-note {
+    margin-top: -4px;
+    padding-left: 50px;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+}
+
+.ph-explain {
+    margin-bottom: 18px;
+
+    color: #A0A39C;
+
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+
+/* =========================
+   FILTER TANGGAL
+========================= */
+
+.ph-range {
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color: var(--text-muted);
+
+    font-size: 11px;
+}
+
+.ph-date {
+    height: 44px;
+
+    padding: 0 12px;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    outline: none;
+
+    background: var(--white);
+    color: #6E716B;
+
+    font-family: inherit;
+    font-size: 12px;
+
+    transition: 0.2s ease;
+}
+
+.ph-date:focus {
+    border-color: var(--green);
+
+    box-shadow:
+        0 0 0 3px rgba(157, 186, 140, 0.10);
+}
+
+.ph-date.invalid {
+    border-color: #D98C7A;
+}
+
+.ph-range-error {
+    margin: -10px 0 16px;
+
+    color: #B5483E;
+
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.ph-range-error[hidden] {
+    display: none;
+}
+
+
+/* =========================
+   TABEL
+========================= */
+
+.ph-table th {
+    padding: 13px 12px;
+
+    white-space: normal;
+}
+
+.ph-table td {
+    padding: 14px 12px;
+}
+
+.ph-date-cell {
+    color: var(--text);
+
+    font-weight: 600;
+}
+
+/* KOREKSI: wadah horizontal gambar + teks pada kolom Produk / SKU */
+.ph-product-cell {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+/* KOREKSI: min-width: 0 supaya nama panjang bisa terpotong (ellipsis) */
+.ph-product {
+    min-width: 0;
+}
+
+.ph-product strong {
+    display: block;
+
+    max-width: 170px;
+
+    overflow: hidden;
+
+    color: var(--text);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-overflow: ellipsis;
+
+    /* KOREKSI: nama satu baris, tinggi baris tetap rapi */
+    white-space: nowrap;
+}
+
+.ph-product small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #A0A39C;
+
+    font-size: 9px;
+}
+
+.ph-thumb {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    overflow: hidden;
+
+    /* KOREKSI: "margin: 0 auto;" dihapus, thumbnail rata kiri */
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    background: #F3F4F0;
+    color: #A0A39C;
+}
+
+.ph-thumb img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.ph-thumb.big {
+    width: 84px;
+    height: 84px;
+
+    margin: 0;
+
+    border-radius: 14px;
+}
+
+.ph-qty {
+    color: var(--green-dark);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.ph-user {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+.ph-avatar {
+    width: 26px;
+    height: 26px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    background: var(--green-light);
+    color: var(--green-dark);
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.ph-notes {
+    display: block;
+
+    max-width: 170px;
+
+    overflow: hidden;
+
+    color: #686B65;
+
+    text-overflow: ellipsis;
+}
+
+.ph-none {
+    color: #B1B3AF;
+}
+
+.ph-action {
+    height: 32px;
+
+    padding: 0 16px;
+
+    border: 1px solid var(--border);
+    border-radius: 9px;
+
+    background: var(--white);
+    color: var(--green-dark);
+
+    font-size: 10px;
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+.ph-action:hover {
+    border-color: #C8D7C0;
+
+    background: var(--green-light);
+}
+
+.ph-action:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* =========================
+   MODAL DETAIL
+========================= */
+
+.ph-preview {
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+
+    margin-bottom: 18px;
+}
+
+.ph-preview-text strong {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.ph-preview-text span {
+    display: block;
+
+    color: var(--text-muted);
+
+    font-size: 11px;
+}
+
+.ph-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 16px 24px;
+}
+
+.ph-field span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+}
+
+.ph-field strong {
+    display: block;
+
+    color: var(--text);
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.ph-field strong.accent {
+    color: var(--green-dark);
+
+    font-size: 15px;
+}
+
+.ph-field.full {
+    grid-column: 1 / -1;
+}
+
+.ph-field p {
+    color: #686B65;
+
+    font-size: 12px;
+    line-height: 1.6;
+
+    white-space: pre-wrap;
+}
+
+.ph-mat-wrap {
+    overflow-x: auto;
+}
+
+.ph-mat {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+.ph-mat th {
+    padding: 10px 8px;
+
+    color: #9A9D96;
+
+    text-align: left;
+
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+.ph-mat td {
+    padding: 11px 8px;
+
+    border-top: 1px solid var(--border);
+
+    color: #686B65;
+
+    font-size: 11px;
+}
+
+.ph-mat td strong {
+    display: block;
+
+    color: var(--text);
+
+    font-weight: 600;
+}
+
+.ph-mat td small {
+    color: #A0A39C;
+
+    font-size: 9px;
+}
+
+.ph-mat .num {
+    text-align: right;
+
+    color: var(--text);
+
+    font-weight: 600;
+}
+
+.ph-mat th.num {
+    text-align: right;
+}
+
+.ph-empty-line {
+    color: var(--text-muted);
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.ph-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.ph-footer .pe-btn {
+    min-width: 130px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+
+    .ph-range {
+        flex: 1 1 100%;
+    }
+
+    .ph-date {
+        flex: 1;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .ph-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ph-preview {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

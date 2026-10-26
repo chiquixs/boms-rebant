@@ -1,0 +1,872 @@
+/* =========================
+   STOCK & PRODUCTION PLANNING
+   Class baru diawali "sp-". Kerangka halaman, tabel, badge, dan modal
+   memakai ulang class pq-* (production-queue.css) dan pe-*
+   (production-execution-modal.css) supaya tampilan konsisten.
+========================= */
+
+
+/* =========================
+   KARTU STATISTIK
+========================= */
+
+.pq-stat.low .pq-stat-icon {
+    color: #FFFFFF;
+    background: #D9534F;
+}
+
+.pq-stat.low .pq-stat-value {
+    color: #D9534F;
+}
+
+.sp-stat-note {
+    margin-top: -4px;
+    padding-left: 50px;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+}
+
+
+/* =========================
+   PENANDA DATA DEMONSTRASI
+========================= */
+
+.sp-demo {
+    display: flex;
+    align-items: flex-start;
+
+    gap: 10px;
+
+    margin-bottom: 20px;
+    padding: 12px 16px;
+
+    border: 1px solid #F1E3B5;
+    border-radius: 12px;
+
+    background: #FFF8DC;
+    color: #8A6A12;
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.sp-demo[hidden] {
+    display: none;
+}
+
+.sp-demo svg {
+    flex-shrink: 0;
+
+    margin-top: 1px;
+}
+
+
+/* =========================
+   TAB
+========================= */
+
+.sp-tabs {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 8px;
+
+    margin-bottom: 8px;
+}
+
+.sp-tab {
+    height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 0 16px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: var(--white);
+    color: #6E716B;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+.sp-tab span {
+    min-width: 22px;
+
+    padding: 2px 7px;
+
+    border-radius: 20px;
+
+    background: #F3F4F0;
+    color: var(--text-muted);
+
+    font-size: 10px;
+    text-align: center;
+}
+
+.sp-tab:hover {
+    border-color: #CBD8C4;
+}
+
+.sp-tab.active {
+    border-color: var(--green-dark);
+
+    background: var(--green-dark);
+    color: var(--white);
+}
+
+.sp-tab.active span {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--white);
+}
+
+.sp-tab:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+.sp-tab-hint {
+    margin-bottom: 18px;
+
+    color: #A0A39C;
+
+    font-size: 10px;
+}
+
+
+/* =========================
+   SEARCH + IKON X
+========================= */
+
+.sp-search-clear {
+    width: 24px;
+    height: 24px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    margin-left: auto;
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #F0F1EE;
+    color: #8A8D86;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.sp-search-clear:hover {
+    background: #E3E6DF;
+    color: var(--text);
+}
+
+.sp-search-clear:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+.sp-search-clear[hidden] {
+    display: none;
+}
+
+
+/* =========================
+   TABEL
+========================= */
+
+.sp-table th {
+    padding: 13px 12px;
+
+    white-space: normal;
+}
+
+.sp-table td {
+    padding: 14px 12px;
+}
+
+.sp-thumb {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    overflow: hidden;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    background: #F3F4F0;
+    color: #A0A39C;
+}
+
+.sp-thumb img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.sp-thumb.big {
+    width: 84px;
+    height: 84px;
+
+    border-radius: 14px;
+}
+
+.sp-product {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+.sp-product-text {
+    min-width: 0;
+}
+
+.sp-product-text strong {
+    display: block;
+
+    max-width: 200px;
+
+    overflow: hidden;
+
+    color: var(--text);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-overflow: ellipsis;
+}
+
+.sp-product-text small {
+    display: block;
+
+    max-width: 200px;
+    margin-top: 3px;
+
+    overflow: hidden;
+
+    color: #A0A39C;
+
+    font-size: 9px;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sp-stock {
+    min-width: 76px;
+}
+
+.sp-stock strong {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: var(--text);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.sp-meter {
+    height: 5px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background: #E7EAE2;
+}
+
+.sp-meter span {
+    display: block;
+
+    height: 100%;
+
+    border-radius: 20px;
+
+    background: var(--green-dark);
+}
+
+.sp-meter.sp-ok span {
+    background: var(--green-dark);
+}
+
+.sp-meter.sp-low span {
+    background: #D9534F;
+}
+
+.sp-rec {
+    color: var(--green-dark);
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.sp-rec-none {
+    color: #B1B3AF;
+}
+
+.sp-rec-note {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #A0A39C;
+
+    font-size: 9px;
+    font-weight: 400;
+}
+
+.sp-rec-covered {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #8A6A12;
+
+    font-size: 9px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   BADGE STATUS STOK (Aman / Stok Rendah)
+========================= */
+
+.pq-badge.sp-ok {
+    background: #E3EFE0;
+    color: #58754E;
+}
+
+.pq-badge.sp-low {
+    background: #FDE8E7;
+    color: #B5483E;
+}
+
+
+/* =========================
+   AKSI BARIS
+========================= */
+
+.sp-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+}
+
+.sp-action {
+    height: 32px;
+
+    padding: 0 14px;
+
+    border-radius: 9px;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    transition: 0.2s ease;
+}
+
+.sp-action.primary {
+    border: none;
+
+    background: var(--green-dark);
+    color: var(--white);
+}
+
+.sp-action.primary:hover:not(:disabled) {
+    background: #465C3E;
+}
+
+.sp-action.primary:disabled {
+    background: #E3E6DF;
+    color: #A0A39C;
+
+    cursor: not-allowed;
+}
+
+.sp-action.outline {
+    border: 1px solid var(--border);
+
+    background: var(--white);
+    color: var(--green-dark);
+}
+
+.sp-action.outline:hover {
+    border-color: #C8D7C0;
+
+    background: var(--green-light);
+}
+
+.sp-action:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* =========================
+   PANEL INSIGHT
+========================= */
+
+.sp-insight {
+    display: grid;
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+
+    margin-top: 24px;
+}
+
+.sp-insight[hidden] {
+    display: none;
+}
+
+.sp-panel {
+    padding: 22px;
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+}
+
+.sp-panel h3 {
+    margin-bottom: 4px;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.sp-panel > p {
+    margin-bottom: 16px;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+}
+
+.sp-bar {
+    height: 12px;
+
+    display: flex;
+
+    overflow: hidden;
+
+    margin-bottom: 14px;
+
+    border-radius: 20px;
+
+    background: #E7EAE2;
+}
+
+.sp-bar span {
+    display: block;
+
+    height: 100%;
+}
+
+.sp-bar .safe  { background: var(--green-dark); }
+.sp-bar .low   { background: #D9534F; }
+.sp-bar .need  { background: #D98A1F; }
+
+.sp-legend {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.sp-legend div {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color: #686B65;
+
+    font-size: 11px;
+}
+
+.sp-legend i {
+    width: 9px;
+    height: 9px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+}
+
+.sp-legend i.safe { background: var(--green-dark); }
+.sp-legend i.low  { background: #D9534F; }
+.sp-legend i.need { background: #D98A1F; }
+
+.sp-legend strong {
+    margin-left: auto;
+
+    color: var(--text);
+}
+
+.sp-top {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.sp-top button {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 8px 10px;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    background: var(--white);
+
+    text-align: left;
+
+    transition: 0.2s ease;
+}
+
+.sp-top button:hover {
+    border-color: #C8D7C0;
+
+    background: #F6FAF3;
+}
+
+.sp-top .sp-thumb {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 9px;
+}
+
+.sp-top-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.sp-top-text strong {
+    display: block;
+
+    overflow: hidden;
+
+    color: var(--text);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sp-top-text small {
+    color: #A0A39C;
+
+    font-size: 9px;
+}
+
+.sp-top b {
+    color: var(--green-dark);
+
+    font-size: 12px;
+}
+
+.sp-top-empty {
+    color: var(--text-muted);
+
+    font-size: 11px;
+}
+
+.sp-sum {
+    display: flex;
+    flex-direction: column;
+}
+
+.sp-sum div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 11px 0;
+
+    border-top: 1px solid #F0F1EE;
+
+    color: #686B65;
+
+    font-size: 11px;
+}
+
+.sp-sum div:first-child {
+    border-top: none;
+}
+
+.sp-sum strong {
+    color: var(--text);
+
+    font-size: 13px;
+}
+
+
+/* =========================
+   MODAL (DETAIL + PERMINTAAN PRODUKSI)
+========================= */
+
+.sp-note {
+    margin-bottom: 18px;
+    padding: 12px 14px;
+
+    border-radius: 10px;
+
+    background: var(--green-light);
+    color: var(--green-dark);
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.sp-warn {
+    margin-top: 12px;
+    padding: 11px 14px;
+
+    border-radius: 10px;
+
+    background: #FFF8DC;
+    color: #8A6A12;
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.sp-warn[hidden] {
+    display: none;
+}
+
+.sp-readonly {
+    margin-bottom: 18px;
+    padding: 16px;
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    background: #FBFCFA;
+}
+
+.sp-readonly .sp-preview {
+    margin-bottom: 16px;
+}
+
+.sp-info-line {
+    margin-top: 12px;
+    padding: 11px 14px;
+
+    border-radius: 10px;
+
+    background: var(--green-light);
+    color: var(--green-dark);
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.sp-info-line[hidden] {
+    display: none;
+}
+
+.sp-preview {
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+
+    margin-bottom: 18px;
+}
+
+.sp-preview[hidden] {
+    display: none;
+}
+
+.sp-preview-text strong {
+    display: block;
+
+    margin-bottom: 4px;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.sp-preview-text span {
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: var(--text-muted);
+
+    font-size: 11px;
+}
+
+.sp-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 16px 24px;
+}
+
+.sp-field span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--text-muted);
+
+    font-size: 10px;
+}
+
+.sp-field strong {
+    display: block;
+
+    color: var(--text);
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.sp-field strong.accent {
+    color: var(--green-dark);
+}
+
+.sp-req {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 10px 0;
+
+    border-top: 1px solid var(--border);
+
+    font-size: 11px;
+}
+
+.sp-req:first-of-type {
+    border-top: none;
+}
+
+.sp-req strong {
+    color: var(--green-dark);
+}
+
+.sp-req small {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #A0A39C;
+
+    font-size: 9px;
+}
+
+.sp-empty-line {
+    color: var(--text-muted);
+
+    font-size: 11px;
+}
+
+.sp-textarea {
+    width: 100%;
+
+    padding: 12px 14px;
+
+    border: 1px solid var(--border);
+    border-radius: 11px;
+
+    outline: none;
+
+    background: var(--white);
+    color: var(--text);
+
+    font-family: inherit;
+    font-size: 12px;
+
+    resize: vertical;
+}
+
+.sp-textarea:focus {
+    border-color: var(--green);
+
+    box-shadow:
+        0 0 0 3px rgba(157, 186, 140, 0.15);
+}
+
+.sp-full {
+    width: 100%;
+}
+
+.sp-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.sp-footer .pe-btn {
+    min-width: 130px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+
+    .sp-insight {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .sp-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sp-preview {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

@@ -9,11 +9,8 @@
 ========================= --}}
 
 <div class="pq-page-header">
-
-    <div class="pq-page-header-text">
-        <h1>Production Queue</h1>
-        <p>Kelola antrean dan status pekerjaan produksi</p>
-    </div>
+    <h1>Production Queue</h1>
+    <p>Kelola antrean dan status pekerjaan produksi</p>
 </div>
 
 
@@ -36,7 +33,7 @@
                     <path d="M3 18h.01"/>
                 </svg>
             </div>
-            <span class="pq-stat-label">Total Requests</span>
+            <span class="pq-stat-label">Total Request</span>
         </div>
         <strong class="pq-stat-value" id="pqStatTotal">-</strong>
     </div>
@@ -78,7 +75,7 @@
                     <path d="m8 12 3 3 5-6"/>
                 </svg>
             </div>
-            <span class="pq-stat-label">Completed Today</span>
+            <span class="pq-stat-label">Completed</span>
         </div>
         <strong class="pq-stat-value" id="pqStatDone">-</strong>
     </div>
@@ -102,16 +99,25 @@
         <input
             type="text"
             id="pqSearch"
-            placeholder="Cari request no atau nama produk..."
+            placeholder="Cari request no, produk, SKU, atau varian..."
             autocomplete="off"
             aria-label="Cari request no, nama produk, varian, atau SKU"
         >
+
+        <button type="button" class="pq-search-clear" id="pqSearchClear"
+                aria-label="Hapus pencarian" title="Hapus pencarian" hidden>
+            <svg width="12" height="12" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M18 6 6 18"/>
+                <path d="m6 6 12 12"/>
+            </svg>
+        </button>
     </label>
 
     <select class="pq-select" id="pqFilterSource" aria-label="Filter source">
         <option value="">Semua Source</option>
-        <option value="ORDER">ORDER</option>
-        <option value="MTS_MIN_STOCK">MTS-MIN-STOCK</option>
+        <option value="ORDER">Pesanan Pelanggan (MTO)</option>
+        <option value="MTS">Pengisian Stok (MTS)</option>
     </select>
 
     <select class="pq-select" id="pqFilterStatus" aria-label="Filter status">
@@ -122,7 +128,7 @@
     </select>
 
     <button type="button" class="pq-reset" id="pqReset" hidden>
-        Reset Filters
+        Reset filter
     </button>
 
 </div>
@@ -148,11 +154,14 @@
 
             <thead>
                 <tr>
-                    <th>Request No</th>
-                    <th>Product</th>
+                    <th class="center">No.</th>
+                    <th>No. Permintaan</th>
+                    <th>Produk</th>
                     <th class="center">Source</th>
-                    <th class="center">Qty Requested</th>
-                    <th class="center">Qty Produced</th>
+                    <th class="center">Jumlah Diminta</th>
+                    <th class="center">Jumlah Diproduksi</th>
+                    <th class="center">Sisa Produksi</th>
+                    <th>Tanggal Permintaan</th>
                     <th class="center">Status</th>
                     <th class="center">Aksi</th>
                 </tr>
@@ -176,7 +185,7 @@
         </div>
         <h3>Tidak ada request ditemukan</h3>
         <p id="pqEmptyText">Belum ada request produksi yang sesuai dengan pencarian atau filter.</p>
-        <button type="button" id="pqEmptyReset">Reset Filters</button>
+        <button type="button" id="pqEmptyReset">Reset filter</button>
     </div>
 
 
@@ -245,12 +254,26 @@
     // LABEL + KELAS BADGE
     // ==========================================
 
-    const SOURCE_META = {
-        ORDER:         { label: 'ORDER',         cls: 'order' },
-        MTS_MIN_STOCK: { label: 'MTS-MIN-STOCK', cls: 'mts' }
-    };
+    // Sumber permintaan (production_requests.source).
+    //   ORDER                           -> Pesanan Pelanggan (MTO)
+    //   MTS_MIN_STOCK / MTS-MIN-STOCK   -> Pengisian Stok (MTS)
+    //   RESTOCK                         -> Pengisian Stok (MTS)
+    // Nilai ini konvensi aplikasi. Constraint database saat ini hanya
+    // mengizinkan ORDER dan RESTOCK, jadi ketiganya dikenali.
+    // Nilai lain atau kosong ditampilkan dengan aman sebagai apa adanya.
+    function sourceMeta(source) {
 
-    // Status mengikuti ERD: WAITING, IN_PROCESS, COMPLETED
+        if (source === 'ORDER') {
+            return { label: 'Pesanan Pelanggan (MTO)', cls: 'order', group: 'ORDER' };
+        }
+
+        if (source === 'MTS_MIN_STOCK' || source === 'MTS-MIN-STOCK' || source === 'RESTOCK') {
+            return { label: 'Pengisian Stok (MTS)', cls: 'mts', group: 'MTS' };
+        }
+
+        return { label: source ? String(source) : 'Tidak diketahui', cls: 'normal', group: '' };
+    }
+
     const STATUS_META = {
         WAITING:    { label: 'WAITING',    cls: 'waiting' },
         IN_PROCESS: { label: 'IN_PROCESS', cls: 'progress' },
@@ -259,9 +282,9 @@
 
     // Tombol aksi menyesuaikan status request
     const ACTION_META = {
-    WAITING:    { key: 'start',    label: 'Mulai Produksi' },
-    IN_PROCESS: { key: 'continue', label: 'Lanjutkan Produksi' },
-    COMPLETED:  { key: 'detail',   label: 'Lihat Detail' }
+        WAITING:    { key: 'start',    label: 'Mulai Produksi' },
+        IN_PROCESS: { key: 'continue', label: 'Lanjutkan Produksi' },
+        COMPLETED:  { key: 'detail',   label: 'Lihat Detail' }
     };
 
 
@@ -271,7 +294,11 @@
     // Nama field mengikuti kolom production_requests, products, dan product_groups.
     // ==========================================
 
-    const MOCK_ROWS = [
+    // Gambar demonstrasi. Dengan backend, kirim image_url yang sudah siap pakai
+    // (products.image_path, atau product_groups.image_path jika kosong).
+    const MOCK_IMG = "{{ asset('images/produk.jpg') }}";
+
+    const MOCK_REQUESTS = [
         ['PR-20261010-001', 'Frame Kayu Karakter Jepang (10x30)', 'V1', 'FKGU-B-N-V1', 'ORDER', 20, 0, 'WAITING'],
         ['PR-20261010-002', 'Sign Peringatan Hitam (9x30)', 'CCTV', 'D6A-1', 'MTS_MIN_STOCK', 10, 6, 'IN_PROCESS'],
         ['PR-20261010-003', 'Quotes Black and White (15x20)', 'Leave Home', 'I9J-1', 'ORDER', 20, 20, 'COMPLETED'],
@@ -296,60 +323,24 @@
         ['PR-20261008-007', 'Quotes Black and White (15x20)', 'Creativity', 'I9J-3', 'ORDER', 7, 7, 'COMPLETED'],
         ['PR-20261008-008', 'Malang Tempo Dulu (30x45)', 'Benstur Kantor', 'T29A-3', 'ORDER', 18, 0, 'WAITING'],
         ['PR-20261008-009', 'Gantungan Gelang Kayu 2 Sisi', 'White', 'GG-B-W', 'ORDER', 22, 9, 'IN_PROCESS']
-    ];
+    ].map(function (row, index) {
 
-    // Dua request COMPLETED dibuat selesai "hari ini" supaya kartu Completed Today terisi
-    const MOCK_DONE_TODAY = ['PR-20261010-003', 'PR-20261010-008'];
-
-    // PR-20261010-003 -> 2026-10-10 pada jam tertentu (hanya untuk data simulasi)
-    function mockTime(requestNo, hour, minute) {
-
-        const m = /PR-(\d{4})(\d{2})(\d{2})-/.exec(requestNo);
-
-        const d = m
-            ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]), hour, minute)
-            : new Date();
-
-        return d.toISOString();
-    }
-
-    const MOCK_REQUESTS = MOCK_ROWS.map(function (row) {
-
-        const status = row[7];
-
-        let completedAt = null;
-
-        if (status === 'COMPLETED') {
-
-            if (MOCK_DONE_TODAY.indexOf(row[0]) !== -1) {
-
-                const now = new Date();
-                now.setHours(14, 20, 0, 0);
-
-                completedAt = now.toISOString();
-
-            } else {
-                completedAt = mockTime(row[0], 15, 45);
-            }
-        }
+        // created_at hanya untuk simulasi: diturunkan dari nomor request.
+        const m = /PR-(\d{4})(\d{2})(\d{2})-/.exec(row[0]);
 
         return {
             request_no:    row[0],
             product_name:  row[1],   // product_groups.name
             variant_name:  row[2],   // products.variant_name
             sku:           row[3],   // products.sku
-            source:        row[4],
-            qty_requested: row[5],
-            qty_produced:  row[6],
-            status:        status,
-            started_at:    status === 'WAITING' ? null : mockTime(row[0], 8, 30),
-            completed_at:  completedAt
+            source:        row[4],   // production_requests.source
+            qty_requested: row[5],   // production_requests.qty_requested
+            qty_produced:  row[6],   // total production_logs.qty_produced
+            status:        row[7],   // WAITING | IN_PROCESS | COMPLETED
+            image_url:     index % 3 === 0 ? MOCK_IMG : null,
+            created_at:    m ? m[1] + '-' + m[2] + '-' + m[3] + 'T09:00:00' : null
         };
     });
-
-    // Perubahan yang dibuat user pada sesi halaman ini (tetap ada saat Refresh).
-    // Hanya untuk simulasi. Hapus saat backend siap.
-    const overrides = {};
 
 
     // ==========================================
@@ -395,28 +386,8 @@
             }
 
             return MOCK_REQUESTS.map(function (item) {
-                return Object.assign({}, item, overrides[item.request_no] || {});
+                return Object.assign({}, item);
             });
-        },
-
-        // Mulai produksi: server mencatat started_at dan mengubah status menjadi IN_PROCESS.
-        // Uji tampilan gagal: tambahkan ?mock=startfail di URL.
-        async startProduction(item) {
-
-            if (PQ_CONFIG.apiUrl) {
-                // Hubungkan ke endpoint backend yang disepakati tim.
-                throw new Error('Endpoint start production belum dikonfigurasi');
-            }
-
-            await new Promise(function (resolve) {
-                setTimeout(resolve, 350);
-            });
-
-            if (new URLSearchParams(window.location.search).get('mock') === 'startfail') {
-                throw new Error('Simulasi gagal');
-            }
-
-            return { started_at: new Date().toISOString() };
         }
     };
 
@@ -452,6 +423,7 @@
         source:       document.getElementById('pqFilterSource'),
         status:       document.getElementById('pqFilterStatus'),
         reset:        document.getElementById('pqReset'),
+        searchClear:  document.getElementById('pqSearchClear'),
 
         count:        document.getElementById('pqCount'),
         wrapper:      document.getElementById('pqTableWrapper'),
@@ -489,6 +461,47 @@
         });
     }
 
+    const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+    function fmtDate(value) {
+
+        if (!value) return '-';
+
+        const d = new Date(value);
+
+        if (isNaN(d.getTime())) return '-';
+
+        return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+    }
+
+    const THUMB_PLACEHOLDER =
+        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">' +
+            '<rect x="3" y="4" width="18" height="16" rx="2"/>' +
+            '<circle cx="9" cy="10" r="1.5"/>' +
+            '<path d="m21 16-5-5-8 9"/>' +
+        '</svg>';
+
+    // Gambar produk atau placeholder jika tidak ada.
+    function thumbHtml(item) {
+
+        const inner = item.image_url
+            ? '<img src="' + esc(item.image_url) + '" alt="' + esc(item.product_name) + '" loading="lazy">'
+            : THUMB_PLACEHOLDER;
+
+        return '<span class="pq-thumb">' + inner + '</span>';
+    }
+
+    // Gambar gagal dimuat -> kembali ke placeholder.
+    document.addEventListener('error', function (event) {
+
+        const img = event.target;
+
+        if (img && img.tagName === 'IMG' && img.parentNode && img.parentNode.classList.contains('pq-thumb')) {
+            img.parentNode.innerHTML = THUMB_PLACEHOLDER;
+        }
+
+    }, true);
+
     function hasActiveFilter() {
 
         const f = state.filters;
@@ -504,13 +517,13 @@
 
         return state.all.filter(function (item) {
 
-            if (f.source && item.source !== f.source) return false;
+            if (f.source && sourceMeta(item.source).group !== f.source) return false;
             if (f.status && item.status !== f.status) return false;
 
             if (keyword) {
 
                 const haystack =
-                    (item.request_no + ' ' + item.product_name + ' ' + item.variant_name + ' ' + item.sku).toLowerCase();
+                    [item.request_no, item.product_name, item.variant_name, item.sku].join(' ').toLowerCase();
 
                 if (haystack.indexOf(keyword) === -1) return false;
             }
@@ -546,19 +559,12 @@
             }).length;
         };
 
-        const completedToday = state.all.filter(function (item) {
-
-            return item.status === 'COMPLETED' && item.completed_at &&
-                new Date(item.completed_at).toDateString() === new Date().toDateString();
-
-        }).length;
-
         const ready = !state.loading && !state.error;
 
         els.statTotal.textContent    = ready ? state.all.length : '-';
         els.statWaiting.textContent  = ready ? count('WAITING') : '-';
         els.statProgress.textContent = ready ? count('IN_PROCESS') : '-';
-        els.statDone.textContent     = ready ? completedToday : '-';
+        els.statDone.textContent     = ready ? count('COMPLETED') : '-';
     }
 
     function renderSkeleton() {
@@ -569,7 +575,7 @@
 
             html += '<tr>';
 
-            for (let c = 0; c < 7; c++) {
+            for (let c = 0; c < 10; c++) {
                 html += '<td><span class="pq-skeleton"></span></td>';
             }
 
@@ -579,20 +585,30 @@
         els.body.innerHTML = html;
     }
 
-    function renderRow(item) {
+    function renderRow(item, number) {
 
-        const source   = SOURCE_META[item.source]     || { label: item.source,   cls: 'normal' };
-        const status   = STATUS_META[item.status]     || { label: item.status,   cls: 'normal' };
-        const action   = ACTION_META[item.status]     || ACTION_META.COMPLETED;
+        const source = sourceMeta(item.source);
+        const status = STATUS_META[item.status] || { label: item.status || '-', cls: 'normal' };
+        const action = ACTION_META[item.status] || ACTION_META.COMPLETED;
+
+        const requested = Number(item.qty_requested) || 0;
+        const produced  = Number(item.qty_produced) || 0;
+
+        // Sisa Produksi = max(0, qty_requested - total qty_produced)
+        const remaining = Math.max(0, requested - produced);
 
         return '' +
             '<tr>' +
+                '<td class="center">' + number + '</td>' +
                 '<td><span class="pq-request-no">' + esc(item.request_no) + '</span></td>' +
-                '<td><span class="pq-product">' + esc(item.product_name) +
-                    '<small>' + esc(item.sku) + (item.variant_name ? ' &middot; ' + esc(item.variant_name) : '') + '</small></span></td>' +
+                '<td><div class="pq-product-wrap">' + thumbHtml(item) +
+                    '<span class="pq-product">' + esc(item.product_name) +
+                    '<small>SKU: ' + esc(item.sku) + (item.variant_name ? ' &middot; Varian: ' + esc(item.variant_name) : '') + '</small></span></div></td>' +
                 '<td class="center"><span class="pq-badge ' + source.cls + '">' + esc(source.label) + '</span></td>' +
-                '<td class="center"><span class="pq-qty">' + esc(item.qty_requested) + ' pcs</span></td>' +
-                '<td class="center"><span class="pq-qty">' + esc(item.qty_produced) + ' / ' + esc(item.qty_requested) + '</span></td>' +
+                '<td class="center"><span class="pq-qty">' + esc(requested) + ' pcs</span></td>' +
+                '<td class="center"><span class="pq-qty">' + esc(produced) + ' pcs</span></td>' +
+                '<td class="center"><span class="pq-qty pq-remain' + (remaining === 0 ? ' zero' : '') + '">' + esc(remaining) + ' pcs</span></td>' +
+                '<td><span class="pq-date">' + esc(fmtDate(item.created_at)) + '</span></td>' +
                 '<td class="center"><span class="pq-badge ' + status.cls + '">' + esc(status.label) + '</span></td>' +
                 '<td class="center">' +
                     '<button type="button" class="pq-action"' +
@@ -717,7 +733,9 @@
         els.error.hidden = true;
         els.footer.hidden = false;
 
-        els.body.innerHTML = pageItems.map(renderRow).join('');
+        els.body.innerHTML = pageItems.map(function (item, i) {
+            return renderRow(item, from + i + 1);
+        }).join('');
 
         els.info.textContent =
             'Menampilkan ' + (from + 1) + '-' + (from + pageItems.length) +
@@ -775,12 +793,20 @@
         els.source.value   = '';
         els.status.value   = '';
 
+        syncSearchClear();
         applyFilters();
     }
 
     let searchTimer = null;
 
+    // Ikon X hanya tampil saat kolom pencarian berisi teks.
+    function syncSearchClear() {
+        els.searchClear.hidden = els.search.value === '';
+    }
+
     els.search.addEventListener('input', function () {
+
+        syncSearchClear();
 
         clearTimeout(searchTimer);
 
@@ -789,6 +815,19 @@
 
     [els.source, els.status].forEach(function (select) {
         select.addEventListener('change', applyFilters);
+    });
+
+    // Ikon X: hanya mengosongkan pencarian. Source dan status tetap.
+    els.searchClear.addEventListener('click', function () {
+
+        clearTimeout(searchTimer);
+
+        els.search.value = '';
+
+        syncSearchClear();
+        applyFilters();
+
+        els.search.focus();
     });
 
     els.reset.addEventListener('click', resetFilters);
@@ -814,67 +853,9 @@
 
     // ==========================================
     // AKSI TOMBOL
-    //   WAITING    -> Start Production : catat started_at, status IN_PROCESS, buka modal
-    //   IN_PROCESS -> Continue         : buka modal eksekusi
-    //   COMPLETED  -> View Detail      : buka modal detail (hanya baca)
+    //   Mulai Produksi / Lanjutkan Produksi -> buka modal eksekusi
+    //   Lihat Detail                        -> buka modal detail produksi (hanya baca)
     // ==========================================
-
-    function findItem(requestNo) {
-
-        return state.all.find(function (row) {
-            return row.request_no === requestNo;
-        });
-    }
-
-    function saveOverride(item) {
-
-        overrides[item.request_no] = {
-            qty_produced: item.qty_produced,
-            status:       item.status,
-            started_at:   item.started_at,
-            completed_at: item.completed_at
-        };
-    }
-
-    async function startProduction(item, button) {
-
-        // Validasi: hanya request WAITING yang boleh dimulai
-        if (item.status !== 'WAITING') {
-
-            showToast('Request ' + item.request_no + ' sudah tidak berstatus WAITING.');
-            render();
-
-            return;
-        }
-
-        button.disabled = true;
-        button.textContent = 'Starting...';
-
-        let result;
-
-        try {
-
-            result = await queueApi.startProduction(item);
-
-        } catch (error) {
-
-            showToast('Gagal memulai produksi ' + item.request_no + '. Silakan coba lagi.');
-            render();
-
-            return;
-        }
-
-        item.status = 'IN_PROCESS';
-        item.started_at = result.started_at;
-
-        saveOverride(item);
-
-        render();
-
-        if (window.ProductionExecutionModal) {
-            window.ProductionExecutionModal.open(item);
-        }
-    }
 
     els.body.addEventListener('click', function (event) {
 
@@ -889,25 +870,14 @@
             detail: { action: action, requestNo: requestNo }
         }));
 
-        const item = findItem(requestNo);
+        const item = state.all.find(function (row) {
+            return row.request_no === requestNo;
+        });
 
-        if (!item) return;
+        // Mulai / Lanjutkan Produksi -> modal eksekusi
+        if (action === 'start' || action === 'continue') {
 
-        if (action === 'start') {
-
-            startProduction(item, button);
-
-            return;
-        }
-
-        if (action === 'continue') {
-
-            if (item.status !== 'IN_PROCESS') {
-                showToast('Request ' + requestNo + ' tidak berstatus IN_PROCESS.');
-                return;
-            }
-
-            if (window.ProductionExecutionModal) {
+            if (item && window.ProductionExecutionModal) {
                 window.ProductionExecutionModal.open(item);
                 return;
             }
@@ -916,9 +886,10 @@
             return;
         }
 
+        // Lihat Detail -> modal detail produksi
         if (action === 'detail') {
 
-            if (window.ProductionDetailModal) {
+            if (item && window.ProductionDetailModal) {
                 window.ProductionDetailModal.open(item);
                 return;
             }
@@ -928,40 +899,35 @@
     });
 
     // Setelah modal "disimpan" (SIMULASI), perbarui baris di tabel
-    //   Simpan Progres        -> qty bertambah, status IN_PROCESS
-    //   Total mencapai target -> status COMPLETED + completed_at
+    //   Simpan Progres      -> IN_PROCESS -> tombol "Lanjutkan Produksi"
+    //   Selesaikan Produksi -> COMPLETED  -> tombol "Lihat Detail"
     document.addEventListener('production-execution:saved', function (event) {
 
         const detail = event.detail;
 
-        const item = findItem(detail.requestNo);
+        const item = state.all.find(function (row) {
+            return row.request_no === detail.requestNo;
+        });
 
         if (!item) return;
 
         item.qty_produced = detail.qtyProduced;
         item.status = detail.status;
 
-        if (detail.status === 'COMPLETED') {
-            item.completed_at = new Date().toISOString();
-        }
-
-        saveOverride(item);
-
         render();
 
         showToast(
             'Simulasi: ' + detail.requestNo +
-            (detail.status === 'COMPLETED' ? ' selesai (COMPLETED).' : ' progres disimpan.') +
+            (detail.status === 'COMPLETED' ? ' diselesaikan.' : ' progres disimpan.') +
             ' Belum tersimpan ke database.'
         );
     });
-
-
 
     // ==========================================
     // INIT
     // ==========================================
 
+    syncSearchClear();
     loadData();
 
 })();

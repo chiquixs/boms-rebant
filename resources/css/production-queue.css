@@ -10,13 +10,6 @@
 ========================= */
 
 .pq-page-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    flex-wrap: wrap;
-
-    gap: 16px;
-
     margin-bottom: 28px;
 }
 
@@ -33,41 +26,6 @@
     color: var(--text-muted);
 
     font-size: 12px;
-}
-
-.pq-refresh {
-    height: 44px;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 8px;
-
-    padding: 0 20px;
-
-    border: 1px solid var(--border);
-    border-radius: 11px;
-
-    background: var(--white);
-
-    color: var(--green-dark);
-
-    font-size: 12px;
-    font-weight: 600;
-
-    white-space: nowrap;
-
-    transition: 0.2s ease;
-}
-
-.pq-refresh:hover {
-    background: var(--green-light);
-}
-
-.pq-refresh:focus-visible {
-    outline: 2px solid var(--green);
-    outline-offset: 2px;
 }
 
 
@@ -848,4 +806,99 @@
 
         align-items: flex-start;
     }
+}
+
+
+/* =========================
+   KOREKSI PRODUCTION QUEUE
+   Thumbnail produk, ikon X pencarian, kolom tanggal dan sisa produksi.
+========================= */
+
+.pq-product-wrap {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+.pq-thumb {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    overflow: hidden;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background: #F3F4F0;
+
+    color: #A3A69F;
+}
+
+.pq-thumb img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.pq-search-clear {
+    width: 24px;
+    height: 24px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #F0F1EE;
+    color: #8A8D86;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.pq-search-clear:hover {
+    background: #E3E6DF;
+    color: var(--text);
+}
+
+.pq-search-clear:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+.pq-search-clear[hidden] {
+    display: none;
+}
+
+.pq-date {
+    color: #6E716B;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+}
+
+.pq-remain {
+    font-weight: 700;
+}
+
+.pq-remain.zero {
+    color: #A3A69F;
+
+    font-weight: 500;
 }

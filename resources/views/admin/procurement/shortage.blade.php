@@ -1,6 +1,13 @@
-@extends('layouts.produksi')
+@extends('layouts.admin')
 
 @section('title', 'Material Shortage - REBANT BOMS')
+
+@push('styles')
+    @vite([
+        'resources/css/production-queue.css',
+        'resources/css/production-execution-modal.css',
+        'resources/css/material-shortage.css'
+    ])
 
 @section('content')
 

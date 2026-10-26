@@ -192,6 +192,11 @@ Route::middleware('auth')->group(function () {
             Route::put('/procurement/suppliers/{supplier}', [SupplierController::class, 'update'])->name('procurement.suppliers.update');
             Route::delete('/procurement/suppliers/{supplier}', [SupplierController::class, 'destroy'])->name('procurement.suppliers.destroy');
 
+            // Material Shortage (harus di atas /procurement/{po})
+            Route::get('/procurement/shortage', function () {
+                return view('admin.procurement.shortage');
+            })->name('procurement.shortage');
+
 
             Route::get('/procurement/{po}', function ($po) {
                 return view('admin.procurement.show', [
@@ -229,9 +234,14 @@ Route::middleware('auth')->group(function () {
                 return view('produksi.queue.index');
             })->name('queue.index');
 
-            Route::get('/shortage', function () {
-                return view('produksi.shortage.index');
-            })->name('shortage.index');
+            Route::get('/planning', function () {
+                return view('produksi.planning.index');
+            })->name('planning.index');
+
+            Route::get('/history', function () {
+            return view('produksi.history.index');
+            })->name('history.index');
+
         });
 
 
