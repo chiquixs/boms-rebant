@@ -343,6 +343,15 @@
 
         </a>
 
+            {{-- Material Shortage --}}
+        <a
+            href="/admin/procurement/shortage"
+            class="nav-subitem {{ request()->is('admin/procurement/shortage*') ? 'active' : '' }}"
+        >
+            <span class="nav-subitem-dot"></span>
+            <span>Material Shortage</span>
+        </a>
+
     </div>
 
 </div>

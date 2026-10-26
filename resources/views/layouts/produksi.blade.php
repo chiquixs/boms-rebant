@@ -11,10 +11,11 @@
         'resources/css/produksi.css',
         'resources/css/production-queue.css',
         'resources/css/production-execution-modal.css',
-        'resources/css/production-execution-modal.css',
-        'resources/css/material-shortage.css'
-
+        'resources/css/stock-planning.css',
+        'resources/css/production-history.css',
     ])
+
+
 
     @stack('styles')
 </head>
@@ -78,32 +79,31 @@
             </a>
 
 
-            {{-- Material Shortage --}}
-            <a href="{{ route('produksi.shortage.index') }}"
-               class="nav-item {{ request()->routeIs('produksi.shortage.*') ? 'active' : '' }}">
+            {{-- Stock & Production Planning --}}
+            <a href="{{ route('produksi.planning.index') }}"
+               class="nav-item {{ request()->routeIs('produksi.planning.*') ? 'active' : '' }}">
 
                 <svg width="20" height="20" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M12 3 2 20h20L12 3Z"/>
-                    <path d="M12 10v4"/>
-                    <path d="M12 17h.01"/>
+                    <path d="M3 3v18h18"/>
+                    <path d="m7 15 4-4 3 3 5-6"/>
                 </svg>
 
-                <span>Material Shortage</span>
+                <span>Stock & Production Planning</span>
             </a>
 
 
-            {{-- Finished Goods Inventory (halaman belum dibuat) --}}
-            <a href="#" class="nav-item">
+            {{-- Riwayat Produksi --}}
+            <a href="{{ route('produksi.history.index') }}"
+               class="nav-item {{ request()->routeIs('produksi.history.*') ? 'active' : '' }}">
 
                 <svg width="20" height="20" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="1.8">
-                    <rect x="3" y="5" width="18" height="16" rx="2"/>
-                    <path d="M3 10h18"/>
-                    <path d="M9 14h6"/>
+                    <circle cx="12" cy="12" r="9"/>
+                    <path d="M12 7v5l3 2"/>
                 </svg>
 
-                <span>Finished Goods Inventory</span>
+                <span>Riwayat Produksi</span>
             </a>
 
         </nav>

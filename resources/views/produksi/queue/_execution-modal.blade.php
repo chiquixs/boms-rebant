@@ -6,7 +6,7 @@
 
 <div class="pe-overlay" id="peOverlay" hidden>
 
-    <div class="pe-modal"
+    <div class="pe-modal pe-modal-wide"
          role="dialog"
          aria-modal="true"
          aria-labelledby="peTitle">
@@ -45,7 +45,7 @@
             {{-- Info produk --}}
             <div class="pe-product">
 
-                <div class="pe-product-thumb">
+                <div class="pe-product-thumb" id="peThumb">
                     <svg width="22" height="22" viewBox="0 0 24 24"
                          fill="none" stroke="currentColor" stroke-width="1.6">
                         <rect x="3" y="4" width="18" height="16" rx="2"/>
@@ -61,7 +61,7 @@
 
                 <div class="pe-product-badges">
                     <span class="pq-badge" id="peSource">-</span>
-                    <span class="pq-badge progress" id="peStatus">IN_PROCESS</span>
+                    <span class="pq-badge" id="peStatus">-</span>
                 </div>
 
             </div>
@@ -139,6 +139,9 @@
                 </section>
 
 
+                {{-- Pemakaian Aktual dan Hasil Produksi: berdampingan di layar lebar --}}
+                <div class="pe-columns">
+
                 {{-- 2. PEMAKAIAN AKTUAL --}}
                 <section class="pe-section">
 
@@ -202,6 +205,9 @@
                 </section>
 
 
+                </div>
+
+
                 <div class="pe-form-error" id="peFormError" hidden></div>
 
             </div>
@@ -243,9 +249,30 @@
     // LABEL BADGE (sama dengan Production Queue)
     // ==========================================
 
-    const SOURCE_META = {
-        ORDER:         { label: 'ORDER',         cls: 'order' },
-        MTS_MIN_STOCK: { label: 'MTS-MIN-STOCK', cls: 'mts' }
+    // Sumber permintaan (production_requests.source).
+    //   ORDER                           -> Pesanan Pelanggan (MTO)
+    //   MTS_MIN_STOCK / MTS-MIN-STOCK   -> Pengisian Stok (MTS)
+    //   RESTOCK                         -> Pengisian Stok (MTS)
+    // Nilai ini konvensi aplikasi. Constraint database saat ini hanya
+    // mengizinkan ORDER dan RESTOCK, jadi ketiganya dikenali.
+    // Nilai lain atau kosong ditampilkan dengan aman sebagai apa adanya.
+    function sourceMeta(source) {
+
+        if (source === 'ORDER') {
+            return { label: 'Pesanan Pelanggan (MTO)', cls: 'order', group: 'ORDER' };
+        }
+
+        if (source === 'MTS_MIN_STOCK' || source === 'MTS-MIN-STOCK' || source === 'RESTOCK') {
+            return { label: 'Pengisian Stok (MTS)', cls: 'mts', group: 'MTS' };
+        }
+
+        return { label: source ? String(source) : 'Tidak diketahui', cls: 'normal', group: '' };
+    }
+
+    const STATUS_META = {
+        WAITING:    { label: 'WAITING',    cls: 'waiting' },
+        IN_PROCESS: { label: 'IN_PROCESS', cls: 'progress' },
+        COMPLETED:  { label: 'COMPLETED',  cls: 'done' }
     };
 
 
@@ -338,7 +365,8 @@
         productName:  $('peProductName'),
         productSku:   $('peProductSku'),
         source:       $('peSource'),
-
+        status:       $('peStatus'),
+        thumb:        $('peThumb'),
 
         loading:      $('peLoading'),
         loadError:    $('peLoadError'),
@@ -403,20 +431,45 @@
     // RENDER
     // ==========================================
 
+    // Placeholder bawaan di markup, dipakai saat gambar tidak ada atau gagal dimuat
+    const THUMB_PLACEHOLDER = els.thumb.innerHTML;
+
     function renderHeader() {
 
         const item = state.item;
 
-        const source = SOURCE_META[item.source] || { label: item.source, cls: 'normal' };
+        const source = sourceMeta(item.source);
+        const status = STATUS_META[item.status] || { label: item.status || '-', cls: 'normal' };
 
         els.requestNo.textContent = item.request_no;
         els.productName.textContent = item.product_name;
         els.productSku.textContent =
-            item.sku + (item.variant_name ? ' \u00B7 ' + item.variant_name : '');
+            'SKU: ' + item.sku + (item.variant_name ? ' \u00B7 Varian: ' + item.variant_name : '');
 
         els.source.textContent = source.label;
         els.source.className = 'pq-badge ' + source.cls;
 
+        els.status.textContent = status.label;
+        els.status.className = 'pq-badge ' + status.cls;
+
+        // Gambar produk (image_url dari backend) atau placeholder
+        els.thumb.innerHTML = THUMB_PLACEHOLDER;
+
+        if (item.image_url) {
+
+            const img = document.createElement('img');
+
+            img.alt = item.product_name;
+
+            img.onerror = function () {
+                els.thumb.innerHTML = THUMB_PLACEHOLDER;
+            };
+
+            img.src = item.image_url;
+
+            els.thumb.innerHTML = '';
+            els.thumb.appendChild(img);
+        }
     }
 
     function renderMaterials() {
@@ -725,9 +778,8 @@
     // SIMPAN
     // ==========================================
 
-        // mode: 'progress' -> Simpan Progres. Status tetap IN_PROCESS,
-    //                     kecuali total hasil sudah mencapai qty_requested (otomatis COMPLETED).
-    //       'finish'   -> Selesaikan Produksi. Hanya boleh jika total hasil mencapai qty_requested.
+    // mode: 'progress' -> status IN_PROCESS (tombol di tabel jadi "Lanjutkan Produksi")
+    //       'finish'   -> status COMPLETED   (tombol di tabel jadi "Lihat Detail")
     async function handleSubmit(mode) {
 
         if (state.saving) return;
@@ -737,24 +789,31 @@
         if (!result) return;
 
         const totalProduced = state.item.qty_produced + result.qty;
-        const reachedTarget = totalProduced >= state.item.qty_requested;
         const isFinish = mode === 'finish';
 
-        if (isFinish && !reachedTarget) {
+        if (isFinish) {
 
-            els.qtyGroup.classList.add('invalid');
-            els.qtyError.textContent =
-                'Total hasil baru ' + totalProduced + ' dari ' + state.item.qty_requested +
-                ' pcs. Produksi baru bisa diselesaikan setelah mencapai target. Gunakan Simpan Progres jika belum selesai.';
-            els.qtyError.hidden = false;
-            els.qty.focus();
+            if (totalProduced <= 0) {
 
-            return;
+                els.qtyGroup.classList.add('invalid');
+                els.qtyError.textContent = 'Isi hasil produksi minimal 1 pcs untuk menyelesaikan produksi.';
+                els.qtyError.hidden = false;
+                els.qty.focus();
+
+                return;
+            }
+
+            if (totalProduced < state.item.qty_requested &&
+                !window.confirm('Total hasil ' + totalProduced + ' pcs masih di bawah target ' +
+                    state.item.qty_requested + ' pcs. Tetap selesaikan produksi?')) {
+                return;
+            }
         }
 
         const payload = {
             request_no: state.item.request_no,
             qty_produced_this_session: result.qty,
+            finish: isFinish,
             usages: result.usages
         };
 
@@ -789,7 +848,7 @@
             detail: {
                 requestNo: state.item.request_no,
                 qtyProduced: totalProduced,
-                status: reachedTarget ? 'COMPLETED' : 'IN_PROCESS',
+                status: isFinish ? 'COMPLETED' : 'IN_PROCESS',
                 mode: mode,
                 usages: result.usages.map(function (u) {
                     const m = state.materials.find(function (x) { return x.raw_material_id === u.raw_material_id; });

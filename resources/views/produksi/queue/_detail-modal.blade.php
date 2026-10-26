@@ -1,6 +1,6 @@
 {{-- =========================
     MODAL: DETAIL PRODUKSI (hanya baca)
-    Dibuka dari tombol "View Detail" pada request berstatus COMPLETED.
+    Dibuka dari tombol "Lihat Detail" pada request berstatus COMPLETED.
     Semua data di sini masih SIMULASI.
 ========================= --}}
 
@@ -45,7 +45,7 @@
             {{-- Info produk --}}
             <div class="pe-product">
 
-                <div class="pe-product-thumb">
+                <div class="pe-product-thumb" id="pdThumb">
                     <svg width="22" height="22" viewBox="0 0 24 24"
                          fill="none" stroke="currentColor" stroke-width="1.6">
                         <rect x="3" y="4" width="18" height="16" rx="2"/>
@@ -307,10 +307,25 @@
     'use strict';
 
 
-    const SOURCE_META = {
-        ORDER:         { label: 'ORDER',         cls: 'order' },
-        MTS_MIN_STOCK: { label: 'MTS-MIN-STOCK', cls: 'mts' }
-    };
+    // Sumber permintaan (production_requests.source).
+    //   ORDER                           -> Pesanan Pelanggan (MTO)
+    //   MTS_MIN_STOCK / MTS-MIN-STOCK   -> Pengisian Stok (MTS)
+    //   RESTOCK                         -> Pengisian Stok (MTS)
+    // Nilai ini konvensi aplikasi. Constraint database saat ini hanya
+    // mengizinkan ORDER dan RESTOCK, jadi ketiganya dikenali.
+    // Nilai lain atau kosong ditampilkan dengan aman sebagai apa adanya.
+    function sourceMeta(source) {
+
+        if (source === 'ORDER') {
+            return { label: 'Pesanan Pelanggan (MTO)', cls: 'order', group: 'ORDER' };
+        }
+
+        if (source === 'MTS_MIN_STOCK' || source === 'MTS-MIN-STOCK' || source === 'RESTOCK') {
+            return { label: 'Pengisian Stok (MTS)', cls: 'mts', group: 'MTS' };
+        }
+
+        return { label: source ? String(source) : 'Tidak diketahui', cls: 'normal', group: '' };
+    }
 
 
     // ==========================================
@@ -327,7 +342,7 @@
     ];
 
     // Data yang baru diisi lewat modal eksekusi pada sesi halaman ini
-    // (requestNo -> { usages, shortages }).
+    // (requestNo -> { usages, completedAt, shortages }).
     const recorded = {};
 
 
@@ -345,6 +360,14 @@
         return Math.round(n * 100) / 100;
     }
 
+    // PR-20261010-001 -> 10 Okt 2026 (hanya untuk data simulasi)
+    function mockDay(requestNo) {
+
+        const m = /PR-(\d{4})(\d{2})(\d{2})-/.exec(requestNo);
+
+        return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : new Date();
+    }
+
     const detailApi = {
 
         async fetchDetail(item) {
@@ -356,6 +379,15 @@
             }
 
             const rec = recorded[item.request_no] || {};
+
+            const day = mockDay(item.request_no);
+
+            const startedAt = new Date(day.getTime());
+            startedAt.setHours(8, 30);
+
+            const completedAt = rec.completedAt || new Date(day.getTime());
+
+            if (!rec.completedAt) completedAt.setHours(15, 45);
 
             const materials = rec.usages
                 ? Object.keys(rec.usages).map(function (key) { return rec.usages[key]; })
@@ -372,8 +404,8 @@
                 });
 
             return {
-                started_at: item.started_at,       // production_requests.started_at
-                completed_at: item.completed_at,   // production_requests.completed_at
+                started_at: startedAt,
+                completed_at: completedAt,
                 materials: materials,
                 shortages: rec.shortages || []
             };
@@ -397,6 +429,7 @@
         productName: $('pdProductName'),
         productSku:  $('pdProductSku'),
         source:      $('pdSource'),
+        thumb:       $('pdThumb'),
         status:      $('pdStatus'),
 
         loading:     $('pdLoading'),
@@ -431,9 +464,7 @@
         return Number(n).toLocaleString('id-ID', { maximumFractionDigits: 2 });
     }
 
-    function fmtDate(value) {
-
-        const date = new Date(value);
+    function fmtDate(date) {
 
         return date.toLocaleString('id-ID', {
             day: '2-digit', month: 'short', year: 'numeric',
@@ -446,22 +477,44 @@
     // RENDER
     // ==========================================
 
+    // Placeholder bawaan di markup, dipakai saat gambar tidak ada atau gagal dimuat
+    const THUMB_PLACEHOLDER = els.thumb.innerHTML;
+
     function renderHeader() {
 
         const item = state.item;
 
-        const source = SOURCE_META[item.source] || { label: item.source, cls: 'normal' };
+        const source = sourceMeta(item.source);
 
         els.requestNo.textContent = item.request_no;
         els.productName.textContent = item.product_name;
         els.productSku.textContent =
-            item.sku + (item.variant_name ? ' \u00B7 ' + item.variant_name : '');
+            'SKU: ' + item.sku + (item.variant_name ? ' \u00B7 Varian: ' + item.variant_name : '');
 
         els.source.textContent = source.label;
         els.source.className = 'pq-badge ' + source.cls;
 
         els.status.textContent = 'COMPLETED';
         els.status.className = 'pq-badge done';
+
+        // Gambar produk (image_url dari backend) atau placeholder
+        els.thumb.innerHTML = THUMB_PLACEHOLDER;
+
+        if (item.image_url) {
+
+            const img = document.createElement('img');
+
+            img.alt = item.product_name;
+
+            img.onerror = function () {
+                els.thumb.innerHTML = THUMB_PLACEHOLDER;
+            };
+
+            img.src = item.image_url;
+
+            els.thumb.innerHTML = '';
+            els.thumb.appendChild(img);
+        }
     }
 
     function renderDetail(data) {
@@ -481,7 +534,7 @@
         const logs = [
             { at: data.started_at,   text: 'Produksi dimulai oleh Production' },
             { at: data.completed_at, text: 'Produksi selesai. Hasil: ' + item.qty_produced + ' pcs' }
-        ].filter(function (entry) { return entry.at; });
+        ];
 
         els.log.innerHTML = logs.map(function (entry) {
 
@@ -660,6 +713,8 @@
 
             rec.usages[u.name] = prev;
         });
+
+        if (d.status === 'COMPLETED') rec.completedAt = new Date();
     });
 
     document.addEventListener('production-execution:shortage', function (event) {

@@ -800,7 +800,10 @@
         grid-template-columns: 1fr;
     }
 
-    /* =========================
+}
+
+
+/* =========================
    MODAL DETAIL PRODUKSI (pd-)
    Memakai class pe-* untuk kerangka modal.
 ========================= */
@@ -937,4 +940,85 @@
     background: #E2EEF7;
 }
 
+
+/* =========================
+   KOREKSI: MODAL EKSEKUSI LEBAR (pe-modal-wide)
+   Hanya modal eksekusi yang memakai class ini. Modal lain tetap 680px.
+========================= */
+
+.pe-modal.pe-modal-wide {
+    width: 90%;
+    max-width: 1200px;
+    max-height: 85vh;
+}
+
+.pe-modal-wide .pe-body {
+    padding: 22px 28px 12px;
+}
+
+.pe-product-thumb {
+    overflow: hidden;
+}
+
+.pe-product-thumb img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.pe-columns {
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 18px;
+
+    align-items: start;
+
+    margin-bottom: 18px;
+}
+
+.pe-columns .pe-section {
+    min-width: 0;
+
+    margin-bottom: 0;
+}
+
+.pe-modal-wide .pe-footer {
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 12px;
+}
+
+.pe-modal-wide .pe-footer .pe-btn {
+    min-width: 160px;
+}
+
+@media (max-width: 900px) {
+
+    .pe-modal.pe-modal-wide {
+        width: 100%;
+    }
+
+    .pe-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .pe-modal-wide .pe-body {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .pe-modal-wide .pe-footer {
+        flex-direction: column-reverse;
+    }
+
+    .pe-modal-wide .pe-footer .pe-btn {
+        width: 100%;
+    }
 }
