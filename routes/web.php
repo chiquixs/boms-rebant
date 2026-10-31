@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\MaterialController;
 use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\ProcurementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -204,6 +205,13 @@ Route::middleware('auth')->group(function () {
                 ]);
             })->name('procurement.show');
 
+            Route::get('/procurement', [ProcurementController::class, 'index'])->name('procurement.index');
+            Route::post('/procurement', [ProcurementController::class, 'store'])->name('procurement.store');
+
+            Route::get('/procurement/{po}', function ($po) {
+                return view('admin.procurement.show', ['po' => $po]);
+            })->name('procurement.show');
+
             /*
             |--------------------------------------------------------------------------
             | Activity Logs
@@ -239,9 +247,8 @@ Route::middleware('auth')->group(function () {
             })->name('planning.index');
 
             Route::get('/history', function () {
-            return view('produksi.history.index');
+                return view('produksi.history.index');
             })->name('history.index');
-
         });
 
 
