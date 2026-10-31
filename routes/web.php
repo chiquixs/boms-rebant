@@ -199,11 +199,8 @@ Route::middleware('auth')->group(function () {
             })->name('procurement.shortage');
 
 
-            Route::get('/procurement/{po}', function ($po) {
-                return view('admin.procurement.show', [
-                    'po' => $po,
-                ]);
-            })->name('procurement.show');
+            Route::get('/procurement/{purchaseOrder:po_no}', [ProcurementController::class, 'show'])->name('procurement.show');
+            Route::post('/procurement/{purchaseOrder:po_no}/receive', [ProcurementController::class, 'receive'])->name('procurement.receive');
 
             Route::get('/procurement', [ProcurementController::class, 'index'])->name('procurement.index');
             Route::post('/procurement', [ProcurementController::class, 'store'])->name('procurement.store');
