@@ -3,15 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\MaterialShortage;
 use App\Models\PurchaseOrder;
+use App\Models\PurchaseOrderItem;
 use App\Models\RawMaterial;
+use App\Models\RawMaterialMovement;
 use App\Models\Supplier;
+use App\Models\SupplierMaterial;
+use App\Services\PurchaseOrderNotifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\MaterialShortage;
-use App\Models\PurchaseOrderItem;
-use App\Models\RawMaterialMovement;
-use App\Models\SupplierMaterial;
 use Illuminate\Validation\ValidationException;
 
 class ProcurementController extends Controller
@@ -31,14 +32,14 @@ class ProcurementController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        $activePoCount      = $purchaseOrders->whereIn('status', [
+        $activePoCount = $purchaseOrders->whereIn('status', [
             PurchaseOrder::STATUS_ORDERED,
             PurchaseOrder::STATUS_PARTIALLY_RECEIVED,
         ])->count();
 
-        $waitingGoodsCount  = $purchaseOrders->where('status', PurchaseOrder::STATUS_ORDERED)->count();
+        $waitingGoodsCount = $purchaseOrders->where('status', PurchaseOrder::STATUS_ORDERED)->count();
 
-        $receivedThisMonth  = PurchaseOrder::where('status', PurchaseOrder::STATUS_RECEIVED)
+        $receivedThisMonth = PurchaseOrder::where('status', PurchaseOrder::STATUS_RECEIVED)
             ->whereMonth('updated_at', now()->month)
             ->whereYear('updated_at', now()->year)
             ->count();
@@ -48,7 +49,7 @@ class ProcurementController extends Controller
             ->with('materials')
             ->get()
             ->flatMap(function ($supplier) {
-                return $supplier->materials->map(fn($sm) => [
+                return $supplier->materials->map(fn ($sm) => [
                     'raw_material_id' => $sm->raw_material_id,
                     'supplier_id'     => $supplier->id,
                     'supplier_name'   => $supplier->name,
@@ -70,6 +71,9 @@ class ProcurementController extends Controller
         ));
     }
 
+    /**
+     * PO dari form restock (halaman Procurement).
+     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -89,10 +93,10 @@ class ProcurementController extends Controller
             'unit_price'      => 'Harga satuan',
         ]);
 
-        $material = RawMaterial::findOrFail($data['raw_material_id']);
+        $material       = RawMaterial::findOrFail($data['raw_material_id']);
         $recommendation = max($material->target_stock - $material->current_stock, 0);
 
-        DB::transaction(function () use ($data, $request, $recommendation) {
+        $po = DB::transaction(function () use ($data, $request, $recommendation) {
 
             $po = PurchaseOrder::create([
                 'supplier_id'   => $data['supplier_id'],
@@ -102,7 +106,7 @@ class ProcurementController extends Controller
                 'trigger_type'  => PurchaseOrder::TRIGGER_MANUAL,
                 'status'        => PurchaseOrder::STATUS_ORDERED,
                 'approved_at'   => now(),
-                'email_sent_at' => now(), // simulasi: dianggap langsung terkirim
+                'email_sent_at' => null, // diisi PurchaseOrderNotifier setelah email terkirim
                 'notes'         => $data['notes'] ?? null,
             ]);
 
@@ -113,26 +117,39 @@ class ProcurementController extends Controller
                 'qty_received'    => 0,
                 'unit_price'      => $data['unit_price'],
             ]);
+
+            return $po;
         });
+
+        // Di luar transaksi: PO sudah tersimpan, email gagal tidak membatalkannya
+        $sent = app(PurchaseOrderNotifier::class)->send($po);
 
         return redirect()
             ->route('admin.procurement.index')
-            ->with('success', 'Purchase Order berhasil dibuat dan dikirim ke supplier.');
+            ->with(
+                $sent ? 'success' : 'error',
+                $sent
+                    ? "PO {$po->po_no} dibuat dan email terkirim ke supplier."
+                    : "PO {$po->po_no} dibuat, tetapi email gagal dikirim. Cek email supplier atau kirim ulang dari halaman detail PO."
+            );
     }
 
+    /**
+     * PO dari halaman Material Shortage (bisa menghasilkan beberapa PO, satu per supplier).
+     */
     public function storeFromShortages(Request $request)
     {
         $data = $request->validate([
-            'notes'                         => ['nullable', 'string'],
-            'items'                         => ['required', 'array', 'min:1'],
-            'items.*.raw_material_id'       => ['required', 'exists:raw_materials,id'],
-            'items.*.material_shortage_id'  => ['nullable', 'exists:material_shortages,id'],
-            'items.*.qty_suggested'         => ['nullable', 'numeric', 'min:0'],
-            'items.*.qty_ordered'           => ['required', 'numeric', 'gt:0'],
-            'items.*.supplier_id'           => ['required', 'exists:suppliers,id'],
+            'notes'                        => ['nullable', 'string'],
+            'items'                        => ['required', 'array', 'min:1'],
+            'items.*.raw_material_id'      => ['required', 'exists:raw_materials,id'],
+            'items.*.material_shortage_id' => ['nullable', 'exists:material_shortages,id'],
+            'items.*.qty_suggested'        => ['nullable', 'numeric', 'min:0'],
+            'items.*.qty_ordered'          => ['required', 'numeric', 'gt:0'],
+            'items.*.supplier_id'          => ['required', 'exists:suppliers,id'],
         ]);
 
-        // Validasi pasangan supplier-bahan beneran valid (bukan cuma dari dropdown yang bisa diakali)
+        // Validasi pasangan supplier-bahan benar-benar valid (bukan cuma dari dropdown yang bisa diakali)
         foreach ($data['items'] as $item) {
             $isValidPair = SupplierMaterial::where('supplier_id', $item['supplier_id'])
                 ->where('raw_material_id', $item['raw_material_id'])
@@ -160,7 +177,7 @@ class ProcurementController extends Controller
                     'trigger_type'  => PurchaseOrder::TRIGGER_MANUAL,
                     'status'        => PurchaseOrder::STATUS_ORDERED,
                     'approved_at'   => now(),
-                    'email_sent_at' => now(),
+                    'email_sent_at' => null, // diisi PurchaseOrderNotifier setelah email terkirim
                     'notes'         => $data['notes'] ?? null,
                 ]);
 
@@ -184,13 +201,34 @@ class ProcurementController extends Controller
             })->values();
         });
 
+        // Di luar transaksi: kirim email per PO
+        $notifier = app(PurchaseOrderNotifier::class);
+
         return response()->json([
             'success'         => true,
-            'purchase_orders' => $createdPos->map(fn($po) => [
-                'po_no' => $po->po_no,
-                'url'   => route('admin.procurement.show', $po->po_no),
-            ]),
+            'purchase_orders' => $createdPos->map(function ($po) use ($notifier) {
+                return [
+                    'po_no'      => $po->po_no,
+                    'url'        => route('admin.procurement.show', $po->po_no),
+                    'email_sent' => $notifier->send($po),
+                ];
+            })->values(),
         ]);
+    }
+
+    /**
+     * Kirim ulang email PO ke supplier.
+     */
+    public function sendEmail(PurchaseOrder $purchaseOrder)
+    {
+        $sent = app(PurchaseOrderNotifier::class)->send($purchaseOrder);
+
+        return back()->with(
+            $sent ? 'success' : 'error',
+            $sent
+                ? "Email PO {$purchaseOrder->po_no} berhasil dikirim ke supplier."
+                : "Email PO {$purchaseOrder->po_no} gagal dikirim. Cek email supplier atau log aplikasi."
+        );
     }
 
     private function generatePoNo(): string
@@ -251,14 +289,14 @@ class ProcurementController extends Controller
                 $material->update(['current_stock' => $qtyAfter]);
 
                 RawMaterialMovement::create([
-                    'raw_material_id'           => $material->id,
-                    'created_by'                => $request->user()->id,
-                    'movement_type'             => 'IN',
-                    'qty'                       => $qtyIn,
-                    'qty_before'                => $qtyBefore,
-                    'qty_after'                 => $qtyAfter,
-                    'note'                      => 'Penerimaan PO ' . $purchaseOrder->po_no,
-                    'purchase_order_item_id'    => $item->id,
+                    'raw_material_id'        => $material->id,
+                    'created_by'             => $request->user()->id,
+                    'movement_type'          => 'IN',
+                    'qty'                    => $qtyIn,
+                    'qty_before'             => $qtyBefore,
+                    'qty_after'              => $qtyAfter,
+                    'note'                   => 'Penerimaan PO ' . $purchaseOrder->po_no,
+                    'purchase_order_item_id' => $item->id,
                 ]);
 
                 $item->update(['qty_received' => $item->qty_received + $qtyIn]);
@@ -282,10 +320,10 @@ class ProcurementController extends Controller
             $purchaseOrder->refresh()->load('items');
 
             $allReceived = $purchaseOrder->items->every(
-                fn($i) => $i->qty_received >= $i->qty_ordered
+                fn ($i) => $i->qty_received >= $i->qty_ordered
             );
 
-            $anyReceived = $purchaseOrder->items->contains(fn($i) => $i->qty_received > 0);
+            $anyReceived = $purchaseOrder->items->contains(fn ($i) => $i->qty_received > 0);
 
             $purchaseOrder->update([
                 'status' => $allReceived
