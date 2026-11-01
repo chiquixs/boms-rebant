@@ -429,6 +429,167 @@
     outline-offset: 2px;
 }
 
+/* =========================
+   VARIAN PRODUK (kolom Varian + daftar varian)
+   Tombol .pv-btn dan wadah .pv-detail ada di production-queue.css.
+========================= */
+
+.sp-group-row.open > td {
+    background: #FCFDFB;
+}
+
+/* Peringatan merah: ada varian dengan stok di bawah minimum */
+.sp-lowwarn {
+    max-width: 230px;
+
+    margin-top: 8px;
+    padding: 8px 10px;
+
+    border: 1px solid #F3C9C6;
+    border-radius: 9px;
+
+    background: #FDF0EF;
+    color: #B5483E;
+
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.sp-lowwarn strong {
+    display: block;
+
+    margin-bottom: 2px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.sp-lowwarn span {
+    display: block;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sp-vlist {
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+
+    min-width: 920px;
+}
+
+.sp-vitem {
+    display: grid;
+
+    grid-template-columns:
+        96px minmax(110px, 1fr) 190px 92px 96px 240px;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 10px 12px;
+
+    border: 1px solid #ECEFE9;
+    border-radius: 8px;
+
+    background: var(--white);
+}
+
+.sp-vitem.low {
+    border-color: #F3D3D0;
+}
+
+.sp-vitem > strong {
+    overflow: hidden;
+
+    color: var(--text);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sp-vitem > .pv-sku,
+.sp-vitem > .pq-badge {
+    justify-self: start;
+}
+
+.sp-vrec {
+    text-align: center;
+}
+
+.sp-vitem .sp-actions {
+    justify-content: flex-end;
+}
+
+/* Visualisasi stok per varian */
+.sp-vstock-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+
+    gap: 8px;
+
+    margin-bottom: 5px;
+}
+
+.sp-vstock-top b {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.sp-vstock-top b.ok  { color: var(--green-dark); }
+.sp-vstock-top b.low { color: #D9534F; }
+
+.sp-vstock-top small {
+    color: #A0A39C;
+
+    font-size: 9px;
+
+    white-space: nowrap;
+}
+
+.sp-vbar {
+    position: relative;
+
+    height: 7px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background: #E7EAE2;
+}
+
+.sp-vbar span {
+    display: block;
+
+    height: 100%;
+
+    border-radius: 20px;
+}
+
+.sp-vbar.ok span  { background: var(--green-dark); }
+.sp-vbar.low span { background: #D9534F; }
+
+/* Penanda batas stok minimum */
+.sp-vbar i {
+    position: absolute;
+    top: 0;
+
+    width: 2px;
+    height: 100%;
+
+    background: rgba(40, 44, 36, 0.45);
+}
+
 
 /* =========================
    PANEL INSIGHT
