@@ -11,9 +11,13 @@ class MaterialShortage extends Model
     public const STATUS_RESOLVED = 'RESOLVED';
 
     protected $fillable = [
-        'production_request_id', 'raw_material_id',
-        'qty_needed', 'qty_available', 'status',
-        'reported_at', 'resolved_at',
+        'production_request_id',
+        'raw_material_id',
+        'qty_needed',
+        'qty_available',
+        'status',
+        'reported_at',
+        'resolved_at',
     ];
 
     protected function casts(): array
@@ -24,5 +28,10 @@ class MaterialShortage extends Model
     public function rawMaterial(): BelongsTo
     {
         return $this->belongsTo(RawMaterial::class);
+    }
+
+    public function productionRequest(): BelongsTo
+    {
+        return $this->belongsTo(ProductionRequest::class);
     }
 }

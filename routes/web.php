@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\ProcurementController;
+use App\Http\Controllers\Admin\MaterialShortageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -178,36 +179,33 @@ Route::middleware('auth')->group(function () {
             ])->name('inventory.material-history');
 
             /*
-            |--------------------------------------------------------------------------
-            | Procurement
-            |--------------------------------------------------------------------------
-            */
-
-            Route::get('/procurement', function () {
-                return view('admin.procurement.index');
-            })->name('procurement.index');
-
+|--------------------------------------------------------------------------
+| Procurement
+|--------------------------------------------------------------------------
+*/
 
             Route::get('/procurement/suppliers', [SupplierController::class, 'index'])->name('procurement.suppliers');
             Route::post('/procurement/suppliers', [SupplierController::class, 'store'])->name('procurement.suppliers.store');
             Route::put('/procurement/suppliers/{supplier}', [SupplierController::class, 'update'])->name('procurement.suppliers.update');
             Route::delete('/procurement/suppliers/{supplier}', [SupplierController::class, 'destroy'])->name('procurement.suppliers.destroy');
 
-            // Material Shortage (harus di atas /procurement/{po})
-            Route::get('/procurement/shortage', function () {
-                return view('admin.procurement.shortage');
-            })->name('procurement.shortage');
-
-
-            Route::get('/procurement/{purchaseOrder:po_no}', [ProcurementController::class, 'show'])->name('procurement.show');
-            Route::post('/procurement/{purchaseOrder:po_no}/receive', [ProcurementController::class, 'receive'])->name('procurement.receive');
+            // Material Shortage (harus di atas /procurement/{purchaseOrder:po_no})
+            Route::get('/procurement/shortage', [MaterialShortageController::class, 'page'])->name('procurement.shortage');
+            Route::get('/procurement/shortage/data', [MaterialShortageController::class, 'data'])->name('procurement.shortage.data');
+            Route::get('/procurement/shortage/{materialShortage}/data', [MaterialShortageController::class, 'show'])->name('procurement.shortage.show');
+            Route::get('/procurement/shortage/filters/materials', [MaterialShortageController::class, 'materials'])->name('procurement.shortage.materials');
+            Route::get('/procurement/shortage/filters/suppliers', [MaterialShortageController::class, 'suppliers'])->name('procurement.shortage.suppliers');
+            Route::get('/procurement/shortage/filters/supplier-materials', [MaterialShortageController::class, 'supplierMaterials'])
+                ->name('procurement.shortage.supplier-materials');
+            Route::post('/procurement/from-shortages', [ProcurementController::class, 'storeFromShortages'])->name('procurement.store-from-shortage');
 
             Route::get('/procurement', [ProcurementController::class, 'index'])->name('procurement.index');
             Route::post('/procurement', [ProcurementController::class, 'store'])->name('procurement.store');
 
-            Route::get('/procurement/{po}', function ($po) {
-                return view('admin.procurement.show', ['po' => $po]);
-            })->name('procurement.show');
+
+            // Wildcard PALING BAWAH, karena /procurement/{apapun} nangkep semua
+            Route::get('/procurement/{purchaseOrder:po_no}', [ProcurementController::class, 'show'])->name('procurement.show');
+            Route::post('/procurement/{purchaseOrder:po_no}/receive', [ProcurementController::class, 'receive'])->name('procurement.receive');
 
             /*
             |--------------------------------------------------------------------------
