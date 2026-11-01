@@ -8,6 +8,7 @@
 'resources/css/production-execution-modal.css',
 'resources/css/material-shortage.css'
 ])
+@endpush
 
 @section('content')
 
@@ -314,6 +315,11 @@
                         </div>
 
                         <div class="ms-field">
+                            <span>Purchase Order</span>
+                            <strong id="msdPo">-</strong>
+                        </div>
+
+                        <div class="ms-field">
                             <span>Dilaporkan</span>
                             <strong id="msdReported">-</strong>
                         </div>
@@ -348,7 +354,7 @@
 
 
 {{-- =========================
-    MODAL: BUAT PURCHASE ORDER (rancangan awal)
+    MODAL: BUAT PURCHASE ORDER
 ========================= --}}
 
 <div class="pe-overlay" id="mspOverlay" hidden>
@@ -386,22 +392,11 @@
         <div class="pe-body">
 
             <p class="ms-note">
-                Ini draf awal. Membuat PO tidak mengubah status shortage menjadi RESOLVED
-                dan tidak mengubah stok. Supplier, approval, dan pengiriman email
-                masih menunggu backend.
+                PO akan disimpan lalu dikirim lewat email ke supplier. Shortage menjadi
+                RESOLVED setelah barang diterima dan stok mencukupi.
             </p>
 
             <div class="pe-form-error" id="mspError" hidden></div>
-
-            <!-- <section class="pe-section">
-                <h3><span>1.</span> Supplier</h3>
-                <p class="pe-section-desc">Satu PO hanya untuk satu supplier.</p>
-
-                <select class="pq-select ms-full" id="mspSupplier" aria-label="Supplier">
-                    <option value="">Pilih supplier</option>
-                </select>
-                <small class="ms-note" id="mspSupplierHint"></small>
-            </section> -->
 
             <section class="pe-section">
                 <h3><span>1.</span> Item Shortage & Supplier</h3>
@@ -421,14 +416,6 @@
                 <textarea class="ms-textarea" id="mspNotes" rows="3"
                     placeholder="Catatan untuk supplier atau tim pengadaan..."></textarea>
             </section>
-
-            <!-- <section class="pe-section">
-                <h3><span>3.</span> Catatan</h3>
-                <p class="pe-section-desc">Opsional. Disimpan ke kolom notes pada PO.</p>
-
-                <textarea class="ms-textarea" id="mspNotes" rows="3"
-                    placeholder="Catatan untuk supplier atau tim pengadaan..."></textarea>
-            </section> -->
 
             <div class="ms-confirm" id="mspConfirm" hidden></div>
 
@@ -461,7 +448,8 @@
 
         const MS_CONFIG = {
             perPage: 8,
-            searchDelay: 250
+            searchDelay: 250,
+            toastDuration: 6500
         };
 
         // Status mengikuti ERD: default OPEN. SQL belum membatasi nilai,
@@ -479,148 +467,7 @@
 
 
         // ==========================================
-        // DATA SIMULASI (MOCK)
-        // Hanya untuk tampilan. Bukan data database.
-        // Bentuk field mengikuti material_shortages + relasinya.
-        // ==========================================
-
-        const MOCK_MATERIALS = [{
-                id: 1,
-                code: 'MDF-12',
-                name: 'MDF Board 12 mm',
-                unit: 'pcs',
-                current_stock: 6,
-                safety_stock: 10,
-                reorder_point: 15,
-                is_active: true
-            },
-            {
-                id: 2,
-                code: 'CAT-WH',
-                name: 'Cat Kayu (White)',
-                unit: 'liter',
-                current_stock: 14,
-                safety_stock: 5,
-                reorder_point: 8,
-                is_active: true
-            },
-            {
-                id: 3,
-                code: 'PLY-09',
-                name: 'Plywood 9 mm',
-                unit: 'pcs',
-                current_stock: 3,
-                safety_stock: 8,
-                reorder_point: 12,
-                is_active: true
-            },
-            {
-                id: 4,
-                code: 'SKR-30',
-                name: 'Sekrup 3 cm',
-                unit: 'box',
-                current_stock: 900,
-                safety_stock: 300,
-                reorder_point: 400,
-                is_active: true
-            },
-            {
-                id: 5,
-                code: 'LEM-PV',
-                name: 'Lem Kayu PVAC',
-                unit: 'kg',
-                current_stock: 2,
-                safety_stock: 6,
-                reorder_point: 9,
-                is_active: true
-            },
-            {
-                id: 6,
-                code: 'AMP-120',
-                name: 'Amplas 120',
-                unit: 'lembar',
-                current_stock: 120,
-                safety_stock: 60,
-                reorder_point: 80,
-                is_active: true
-            },
-            {
-                id: 7,
-                code: 'ENG-01',
-                name: 'Engsel Pintu',
-                unit: 'pcs',
-                current_stock: 60,
-                safety_stock: 30,
-                reorder_point: 40,
-                is_active: true
-            },
-            {
-                id: 8,
-                code: 'VRN-CL',
-                name: 'Vernis Clear',
-                unit: 'liter',
-                current_stock: 12,
-                safety_stock: 5,
-                reorder_point: 8,
-                is_active: true
-            }
-        ];
-
-        const MOCK_SUPPLIERS = [{
-                id: 1,
-                name: 'CV Sumber Kayu Jaya'
-            },
-            {
-                id: 2,
-                name: 'PT Mitra Material Nusantara'
-            },
-            {
-                id: 3,
-                name: 'UD Cat & Perekat Makmur'
-            }
-        ];
-
-        function mockShortage(id, requestNo, materialId, needed, available, status, reportedAt, resolvedAt) {
-            return {
-                id: id,
-                production_request_id: 100 + id,
-                raw_material_id: materialId,
-                qty_needed: needed,
-                qty_available: available,
-                status: status,
-                reported_at: reportedAt,
-                resolved_at: resolvedAt || null,
-                production_request: {
-                    id: 100 + id,
-                    request_no: requestNo
-                },
-                raw_material: MOCK_MATERIALS.find(function(m) {
-                    return m.id === materialId;
-                })
-            };
-        }
-
-        const MOCK_SHORTAGES = [
-            mockShortage(1, 'PR-20261010-001', 1, 10, 6, 'OPEN', '2026-10-10T08:15:00'),
-            mockShortage(2, 'PR-20261010-002', 2, 5, 2, 'RESOLVED', '2026-10-10T09:05:00', '2026-10-11T13:30:00'),
-            mockShortage(3, 'PR-20261010-003', 3, 12, 4, 'OPEN', '2026-10-10T10:40:00'),
-            mockShortage(4, 'PR-20261011-001', 4, 200, 150, 'OPEN', '2026-10-11T08:50:00'),
-            mockShortage(5, 'PR-20261011-002', 5, 8, 5, 'OPEN', '2026-10-11T09:20:00'),
-            mockShortage(6, 'PR-20261011-003', 1, 6, 2, 'OPEN', '2026-10-11T11:10:00'),
-            mockShortage(7, 'PR-20261012-001', 6, 40, 30, 'RESOLVED', '2026-10-12T08:00:00', '2026-10-12T15:45:00'),
-            mockShortage(8, 'PR-20261012-002', 7, 24, 10, 'OPEN', '2026-10-12T10:25:00'),
-            mockShortage(9, 'PR-20261012-003', 8, 4, 1, 'OPEN', '2026-10-12T13:05:00'),
-            mockShortage(10, 'PR-20261013-001', 2, 10, 6, 'RESOLVED', '2026-10-13T08:30:00', '2026-10-14T09:10:00'),
-            mockShortage(11, 'PR-20261013-002', 4, 100, 80, 'RESOLVED', '2026-10-13T09:45:00', '2026-10-14T10:00:00'),
-            mockShortage(12, 'PR-20261013-003', 3, 8, 3, 'OPEN', '2026-10-13T11:35:00')
-        ];
-
-
-        // ==========================================
         // LAPISAN DATA (API)
-        // Semua akses data lewat objek ini. Saat backend siap, ganti isi
-        // fungsi (mis. fetch ke endpoint proyek) tanpa menyentuh UI.
-        // Simulasi: ?mock=error | empty | detailerror | savefail
         // ==========================================
 
         const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.content;
@@ -636,7 +483,23 @@
                 ...options,
             });
 
-            if (!res.ok) throw new Error('Request failed: ' + res.status);
+            if (!res.ok) {
+                let message = '';
+
+                try {
+                    const body = await res.json();
+                    message = body.errors ?
+                        Object.values(body.errors)[0][0] :
+                        (body.message || '');
+                } catch (e) {
+                    // respons bukan JSON
+                }
+
+                const error = new Error(message || 'Request failed: ' + res.status);
+                error.status = res.status;
+                throw error;
+            }
+
             return res.json();
         }
 
@@ -664,6 +527,7 @@
                     body: JSON.stringify(payload),
                 });
             },
+
             getSupplierMaterials: function() {
                 return fetchJson('{{ route("admin.procurement.shortage.supplier-materials") }}');
             },
@@ -677,7 +541,7 @@
         const state = {
             rows: [],
             materials: [],
-            suppliers: [],
+            supplierMaterials: [],
             search: '',
             status: '',
             material: '',
@@ -790,6 +654,16 @@
             };
         }
 
+        function poStatusLabel(status) {
+            if (status === 'PARTIALLY_RECEIVED') return 'Sebagian diterima';
+            if (status === 'RECEIVED') return 'Diterima';
+            return 'Menunggu barang';
+        }
+
+        function hasRunningPo(row) {
+            return !!(row.existing_po && row.existing_po.length > 0);
+        }
+
         let toastTimer = null;
 
         function toast(message) {
@@ -798,7 +672,7 @@
             clearTimeout(toastTimer);
             toastTimer = setTimeout(function() {
                 els.toast.classList.remove('show');
-            }, 4200);
+            }, MS_CONFIG.toastDuration);
         }
 
         function findRow(id) {
@@ -954,20 +828,26 @@
             const meta = statusMeta(row.status);
             const material = row.raw_material || {};
             const isOpen = row.status === 'OPEN';
-            const hasPo = row.existing_po && row.existing_po.length > 0;
+            const poList = row.existing_po || [];
+            const hasPo = poList.length > 0;
 
             const warn = short.invalid ?
                 '<span class="ms-warn" title="Qty Available melebihi Qty Needed. Data perlu diperiksa.">Periksa data</span>' :
                 '';
 
-            const poBadge = hasPo ?
-                '<span class="ms-po-badge" title="' + esc(row.existing_po.map(function(p) {
-                    return p.po_no + ' (' + p.status + ')';
-                }).join(', ')) + '">PO: ' + esc(row.existing_po[0].po_no) + (row.existing_po.length > 1 ? ' +' + (row.existing_po.length - 1) : '') + '</span>' :
+            // Info PO yang sedang berjalan
+            const poInfo = hasPo ?
+                '<div class="ms-po-info">' +
+                '<strong>PO sudah dijalankan</strong>' +
+                poList.map(function(p) {
+                    return '<span>' + esc(p.po_no) + ' &middot; ' + esc(poStatusLabel(p.status)) + '</span>';
+                }).join('') +
+                '</div>' :
                 '';
 
-            const poButton = isOpen ?
-                '<button type="button" class="ms-action ' + (hasPo ? 'outline' : 'primary') + '" data-act="po" data-id="' + row.id + '">' + (hasPo ? 'Buat PO Lagi' : 'Buat PO') + '</button>' :
+            // Tombol hanya muncul kalau shortage OPEN dan belum ada PO berjalan
+            const poButton = (isOpen && !hasPo) ?
+                '<button type="button" class="ms-action primary" data-act="po" data-id="' + row.id + '">Buat PO</button>' :
                 '';
 
             return '' +
@@ -979,7 +859,7 @@
                 '<td class="center pq-qty">' + esc(fmtQty(row.qty_available, unit)) + '</td>' +
                 '<td class="center"><strong class="ms-short' + (isOpen ? ' open' : '') + '">' +
                 esc(fmtQty(short.value, unit)) + '</strong>' + warn + '</td>' +
-                '<td class="center"><span class="pq-badge ' + meta.cls + '">' + esc(meta.label) + '</span>' + poBadge + '</td>' +
+                '<td class="center"><span class="pq-badge ' + meta.cls + '">' + esc(meta.label) + '</span>' + poInfo + '</td>' +
                 '<td class="center"><div class="ms-actions">' +
                 '<button type="button" class="ms-action outline" data-act="detail" data-id="' + row.id + '">Detail</button>' +
                 poButton +
@@ -1082,6 +962,7 @@
             needed: $('msdNeeded'),
             available: $('msdAvailable'),
             shortage: $('msdShortage'),
+            po: $('msdPo'),
             reported: $('msdReported'),
             resolved: $('msdResolved'),
             createPo: $('msdCreatePo'),
@@ -1131,6 +1012,8 @@
             const short = shortageOf(item);
             const meta = statusMeta(item.status);
             const material = item.raw_material || {};
+            const poList = item.existing_po || [];
+            const hasPo = poList.length > 0;
 
             D.requestNo.textContent = item.production_request ? item.production_request.request_no : '-';
             D.material.textContent = material.name || '-';
@@ -1144,13 +1027,19 @@
             D.shortage.className = 'ms-short' + (item.status === 'OPEN' ? ' open' : '');
             D.reported.textContent = fmtDate(item.reported_at) || '-';
 
+            D.po.textContent = hasPo ?
+                poList.map(function(p) {
+                    return p.po_no + ' (' + poStatusLabel(p.status) + ')';
+                }).join(', ') :
+                'Belum ada PO';
+
             if (item.resolved_at) {
                 D.resolved.textContent = fmtDate(item.resolved_at);
             } else {
                 D.resolved.textContent = item.status === 'RESOLVED' ? 'Waktu tidak tercatat' : 'Belum selesai';
             }
 
-            D.createPo.hidden = item.status !== 'OPEN';
+            D.createPo.hidden = item.status !== 'OPEN' || hasPo;
 
             D.loading.hidden = true;
             D.error.hidden = true;
@@ -1171,7 +1060,7 @@
 
 
         // ==========================================
-        // MODAL BUAT PURCHASE ORDER (rancangan awal)
+        // MODAL BUAT PURCHASE ORDER
         // ==========================================
 
         const P = {
@@ -1198,95 +1087,9 @@
             }
         });
 
-        // function uniqueSuppliers(rows) {
-        //     const map = new Map();
-        //     rows.forEach(function(r) {
-        //         map.set(r.supplier_id, r.supplier_name);
-        //     });
-        //     return Array.from(map, function([id, name]) {
-        //             return {
-        //                 id: id,
-        //                 name: name
-        //             };
-        //         })
-        //         .sort(function(a, b) {
-        //             return a.name.localeCompare(b.name);
-        //         });
-        // }
-
-        // materialIds kosong -> tampilkan gabungan supplier dari semua bahan di daftar shortage OPEN
-        // materialIds ada isi -> tampilkan IRISAN supplier yang suplai SEMUA bahan tersebut
-        // function supplierCandidates(materialIds) {
-
-        //     if (!materialIds.length) {
-        //         const shown = Array.from(P.items.querySelectorAll('.ms-item')).map(function(node) {
-        //             const row = findRow(Number(node.getAttribute('data-id')));
-        //             return row ? row.raw_material_id : null;
-        //         }).filter(Boolean);
-
-        //         return uniqueSuppliers(state.supplierMaterials.filter(function(sm) {
-        //             return shown.indexOf(sm.raw_material_id) !== -1;
-        //         }));
-        //     }
-
-        //     let supplierIds = null;
-
-        //     materialIds.forEach(function(matId) {
-        //         const ids = new Set(
-        //             state.supplierMaterials
-        //             .filter(function(sm) {
-        //                 return sm.raw_material_id === matId;
-        //             })
-        //             .map(function(sm) {
-        //                 return sm.supplier_id;
-        //             })
-        //         );
-        //         supplierIds = supplierIds === null ? ids : new Set(Array.from(supplierIds).filter(function(id) {
-        //             return ids.has(id);
-        //         }));
-        //     });
-
-        //     const idSet = supplierIds || new Set();
-
-        //     return uniqueSuppliers(state.supplierMaterials.filter(function(sm) {
-        //         return idSet.has(sm.supplier_id);
-        //     }));
-        // }
-
-        // function renderSupplierOptions(materialIds) {
-
-        //     const candidates = supplierCandidates(materialIds);
-        //     const currentValue = P.supplier.value;
-
-        //     P.supplier.innerHTML = '<option value="">Pilih supplier</option>' +
-        //         candidates.map(function(s) {
-        //             return '<option value="' + s.id + '">' + esc(s.name) + '</option>';
-        //         }).join('');
-
-        //     const stillValid = candidates.some(function(s) {
-        //         return String(s.id) === currentValue;
-        //     });
-
-        //     if (stillValid) {
-        //         P.supplier.value = currentValue;
-        //     } else if (currentValue) {
-        //         toast('Supplier sebelumnya tidak men-supply semua bahan yang dipilih. Pilih ulang supplier.');
-        //     }
-
-        //     P.supplierHint.textContent = candidates.length ?
-        //         '' :
-        //         'Tidak ada supplier yang terdaftar untuk kombinasi bahan yang dipilih.';
-        // }
-
-        // function checkedMaterialIds() {
-        //     return Array.from(P.items.querySelectorAll('.ms-item.on')).map(function(node) {
-        //         const row = findRow(Number(node.getAttribute('data-id')));
-        //         return row ? row.raw_material_id : null;
-        //     }).filter(Boolean);
-        // }
-
         function suppliersForMaterial(materialId) {
             const map = new Map();
+
             state.supplierMaterials
                 .filter(function(sm) {
                     return sm.raw_material_id === materialId;
@@ -1294,10 +1097,11 @@
                 .forEach(function(sm) {
                     map.set(sm.supplier_id, sm.supplier_name);
                 });
-            return Array.from(map, function([id, name]) {
+
+            return Array.from(map, function(entry) {
                     return {
-                        id: id,
-                        name: name
+                        id: entry[0],
+                        name: entry[1]
                     };
                 })
                 .sort(function(a, b) {
@@ -1307,12 +1111,13 @@
 
         function openPo(preselectedIds) {
 
+            // Hanya shortage OPEN yang belum punya PO berjalan
             const open = state.rows.filter(function(row) {
-                return row.status === 'OPEN';
+                return row.status === 'OPEN' && !hasRunningPo(row);
             });
 
             if (!open.length) {
-                toast('Tidak ada shortage berstatus OPEN yang bisa dipesan.');
+                toast('Semua shortage OPEN sudah punya PO berjalan.');
                 return;
             }
 
@@ -1324,7 +1129,6 @@
                 const checked = chosen.indexOf(row.id) !== -1;
                 const material = row.raw_material || {};
                 const suppliers = suppliersForMaterial(row.raw_material_id);
-                const hasPo = row.existing_po && row.existing_po.length > 0;
 
                 const supplierOptionsHtml = suppliers.length ?
                     '<option value="">Pilih supplier</option>' +
@@ -1332,14 +1136,6 @@
                         return '<option value="' + s.id + '">' + esc(s.name) + '</option>';
                     }).join('') :
                     '<option value="">Tidak ada supplier terdaftar</option>';
-
-                const poWarning = hasPo ?
-                    '<div class="ms-item-warning">⚠ Sudah ada PO berjalan: ' +
-                    row.existing_po.map(function(p) {
-                        return esc(p.po_no) + ' (' + esc(p.status) + ')';
-                    }).join(', ') +
-                    '. Pastikan ini bukan pesanan ganda.</div>' :
-                    '';
 
                 return '' +
                     '<div class="ms-item' + (checked ? ' on' : '') + '" data-id="' + row.id + '" data-material="' + row.raw_material_id + '">' +
@@ -1359,7 +1155,6 @@
                     '<select class="ms-supplier"' + (checked ? '' : ' disabled') + ' aria-label="Supplier untuk ' + esc(material.name || '') + '">' +
                     supplierOptionsHtml +
                     '</select>' +
-                    poWarning +
                     '</div>';
             }).join('');
 
@@ -1392,7 +1187,7 @@
         }
 
         // Mengumpulkan data sesuai tabel purchase_orders + purchase_order_items.
-        // po_no, status, created_by, dan trigger_type diisi/ditetapkan backend.
+        // po_no, status, created_by, dan trigger_type ditetapkan backend.
         function buildPayload() {
 
             const items = [];
@@ -1466,32 +1261,20 @@
                 return;
             }
 
-            const duplicateItems = data.items.filter(function(i) {
-                const row = findRow(i.material_shortage_id);
-                return row && row.existing_po && row.existing_po.length > 0;
-            });
-
-
             const supplierCount = new Set(data.items.map(function(i) {
                 return i.supplier_id;
             })).size;
 
-
-
             if (!po.confirming) {
                 po.confirming = true;
 
-                let msg = supplierCount > 1 ?
+                const msg = supplierCount > 1 ?
                     'Akan dibuat ' + supplierCount + ' PO terpisah (per supplier) untuk total ' + data.items.length + ' item.' :
-                    'Simpan draf PO untuk ' + data.items.length + ' item?';
+                    'Buat PO untuk ' + data.items.length + ' item dan kirim email ke supplier?';
 
-                if (duplicateItems.length > 0) {
-                    msg += ' ⚠ ' + duplicateItems.length + ' item di antaranya SUDAH punya PO berjalan sebelumnya — pastikan ini bukan pesanan ganda.';
-                }
-
-                P.confirm.textContent = msg + ' Status shortage tidak akan berubah.';
+                P.confirm.textContent = msg + ' Email PO akan dikirim ke setiap supplier.';
                 P.confirm.hidden = false;
-                P.save.textContent = 'Ya, simpan PO';
+                P.save.textContent = 'Ya, buat & kirim PO';
                 P.confirm.scrollIntoView({
                     block: 'nearest'
                 });
@@ -1501,7 +1284,7 @@
             po.saving = true;
             P.save.disabled = true;
             P.cancel.disabled = true;
-            P.save.textContent = 'Menyimpan...';
+            P.save.textContent = 'Mengirim...';
 
             try {
                 const result = await api.createPurchaseOrderFromShortage(data);
@@ -1513,15 +1296,32 @@
                     detail: result
                 }));
 
-                const list = result.purchase_orders.map(function(p) {
+                const created = result.purchase_orders;
+                const list = created.map(function(p) {
                     return p.po_no;
                 }).join(', ');
-                toast(result.purchase_orders.length + ' PO berhasil dibuat: ' + list);
+                const failed = created.filter(function(p) {
+                    return !p.email_sent;
+                }).length;
+
+                toast(
+                    created.length + ' PO dibuat: ' + list + '. ' +
+                    (failed ?
+                        failed + ' email gagal dikirim, kirim ulang dari halaman detail PO.' :
+                        'Email terkirim ke supplier.')
+                );
+
+                // Muat ulang supaya info "PO sudah dijalankan" langsung tampil
+                loadData();
 
             } catch (error) {
                 po.saving = false;
                 resetConfirm();
-                showPoError('PO gagal disimpan. Coba lagi.');
+                showPoError(
+                    error.status === 422 && error.message ?
+                    error.message :
+                    'PO gagal disimpan. Coba lagi.'
+                );
             } finally {
                 po.saving = false;
                 P.save.disabled = false;

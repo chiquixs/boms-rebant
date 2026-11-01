@@ -162,6 +162,23 @@ class ProcurementController extends Controller
             }
         }
 
+        $shortageIds = collect($data['items'])->pluck('material_shortage_id')->filter();
+
+        if ($shortageIds->isNotEmpty()) {
+            $alreadyOrdered = PurchaseOrderItem::whereIn('material_shortage_id', $shortageIds)
+                ->whereHas('purchaseOrder', fn ($q) => $q->whereIn('status', [
+                    PurchaseOrder::STATUS_ORDERED,
+                    PurchaseOrder::STATUS_PARTIALLY_RECEIVED,
+                ]))
+                ->exists();
+
+            if ($alreadyOrdered) {
+                throw ValidationException::withMessages([
+                    'items' => 'Ada shortage yang sudah punya PO berjalan. Muat ulang halaman.',
+                ]);
+            }
+        }
+
         // Kelompokkan item per supplier -> 1 kelompok = 1 PO
         $groups = collect($data['items'])->groupBy('supplier_id');
 
