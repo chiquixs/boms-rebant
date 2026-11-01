@@ -394,3 +394,28 @@
         width: 100%;
     }
 }
+
+.ms-po-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin-top: 6px;
+    padding: 6px 9px;
+    border: 1px solid #BFE3C9;
+    border-radius: 8px;
+    background: #E8F5EC;
+    color: #1E7B3C;
+    font-size: 10px;
+    line-height: 1.4;
+}
+
+.ms-po-info strong {
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.ms-po-info span {
+    color: #3B6B4A;
+    white-space: nowrap;
+}
