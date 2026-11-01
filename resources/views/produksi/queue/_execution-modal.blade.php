@@ -87,10 +87,77 @@
             {{-- Isi --}}
             <div id="peContent" hidden>
 
-                {{-- 1. CEK MATERIAL --}}
+                {{-- 1. DETAIL PRODUK (hanya baca) --}}
                 <section class="pe-section">
 
-                    <h3><span>1.</span> Cek Material</h3>
+                    <h3><span>1.</span> Detail Produk</h3>
+                    <p class="pe-section-desc">
+                        Informasi produk yang sedang diproduksi. Hanya untuk dilihat.
+                    </p>
+
+                    <div class="pe-detail">
+
+                        <div class="pe-detail-image" id="peDetailImage">
+                            <svg width="30" height="30" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="1.6">
+                                <rect x="3" y="4" width="18" height="16" rx="2"/>
+                                <circle cx="9" cy="10" r="1.5"/>
+                                <path d="m21 16-5-5-8 9"/>
+                            </svg>
+                        </div>
+
+                        <div class="pe-detail-main">
+
+                            <div class="pe-detail-grid">
+
+                                <div class="pe-detail-field wide">
+                                    <span>Nama Produk</span>
+                                    <strong id="peDetailName">-</strong>
+                                </div>
+
+                                <div class="pe-detail-field">
+                                    <span>Kode Produk</span>
+                                    <strong id="peDetailCode">-</strong>
+                                </div>
+
+                                <div class="pe-detail-field">
+                                    <span>Kategori</span>
+                                    <strong id="peDetailCategory">-</strong>
+                                </div>
+
+                                <div class="pe-detail-field">
+                                    <span>Metode Produksi</span>
+                                    <strong id="peDetailMethod">-</strong>
+                                </div>
+
+                                <div class="pe-detail-field">
+                                    <span>Dimensi (P x L)</span>
+                                    <strong id="peDetailSize">-</strong>
+                                </div>
+
+                                <div class="pe-detail-field">
+                                    <span>Harga</span>
+                                    <strong id="peDetailPrice">-</strong>
+                                </div>
+
+                            </div>
+
+                            <div class="pe-detail-desc">
+                                <span>Deskripsi</span>
+                                <p id="peDetailDesc">-</p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                {{-- 2. CEK MATERIAL --}}
+                <section class="pe-section">
+
+                    <h3><span>2.</span> Cek Material</h3>
                     <p class="pe-section-desc" id="peCheckDesc">
                         Bandingkan kebutuhan bahan dengan stok yang tersedia.
                     </p>
@@ -142,10 +209,10 @@
                 {{-- Pemakaian Aktual dan Hasil Produksi: berdampingan di layar lebar --}}
                 <div class="pe-columns">
 
-                {{-- 2. PEMAKAIAN AKTUAL --}}
+                {{-- 3. PEMAKAIAN AKTUAL --}}
                 <section class="pe-section">
 
-                    <h3><span>2.</span> Pemakaian Aktual</h3>
+                    <h3><span>3.</span> Pemakaian Aktual</h3>
                     <p class="pe-section-desc">
                         Masukkan jumlah bahan yang benar-benar digunakan.
                     </p>
@@ -160,10 +227,10 @@
                 </section>
 
 
-                {{-- 3. HASIL PRODUKSI --}}
+                {{-- 4. HASIL PRODUKSI --}}
                 <section class="pe-section">
 
-                    <h3><span>3.</span> Hasil Produksi</h3>
+                    <h3><span>4.</span> Hasil Produksi</h3>
                     <p class="pe-section-desc">
                         Masukkan jumlah barang jadi yang selesai diproduksi pada sesi ini. Gunakan Simpan Progres jika produksi belum selesai.
                     </p>
@@ -373,6 +440,15 @@
         retry:        $('peRetry'),
         content:      $('peContent'),
 
+        detailImage:    $('peDetailImage'),
+        detailName:     $('peDetailName'),
+        detailCode:     $('peDetailCode'),
+        detailCategory: $('peDetailCategory'),
+        detailMethod:   $('peDetailMethod'),
+        detailSize:     $('peDetailSize'),
+        detailPrice:    $('peDetailPrice'),
+        detailDesc:     $('peDetailDesc'),
+
         checkDesc:    $('peCheckDesc'),
         checkBody:    $('peCheckBody'),
         shortage:     $('peShortage'),
@@ -472,11 +548,85 @@
         }
     }
 
+    // Detail Produk: dari product_groups lewat item permintaan
+    // (production_requests.product_id -> products.group_id -> product_groups.id).
+    // Backend mengirim item.product_group = { name, code, description,
+    // production_method, category_name, length_cm, width_cm, price, image_url }.
+    // Hanya baca. Nilai kosong atau NULL ditampilkan sebagai "-".
+    const DETAIL_PLACEHOLDER = els.detailImage.innerHTML;
+
+    function isBlank(value) {
+        return value === null || value === undefined || String(value).trim() === '';
+    }
+
+    function dash(value) {
+        return isBlank(value) ? '-' : String(value).trim();
+    }
+
+    function methodLabel(method) {
+
+        if (method === 'MTS') return 'Make-to-Stock (MTS)';
+        if (method === 'MTO') return 'Make-to-Order (MTO)';
+
+        return dash(method);
+    }
+
+    function sizeLabel(length, width) {
+
+        const hasLength = !isBlank(length);
+        const hasWidth = !isBlank(width);
+
+        if (hasLength && hasWidth) return fmt(length) + ' x ' + fmt(width) + ' cm';
+        if (hasLength) return 'P ' + fmt(length) + ' cm';
+        if (hasWidth) return 'L ' + fmt(width) + ' cm';
+
+        return '-';
+    }
+
+    function priceLabel(price) {
+        return isBlank(price) ? '-' : 'Rp ' + fmt(price);
+    }
+
+    function renderDetailProduct() {
+
+        const item = state.item;
+        const group = item.product_group || {};
+
+        els.detailName.textContent = dash(group.name || item.product_name);
+        els.detailCode.textContent = dash(group.code);
+        els.detailCategory.textContent = dash(group.category_name);
+        els.detailMethod.textContent = methodLabel(group.production_method);
+        els.detailSize.textContent = sizeLabel(group.length_cm, group.width_cm);
+        els.detailPrice.textContent = priceLabel(group.price);
+        els.detailDesc.textContent = dash(group.description);
+
+        // Gambar produk induk (product_groups.image_path), cadangan: gambar request
+        const imageUrl = group.image_url || item.image_url;
+
+        els.detailImage.innerHTML = DETAIL_PLACEHOLDER;
+
+        if (imageUrl) {
+
+            const img = document.createElement('img');
+
+            img.alt = dash(group.name || item.product_name);
+
+            img.onerror = function () {
+                els.detailImage.innerHTML = DETAIL_PLACEHOLDER;
+            };
+
+            img.src = imageUrl;
+
+            els.detailImage.innerHTML = '';
+            els.detailImage.appendChild(img);
+        }
+    }
+
     function renderMaterials() {
 
         const rows = state.materials;
 
-        // 1. Cek material
+        // 2. Cek material
         els.checkDesc.textContent =
             'Estimasi kebutuhan bahan untuk ' + state.remaining +
             ' pcs yang belum diproduksi, dibandingkan dengan stok yang tersedia.';
@@ -505,7 +655,7 @@
             return m.name + ' sebanyak ' + fmt(round2(needOf(m) - m.current_stock)) + ' ' + m.unit;
         }).join(', ') + '.';
 
-        // 2. Pemakaian aktual (prefill: kebutuhan, maksimal sebesar stok)
+        // 3. Pemakaian aktual (prefill: kebutuhan, maksimal sebesar stok)
         els.usageList.innerHTML = rows.map(function (m) {
 
             const prefill = Math.min(needOf(m), m.current_stock);
@@ -527,7 +677,7 @@
 
         }).join('');
 
-        // 3. Hasil produksi
+        // 4. Hasil produksi
         els.qty.value = '';
 
         els.statRequested.textContent = state.item.qty_requested + ' pcs';
@@ -639,6 +789,7 @@
         clearErrors();
 
         renderHeader();
+        renderDetailProduct();
 
         els.overlay.hidden = false;
 

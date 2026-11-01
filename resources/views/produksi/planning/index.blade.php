@@ -52,7 +52,8 @@
             <span class="pq-stat-label">Total Produk</span>
         </div>
         <strong class="pq-stat-value" id="spStatTotal">-</strong>
-        <span class="sp-stat-note">Produk aktif di Master Produk & SKU</span>
+        {{-- KOREKSI: stok dikelola per varian --}}
+        <span class="sp-stat-note">Produk aktif, stok dikelola per varian</span>
     </div>
 
     <div class="pq-stat low">
@@ -68,7 +69,8 @@
             <span class="pq-stat-label">Stok di Bawah Minimum</span>
         </div>
         <strong class="pq-stat-value" id="spStatLow">-</strong>
-        <span class="sp-stat-note">Stok saat ini &lt; stok minimum</span>
+        {{-- KOREKSI: dihitung per varian --}}
+        <span class="sp-stat-note">Varian dengan stok &lt; minimum</span>
     </div>
 
     <div class="pq-stat waiting">
@@ -83,7 +85,8 @@
             <span class="pq-stat-label">Perlu Diproduksi (MTS)</span>
         </div>
         <strong class="pq-stat-value" id="spStatNeed">-</strong>
-        <span class="sp-stat-note">Rekomendasi produksi &gt; 0</span>
+        {{-- KOREKSI: dihitung per varian --}}
+        <span class="sp-stat-note">Varian dengan rekomendasi &gt; 0</span>
     </div>
 
     <div class="pq-stat progress">
@@ -186,19 +189,18 @@
 
         <table class="pq-table sp-table">
 
-            <caption class="pq-sr-only">Daftar stok produk jadi dan rekomendasi produksi</caption>
+            <caption class="pq-sr-only">Daftar produk, varian, stok per varian, dan rekomendasi produksi</caption>
 
+            {{-- KOREKSI: satu baris per produk. Stok, min, dan target tampil per varian
+                 di daftar varian, bukan sebagai stok gabungan. --}}
             <thead>
                 <tr>
                     <th class="center">No.</th>
                     <th>Produk / SKU</th>
                     <th>Kategori</th>
-                    <th class="center">Stok Saat Ini</th>
-                    <th class="center">Min. Stock</th>
-                    <th class="center">Target Stock</th>
+                    <th>Varian</th>
                     <th class="center">Rekomendasi Produksi (MTS)</th>
                     <th class="center">Status Stok</th>
-                    <th class="center">Aksi</th>
                 </tr>
             </thead>
 
@@ -256,7 +258,8 @@
 
     <div class="sp-panel">
         <h3>Kondisi Stok</h3>
-        <p>Sebaran status stok seluruh produk aktif.</p>
+        {{-- KOREKSI: dihitung per varian --}}
+        <p>Sebaran status stok seluruh varian aktif.</p>
 
         <div class="sp-bar" id="spBar" aria-hidden="true"></div>
 
@@ -269,7 +272,7 @@
 
     <div class="sp-panel">
         <h3>Rekomendasi Tertinggi</h3>
-        <p>Produk dengan kebutuhan produksi terbesar.</p>
+        <p>Varian dengan kebutuhan produksi terbesar.</p>
 
         <div class="sp-top" id="spTop"></div>
     </div>
@@ -279,8 +282,8 @@
         <p>Dihitung dari data yang sama dengan tabel.</p>
 
         <div class="sp-sum">
-            <div>Produk di bawah stok minimum <strong id="spSumLow">0</strong></div>
-            <div>Produk dengan request aktif <strong id="spSumActive">0</strong></div>
+            <div>Varian di bawah stok minimum <strong id="spSumLow">0</strong></div>
+            <div>Varian dengan request aktif <strong id="spSumActive">0</strong></div>
             <div>Total rekomendasi produksi <strong id="spSumRec">0</strong></div>
         </div>
     </div>
@@ -567,6 +570,10 @@
 
     const ACTIVE_STATUSES = ['WAITING', 'IN_PROCESS'];
 
+    // KOREKSI: ikon panah pada tombol Varian
+    const CHEVRON =
+        '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="m6 9 6 6 6-6"/></svg>';
+
     const PLACEHOLDER_ICON =
         '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">' +
         '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m21 16-5-5-8 9"/></svg>';
@@ -697,7 +704,9 @@
         page: 1,
         loading: true,
         failed: false,
-        simCounter: 0
+        simCounter: 0,
+        groups: [],      // KOREKSI: produk (product_groups) beserta variannya
+        expanded: {}     // KOREKSI: id produk yang daftar variannya sedang dibuka
     };
 
     function $(id) { return document.getElementById(id); }
@@ -851,12 +860,48 @@
                     status: p.current_stock < p.min_stock ? 'LOW' : 'SAFE'
                 });
             });
+
+        buildGroups();
     }
 
-    function inGroup(p, key) {
-        if (key === 'SAFE') return p.status === 'SAFE';
-        if (key === 'LOW')  return p.status === 'LOW';
-        if (key === 'NEED') return p.rec > 0;
+    // KOREKSI: kelompokkan varian (products) per produk (product_groups).
+    // Status produk dihitung dari status tiap varian, BUKAN dari stok gabungan:
+    // Stok Rendah bila minimal satu varian punya current_stock < min_stock.
+    function buildGroups() {
+
+        const byId = {};
+        state.groups = [];
+
+        state.view.forEach(function (p) {
+            let g = byId[p.group.id];
+            if (!g) {
+                g = byId[p.group.id] = {
+                    id: p.group.id,
+                    group: p.group,
+                    category: p.group.category,
+                    variants: []
+                };
+                state.groups.push(g);
+            }
+            g.variants.push(p);
+        });
+
+        state.groups.forEach(function (g) {
+            g.variants.sort(function (a, b) { return String(a.sku).localeCompare(String(b.sku)); });
+            g.low = g.variants.filter(function (v) { return v.status === 'LOW'; });
+            g.recTotal = g.variants.reduce(function (sum, v) { return sum + v.rec; }, 0);
+            g.needCount = g.variants.filter(function (v) { return v.rec > 0; }).length;
+            g.status = g.low.length ? 'LOW' : 'SAFE';
+        });
+
+        state.groups.sort(function (a, b) { return a.group.name.localeCompare(b.group.name); });
+    }
+
+    // KOREKSI: g = satu produk (kelompok varian)
+    function inGroup(g, key) {
+        if (key === 'SAFE') return g.status === 'SAFE';
+        if (key === 'LOW')  return g.status === 'LOW';
+        if (key === 'NEED') return g.recTotal > 0;
         return true;
     }
 
@@ -875,19 +920,25 @@
         const safe = v.filter(function (p) { return p.status === 'SAFE'; }).length;
         const needRec = v.filter(function (p) { return p.rec > 0; }).length;
 
+        // KOREKSI: tab dihitung per produk
+        const g = state.groups;
+        const gSafe = g.filter(function (x) { return x.status === 'SAFE'; }).length;
+        const gLow = g.filter(function (x) { return x.status === 'LOW'; }).length;
+        const gNeed = g.filter(function (x) { return x.recTotal > 0; }).length;
+
         const activeRequests = state.requests.filter(function (r) {
             return ACTIVE_STATUSES.indexOf(r.status) !== -1;
         }).length;
 
-        els.statTotal.textContent  = dash ? '-' : v.length;
+        els.statTotal.textContent  = dash ? '-' : g.length;
         els.statLow.textContent    = dash ? '-' : low;
         els.statNeed.textContent   = dash ? '-' : needRec;
         els.statActive.textContent = dash ? '-' : activeRequests;
 
-        els.tabAll.textContent  = v.length;
-        els.tabSafe.textContent = safe;
-        els.tabLow.textContent  = low;
-        els.tabNeed.textContent = needRec;
+        els.tabAll.textContent  = g.length;
+        els.tabSafe.textContent = gSafe;
+        els.tabLow.textContent  = gLow;
+        els.tabNeed.textContent = gNeed;
 
         // Insight
         els.insight.hidden = dash || state.loading || !v.length;
@@ -930,19 +981,23 @@
         return !!(state.search.trim() || state.category || state.status || state.tab !== 'ALL');
     }
 
+    // KOREKSI: pencarian dan filter bekerja pada tingkat produk. Produk cocok
+    // jika nama produk, atau SKU / nama varian salah satu variannya, cocok.
     function getFiltered() {
 
         const q = state.search.trim().toLowerCase();
 
-        return state.view.filter(function (p) {
+        return state.groups.filter(function (g) {
 
-            if (!inGroup(p, state.tab)) return false;
-            if (state.status && !inGroup(p, state.status)) return false;
-            if (state.category && String(p.group.category.id) !== state.category) return false;
+            if (!inGroup(g, state.tab)) return false;
+            if (state.status && !inGroup(g, state.status)) return false;
+            if (state.category && String(g.category.id) !== state.category) return false;
 
             if (q) {
                 // Nama produk, SKU, dan variasi
-                const haystack = [p.group.name, p.variant_name, p.sku].join(' ').toLowerCase();
+                const haystack = [g.group.name].concat(g.variants.map(function (v) {
+                    return v.sku + ' ' + (v.variant_name || '');
+                })).join(' ').toLowerCase();
                 if (haystack.indexOf(q) === -1) return false;
             }
 
@@ -980,7 +1035,7 @@
         let html = '';
         for (let i = 0; i < 5; i++) {
             html += '<tr>';
-            for (let c = 0; c < 9; c++) {
+            for (let c = 0; c < 6; c++) {
                 html += '<td><span class="pq-skeleton"></span></td>';
             }
             html += '</tr>';
@@ -988,43 +1043,118 @@
         return html;
     }
 
-    function rowHtml(p, number) {
+    // KOREKSI: gambar produk (grup), cadangan gambar varian pertama.
+    function groupThumb(g) {
+        let src = g.group.image_path || '';
+        if (!src) {
+            const withImage = g.variants.filter(function (v) { return v.image_path; })[0];
+            src = withImage ? withImage.image_path : '';
+        }
+        return src
+            ? '<img src="' + esc(src) + '" alt="' + esc(g.group.name) + '" loading="lazy">'
+            : PLACEHOLDER_ICON;
+    }
 
-        const meta = STATUS_META[p.status];
-        const percent = p.target_stock > 0
-            ? Math.min(100, Math.round(p.current_stock / p.target_stock * 100)) : 0;
+    // KOREKSI: peringatan merah di tingkat produk. Dihitung dari varian yang
+    // current_stock < min_stock (bukan stok gabungan).
+    function lowWarningHtml(g) {
 
-        const meter = '<div class="sp-meter ' + (p.status === 'LOW' ? 'low sp-low' : 'sp-ok') + '">' +
-            '<span style="width:' + percent + '%"></span></div>';
+        if (!g.low.length) return '';
 
-        const rec = p.rec > 0
-            ? '<span class="sp-rec">+' + fmt(p.rec) + '</span>'
+        return '<div class="sp-lowwarn">' +
+            '<strong>' + g.low.length + ' Varian Low Stock</strong>' +
+            g.low.map(function (v) {
+                return '<span>' + esc(v.variant_name || v.sku) + ' (' + fmt(v.current_stock) + ' / min ' + fmt(v.min_stock) + ')</span>';
+            }).join('') +
+            '</div>';
+    }
+
+    // KOREKSI: progress bar stok satu varian. Skala = target_stock.
+    // Merah bila di bawah minimum, hijau bila aman. Penuh jika >= target.
+    function stockBarHtml(v) {
+
+        const low = v.current_stock < v.min_stock;
+        const pct = v.target_stock > 0
+            ? Math.min(100, Math.max(0, v.current_stock / v.target_stock * 100))
+            : (v.current_stock > 0 ? 100 : 0);
+        const minPct = v.target_stock > 0
+            ? Math.min(100, Math.max(0, v.min_stock / v.target_stock * 100))
+            : 0;
+
+        return '<div class="sp-vstock">' +
+            '<div class="sp-vstock-top"><b class="' + (low ? 'low' : 'ok') + '">' + fmt(v.current_stock) + '</b>' +
+                '<small>min ' + fmt(v.min_stock) + ' &middot; target ' + fmt(v.target_stock) + '</small></div>' +
+            '<div class="sp-vbar ' + (low ? 'low' : 'ok') + '" role="img" aria-label="Stok ' + v.current_stock +
+                ', minimum ' + v.min_stock + ', target ' + v.target_stock + '">' +
+                '<span style="width:' + pct.toFixed(1) + '%"></span>' +
+                '<i style="left:' + minPct.toFixed(1) + '%"></i></div>' +
+            '</div>';
+    }
+
+    // KOREKSI: satu baris varian (stok, status, rekomendasi, dan aksi per SKU).
+    function variantItemHtml(v) {
+
+        const meta = STATUS_META[v.status];
+
+        const rec = v.rec > 0
+            ? '<span class="sp-rec">+' + fmt(v.rec) + '</span>'
             : '<span class="sp-rec-none">&mdash;</span>';
 
-        const recNote = p.planned > 0
-            ? '<span class="sp-rec-note">Sudah direncanakan: ' + fmt(p.planned) + '</span>'
+        const note = v.planned > 0
+            ? '<span class="sp-rec-note">Sudah direncanakan: ' + fmt(v.planned) + '</span>'
             : '';
 
+        return '<div class="sp-vitem' + (v.status === 'LOW' ? ' low' : '') + '">' +
+            '<span class="pv-sku">' + esc(v.sku) + '</span>' +
+            '<strong title="' + esc(v.variant_name || '-') + '">' + esc(v.variant_name || '-') + '</strong>' +
+            stockBarHtml(v) +
+            '<span class="pq-badge ' + meta.cls + '">' + meta.label + '</span>' +
+            '<div class="sp-vrec">' + rec + note + '</div>' +
+            '<div class="sp-actions">' +
+                '<button type="button" class="sp-action outline" data-act="detail" data-id="' + v.id + '">Detail</button>' +
+                '<button type="button" class="sp-action primary" data-act="mts" data-id="' + v.id + '"' +
+                    (v.rec > 0 ? '' : ' disabled title="Tidak ada kebutuhan produksi"') + '>Buat Permintaan Produksi</button>' +
+            '</div>' +
+            '</div>';
+    }
+
+    function variantRowHtml(g) {
+        return '<tr class="pv-detail-row" id="spVariants' + g.id + '"><td colspan="6"><div class="pv-detail">' +
+            '<div class="pv-detail-head"><strong>Varian Produk</strong><span>' + g.variants.length + ' varian tersedia</span></div>' +
+            '<div class="sp-vlist">' + g.variants.map(variantItemHtml).join('') + '</div>' +
+            '</div></td></tr>';
+    }
+
+    // KOREKSI: satu baris = satu produk (product_groups).
+    function rowHtml(g, number) {
+
+        const open = !!state.expanded[g.id];
+        const meta = STATUS_META[g.status];
+        const skus = g.variants.map(function (v) { return v.sku; });
+        const skuText = 'SKU: ' + skus.slice(0, 2).join(', ') + (skus.length > 2 ? ' +' + (skus.length - 2) : '');
+
+        const rec = g.recTotal > 0
+            ? '<span class="sp-rec">+' + fmt(g.recTotal) + '</span>' +
+              '<span class="sp-rec-note">dari ' + g.needCount + ' varian</span>'
+            : '<span class="sp-rec-none">&mdash;</span>';
+
         return '' +
-            '<tr>' +
+            '<tr class="sp-group-row' + (open ? ' open' : '') + '">' +
                 '<td class="center">' + number + '</td>' +
                 '<td><div class="sp-product">' +
-                    '<span class="sp-thumb">' + thumbInner(p) + '</span>' +
-                    '<div class="sp-product-text"><strong>' + esc(p.group.name) + '</strong>' +
-                    '<small>' + esc(skuLine(p)) + '</small></div>' +
+                    '<span class="sp-thumb">' + groupThumb(g) + '</span>' +
+                    '<div class="sp-product-text"><strong title="' + esc(g.group.name) + '">' + esc(g.group.name) + '</strong>' +
+                    '<small>' + esc(skuText) + '</small></div>' +
                 '</div></td>' +
-                '<td>' + esc(p.group.category ? p.group.category.name : '-') + '</td>' +
-                '<td class="center"><div class="sp-stock"><strong>' + fmt(p.current_stock) + '</strong>' + meter + '</div></td>' +
-                '<td class="center pq-qty">' + fmt(p.min_stock) + '</td>' +
-                '<td class="center pq-qty">' + fmt(p.target_stock) + '</td>' +
-                '<td class="center">' + rec + recNote + '</td>' +
+                '<td>' + esc(g.category ? g.category.name : '-') + '</td>' +
+                '<td><button type="button" class="pv-btn' + (open ? ' open' : '') + '" data-toggle="' + g.id + '"' +
+                    ' aria-expanded="' + (open ? 'true' : 'false') + '" aria-controls="spVariants' + g.id + '">' +
+                    g.variants.length + ' Varian' + CHEVRON + '</button>' +
+                    lowWarningHtml(g) + '</td>' +
+                '<td class="center">' + rec + '</td>' +
                 '<td class="center"><span class="pq-badge ' + meta.cls + '">' + meta.label + '</span></td>' +
-                '<td class="center"><div class="sp-actions">' +
-                    '<button type="button" class="sp-action outline" data-act="detail" data-id="' + p.id + '">Detail</button>' +
-                    '<button type="button" class="sp-action primary" data-act="mts" data-id="' + p.id + '"' +
-                        (p.rec > 0 ? '' : ' disabled title="Tidak ada kebutuhan produksi"') + '>Buat Permintaan Produksi</button>' +
-                '</div></td>' +
-            '</tr>';
+            '</tr>' +
+            (open ? variantRowHtml(g) : '');
     }
 
     function render() {
@@ -1073,8 +1203,8 @@
         const start = (state.page - 1) * SP_CONFIG.perPage;
         const slice = filtered.slice(start, start + SP_CONFIG.perPage);
 
-        els.body.innerHTML = slice.map(function (p, i) {
-            return rowHtml(p, start + i + 1);
+        els.body.innerHTML = slice.map(function (g, i) {
+            return rowHtml(g, start + i + 1);
         }).join('');
 
         els.footer.hidden = false;
@@ -1550,6 +1680,17 @@
 
     els.body.addEventListener('click', function (event) {
 
+        // KOREKSI: buka / tutup daftar varian produk
+        const toggle = event.target.closest('button[data-toggle]');
+        if (toggle) {
+            const gid = Number(toggle.getAttribute('data-toggle'));
+            state.expanded[gid] = !state.expanded[gid];
+            render();
+            const again = els.body.querySelector('button[data-toggle="' + gid + '"]');
+            if (again) again.focus();
+            return;
+        }
+
         const button = event.target.closest('button[data-act]');
         if (!button || button.disabled) return;
 
@@ -1595,6 +1736,7 @@
             state.products = [];
             state.requests = [];
             state.view = [];
+            state.groups = [];
             state.failed = true;
         }
 
