@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\MaterialShortage;
 use App\Models\PurchaseOrderItem;
 use App\Models\RawMaterialMovement;
+use App\Models\SupplierMaterial;
+use Illuminate\Validation\ValidationException;
 
 class ProcurementController extends Controller
 {
@@ -118,6 +120,79 @@ class ProcurementController extends Controller
             ->with('success', 'Purchase Order berhasil dibuat dan dikirim ke supplier.');
     }
 
+    public function storeFromShortages(Request $request)
+    {
+        $data = $request->validate([
+            'notes'                         => ['nullable', 'string'],
+            'items'                         => ['required', 'array', 'min:1'],
+            'items.*.raw_material_id'       => ['required', 'exists:raw_materials,id'],
+            'items.*.material_shortage_id'  => ['nullable', 'exists:material_shortages,id'],
+            'items.*.qty_suggested'         => ['nullable', 'numeric', 'min:0'],
+            'items.*.qty_ordered'           => ['required', 'numeric', 'gt:0'],
+            'items.*.supplier_id'           => ['required', 'exists:suppliers,id'],
+        ]);
+
+        // Validasi pasangan supplier-bahan beneran valid (bukan cuma dari dropdown yang bisa diakali)
+        foreach ($data['items'] as $item) {
+            $isValidPair = SupplierMaterial::where('supplier_id', $item['supplier_id'])
+                ->where('raw_material_id', $item['raw_material_id'])
+                ->exists();
+
+            if (! $isValidPair) {
+                throw ValidationException::withMessages([
+                    'items' => 'Ada bahan yang dipasangkan dengan supplier yang tidak men-supply bahan tersebut.',
+                ]);
+            }
+        }
+
+        // Kelompokkan item per supplier -> 1 kelompok = 1 PO
+        $groups = collect($data['items'])->groupBy('supplier_id');
+
+        $createdPos = DB::transaction(function () use ($groups, $data, $request) {
+
+            return $groups->map(function ($items, $supplierId) use ($data, $request) {
+
+                $po = PurchaseOrder::create([
+                    'supplier_id'   => $supplierId,
+                    'created_by'    => $request->user()->id,
+                    'approved_by'   => $request->user()->id,
+                    'po_no'         => $this->generatePoNo(),
+                    'trigger_type'  => PurchaseOrder::TRIGGER_MANUAL,
+                    'status'        => PurchaseOrder::STATUS_ORDERED,
+                    'approved_at'   => now(),
+                    'email_sent_at' => now(),
+                    'notes'         => $data['notes'] ?? null,
+                ]);
+
+                foreach ($items as $item) {
+
+                    $unitPrice = SupplierMaterial::where('supplier_id', $supplierId)
+                        ->where('raw_material_id', $item['raw_material_id'])
+                        ->value('unit_price');
+
+                    $po->items()->create([
+                        'raw_material_id'      => $item['raw_material_id'],
+                        'material_shortage_id' => $item['material_shortage_id'] ?? null,
+                        'qty_suggested'        => $item['qty_suggested'] ?? null,
+                        'qty_ordered'          => $item['qty_ordered'],
+                        'qty_received'         => 0,
+                        'unit_price'           => $unitPrice,
+                    ]);
+                }
+
+                return $po;
+            })->values();
+        });
+
+        return response()->json([
+            'success'         => true,
+            'purchase_orders' => $createdPos->map(fn($po) => [
+                'po_no' => $po->po_no,
+                'url'   => route('admin.procurement.show', $po->po_no),
+            ]),
+        ]);
+    }
+
     private function generatePoNo(): string
     {
         $last = PurchaseOrder::where('po_no', 'like', 'PO-%')
@@ -210,7 +285,7 @@ class ProcurementController extends Controller
                 fn($i) => $i->qty_received >= $i->qty_ordered
             );
 
-            $anyReceived = $purchaseOrder->items->contains(fn ($i) => $i->qty_received > 0);
+            $anyReceived = $purchaseOrder->items->contains(fn($i) => $i->qty_received > 0);
 
             $purchaseOrder->update([
                 'status' => $allReceived
