@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\ProcurementController;
 use App\Http\Controllers\Admin\MaterialShortageController;
+use App\Http\Controllers\Produksi\ProductionQueueController;
 
 /*
 |--------------------------------------------------------------------------
@@ -229,13 +230,15 @@ Route::middleware('auth')->group(function () {
         ->group(function () {
 
             Route::get('/dashboard', function () {
-
-                return 'Dashboard Produksi';
+                return 'Dashboard Produksi';   // ganti nanti kalau sudah ada dashboard
             })->name('dashboard');
 
             Route::get('/queue', function () {
                 return view('produksi.queue.index');
             })->name('queue.index');
+
+            Route::get('/queue/data', [ProductionQueueController::class, 'index'])
+                ->name('queue.data');
 
             Route::get('/planning', function () {
                 return view('produksi.planning.index');
