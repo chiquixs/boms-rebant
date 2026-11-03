@@ -49,4 +49,20 @@ class ProductionRequest extends Model
     {
         return $this->belongsTo(User::class, 'requested_by');
     }
+
+    public function logs(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ProductionLog::class);
+    }
+
+    public function shortages(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(MaterialShortage::class);
+    }
+
+    // Total qty_produced dari SELURUH sesi production_logs
+    public function getTotalProducedAttribute(): int
+    {
+        return (int) $this->logs()->sum('qty_produced');
+    }
 }
