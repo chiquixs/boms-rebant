@@ -19,15 +19,14 @@
     <button
         type="button"
         class="add-order-button"
-        id="openAddOrderModal"
-    >
+        id="openAddOrderModal">
         <svg width="17" height="17"
-             viewBox="0 0 24 24"
-             fill="none"
-             stroke="currentColor"
-             stroke-width="2">
-            <path d="M12 5v14"/>
-            <path d="M5 12h14"/>
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2">
+            <path d="M12 5v14" />
+            <path d="M5 12h14" />
         </svg>
 
         <span>Add Order</span>
@@ -36,15 +35,21 @@
 </div>
 
 @if (session('success'))
-    <div style="margin-bottom:16px;padding:12px 14px;background:#E8F3E3;color:#2F5D24;border-radius:12px;font-size:13px;">
-        {{ session('success') }}
+<div style="margin-bottom:16px;padding:12px 14px;background:#E8F3E3;color:#2F5D24;border-radius:12px;font-size:13px;">
+    {{ session('success') }}
+</div>
+@endif
+
+@if (session('error'))
+    <div style="margin-bottom:16px;padding:12px 14px;background:#FDECEA;color:#C0392B;border-radius:12px;font-size:13px;">
+        {{ session('error') }}
     </div>
 @endif
 
 @if ($errors->any())
-    <div style="margin-bottom:16px;padding:12px 14px;background:#FDECEA;color:#C0392B;border-radius:12px;font-size:13px;">
-        {{ $errors->first() }}
-    </div>
+<div style="margin-bottom:16px;padding:12px 14px;background:#FDECEA;color:#C0392B;border-radius:12px;font-size:13px;">
+    {{ $errors->first() }}
+</div>
 @endif
 
 {{-- =========================
@@ -58,19 +63,19 @@
 
         <div class="stat-icon new">
             <svg width="21" height="21"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="1.8">
-                <path d="M12 5v14"/>
-                <path d="M5 12h14"/>
-                <circle cx="12" cy="12" r="9"/>
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8">
+                <path d="M12 5v14" />
+                <path d="M5 12h14" />
+                <circle cx="12" cy="12" r="9" />
             </svg>
         </div>
 
         <div class="stat-content">
             <span>New</span>
-            <strong>{{ $counts['NEW'] ?? 0 }}</strong>                  {{-- New --}}
+            <strong>{{ $counts['NEW'] ?? 0 }}</strong> {{-- New --}}
             <small>Pesanan baru masuk</small>
         </div>
 
@@ -82,18 +87,18 @@
 
         <div class="stat-icon waiting">
             <svg width="21" height="21"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="1.8">
-                <circle cx="12" cy="12" r="9"/>
-                <path d="M12 7v5l3 2"/>
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3 2" />
             </svg>
         </div>
 
         <div class="stat-content">
             <span>Waiting Production</span>
-            <strong>{{ $counts['WAITING_PRODUCTION'] ?? 0 }}</strong>   {{-- Waiting Production --}}
+            <strong>{{ $counts['WAITING_PRODUCTION'] ?? 0 }}</strong> {{-- Waiting Production --}}
             <small>Menunggu proses produksi</small>
         </div>
 
@@ -105,19 +110,19 @@
 
         <div class="stat-icon ready">
             <svg width="21" height="21"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="1.8">
-                <path d="M21 8l-9 5-9-5"/>
-                <path d="M3 8l9-5 9 5v8l-9 5-9-5V8Z"/>
-                <path d="M12 13v8"/>
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8">
+                <path d="M21 8l-9 5-9-5" />
+                <path d="M3 8l9-5 9 5v8l-9 5-9-5V8Z" />
+                <path d="M12 13v8" />
             </svg>
         </div>
 
         <div class="stat-content">
             <span>Ready to Pack</span>
-            <strong>{{ $counts['READY_TO_PACK'] ?? 0 }}</strong>        {{-- Ready to Pack --}}
+            <strong>{{ $counts['READY_TO_PACK'] ?? 0 }}</strong> {{-- Ready to Pack --}}
             <small>Siap untuk dikemas</small>
         </div>
 
@@ -129,18 +134,18 @@
 
         <div class="stat-icon completed">
             <svg width="21" height="21"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="1.8">
-                <circle cx="12" cy="12" r="9"/>
-                <path d="m8 12 2.5 2.5L16 9"/>
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8">
+                <circle cx="12" cy="12" r="9" />
+                <path d="m8 12 2.5 2.5L16 9" />
             </svg>
         </div>
 
         <div class="stat-content">
             <span>Completed</span>
-            <strong>{{ $counts['COMPLETED'] ?? 0 }}</strong>            {{-- Completed --}}
+            <strong>{{ $counts['COMPLETED'] ?? 0 }}</strong> {{-- Completed --}}
             <small>Pesanan selesai</small>
         </div>
 
@@ -174,16 +179,15 @@
                         fill="none"
                         stroke="currentColor"
                         stroke-width="1.8">
-                        <circle cx="11" cy="11" r="7"/>
-                        <path d="m20 20-3.5-3.5"/>
+                        <circle cx="11" cy="11" r="7" />
+                        <path d="m20 20-3.5-3.5" />
                     </svg>
 
                     <input
                         type="text"
                         name="search"
                         value="{{ request('search') }}"
-                        placeholder="Cari order ID..."
-                    >
+                        placeholder="Cari order ID...">
 
                 </div>
 
@@ -191,19 +195,19 @@
                 <select name="platform" class="platform-filter" onchange="this.form.submit()">
                     <option value="">Semua Platform</option>
                     @foreach ($platforms as $platform)
-                        <option value="{{ $platform->id }}" @selected(request('platform') == $platform->id)>
-                            {{ $platform->name }}
-                        </option>
+                    <option value="{{ $platform->id }}" @selected(request('platform')==$platform->id)>
+                        {{ $platform->name }}
+                    </option>
                     @endforeach
                 </select>
 
                 {{-- STATUS FILTER --}}
                 <select name="status" class="status-filter" onchange="this.form.submit()">
                     <option value="">Semua Status</option>
-                    <option value="NEW" @selected(request('status') === 'NEW')>New</option>
-                    <option value="WAITING_PRODUCTION" @selected(request('status') === 'WAITING_PRODUCTION')>Waiting Production</option>
-                    <option value="READY_TO_PACK" @selected(request('status') === 'READY_TO_PACK')>Ready to Pack</option>
-                    <option value="COMPLETED" @selected(request('status') === 'COMPLETED')>Completed</option>
+                    <option value="NEW" @selected(request('status')==='NEW' )>New</option>
+                    <option value="WAITING_PRODUCTION" @selected(request('status')==='WAITING_PRODUCTION' )>Waiting Production</option>
+                    <option value="READY_TO_PACK" @selected(request('status')==='READY_TO_PACK' )>Ready to Pack</option>
+                    <option value="COMPLETED" @selected(request('status')==='COMPLETED' )>Completed</option>
                 </select>
 
             </form>
@@ -234,34 +238,51 @@
 
             <tbody>
                 @forelse ($orders as $order)
-                    <tr>
-                        <td><span class="order-id">{{ $order->platform_order_no }}</span></td>
-                        <td>{{ $order->order_date->format('d M Y') }}</td>
-                        <td>
-                            <span class="platform-badge {{ $order->platform->badge_class }}">
-                                {{ $order->platform->name }}
-                            </span>
-                        </td>
-                        <td><strong>Rp{{ number_format($order->total_amount, 0, ',', '.') }}</strong></td>
-                        <td>
-                            <span class="order-status {{ $order->status_class }}">
-                                <span></span>
-                                {{ $order->status_label }}
-                            </span>
-                        </td>
-                        <td>
+                <tr>
+                    <td><span class="order-id">{{ $order->platform_order_no }}</span></td>
+                    <td>{{ $order->order_date->format('d M Y') }}</td>
+                    <td>
+                        <span class="platform-badge {{ $order->platform->badge_class }}">
+                            {{ $order->platform->name }}
+                        </span>
+                    </td>
+                    <td><strong>Rp{{ number_format($order->total_amount, 0, ',', '.') }}</strong></td>
+                    <td>
+                        <span class="order-status {{ $order->status_class }}">
+                            <span></span>
+                            {{ $order->status_label }}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="display:flex; gap:6px;">
+
                             <a href="{{ route('admin.orders.show', $order) }}" class="action-button" title="Lihat detail order">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                                    <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/>
-                                    <circle cx="12" cy="12" r="2.5"/>
+                                    <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" />
+                                    <circle cx="12" cy="12" r="2.5" />
                                 </svg>
                             </a>
-                        </td>
-                    </tr>
+
+                            @if ($order->status === \App\Models\Order::STATUS_READY_TO_PACK)
+                            <form action="{{ route('admin.orders.complete', $order) }}" method="POST"
+                                onsubmit="return confirm('Tandai order {{ $order->platform_order_no }} sebagai selesai?');">
+                                @csrf
+                                <button type="submit" class="action-button" title="Tandai selesai (Completed)"
+                                    style="color:#2F5D24; border-color:#2F5D24;">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                        <path d="m5 12 4 4L19 6" />
+                                    </svg>
+                                </button>
+                            </form>
+                            @endif
+
+                        </div>
+                    </td>
+                </tr>
                 @empty
-                    <tr>
-                        <td colspan="6" style="text-align:center;padding:30px;">Belum ada order.</td>
-                    </tr>
+                <tr>
+                    <td colspan="6" style="text-align:center;padding:30px;">Belum ada order.</td>
+                </tr>
                 @endforelse
             </tbody>
 
@@ -283,16 +304,16 @@
         <div class="pagination">
 
             <button type="button"
-                    @disabled($orders->onFirstPage())
-                    onclick="location.href='{{ $orders->previousPageUrl() }}'">‹</button>
+                @disabled($orders->onFirstPage())
+                onclick="location.href='{{ $orders->previousPageUrl() }}'">‹</button>
 
             @for ($page = max(1, $orders->currentPage() - 2); $page <= min($orders->lastPage(), $orders->currentPage() + 2); $page++)
                 <button type="button"
-                        class="{{ $page === $orders->currentPage() ? 'active' : '' }}"
-                        onclick="location.href='{{ $orders->url($page) }}'">{{ $page }}</button>
-            @endfor
+                    class="{{ $page === $orders->currentPage() ? 'active' : '' }}"
+                    onclick="location.href='{{ $orders->url($page) }}'">{{ $page }}</button>
+                @endfor
 
-            <button type="button"
+                <button type="button"
                     @disabled(! $orders->hasMorePages())
                     onclick="location.href='{{ $orders->nextPageUrl() }}'">›</button>
 
@@ -311,8 +332,7 @@
     class="modal-overlay"
     id="addOrderModal"
     data-has-errors="{{ $errors->any() ? '1' : '0' }}"
-    data-catalog="{{ json_encode($catalog) }}"
->
+    data-catalog="{{ json_encode($catalog) }}">
 
     <div class="order-modal">
 
@@ -328,15 +348,14 @@
             <button
                 type="button"
                 class="modal-close"
-                id="closeAddOrderModal"
-            >
+                id="closeAddOrderModal">
                 <svg width="20" height="20"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="2">
-                    <path d="M6 6l12 12"/>
-                    <path d="M18 6L6 18"/>
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M6 6l12 12" />
+                    <path d="M18 6L6 18" />
                 </svg>
             </button>
 
@@ -345,7 +364,7 @@
 
         {{-- MODAL FORM --}}
         <form id="addOrderForm" method="POST" action="{{ route('admin.orders.store') }}">
-        @csrf
+            @csrf
 
             <div class="modal-body">
 
@@ -362,8 +381,7 @@
                         id="orderId"
                         name="platform_order_no"
                         value="{{ old('platform_order_no') }}"
-                        placeholder="Contoh: #RB-1006"
-                    >
+                        placeholder="Contoh: #RB-1006">
 
                 </div>
 
@@ -381,8 +399,7 @@
                             type="date"
                             id="orderDate"
                             name="order_date"
-                            value="{{ old('order_date', now()->toDateString()) }}"
-                        >
+                            value="{{ old('order_date', now()->toDateString()) }}">
 
                     </div>
 
@@ -396,9 +413,9 @@
                         <select id="orderPlatform" name="platform_id">
                             <option value="">Pilih platform</option>
                             @foreach ($platforms as $platform)
-                                <option value="{{ $platform->id }}" @selected(old('platform_id') == $platform->id)>
-                                    {{ $platform->name }}
-                                </option>
+                            <option value="{{ $platform->id }}" @selected(old('platform_id')==$platform->id)>
+                                {{ $platform->name }}
+                            </option>
                             @endforeach
                         </select>
 
@@ -419,8 +436,7 @@
                         id="customerName"
                         name="customer_name"
                         value="{{ old('customer_name') }}"
-                        placeholder="Masukkan nama pelanggan"
-                    >
+                        placeholder="Masukkan nama pelanggan">
 
                 </div>
 
@@ -441,15 +457,14 @@
                         <button
                             type="button"
                             class="add-product-button"
-                            id="addProductButton"
-                        >
+                            id="addProductButton">
                             <svg width="14" height="14"
-                                 viewBox="0 0 24 24"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 stroke-width="2">
-                                <path d="M12 5v14"/>
-                                <path d="M5 12h14"/>
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M12 5v14" />
+                                <path d="M5 12h14" />
                             </svg>
 
                             Tambah Produk
@@ -458,20 +473,20 @@
                     </div>
 
 
-                {{-- PRODUCT ITEMS --}}
-                <div class="order-items" id="orderItems"></div>
+                    {{-- PRODUCT ITEMS --}}
+                    <div class="order-items" id="orderItems"></div>
 
 
-                {{-- TOTAL --}}
-                <div class="order-total">
+                    {{-- TOTAL --}}
+                    <div class="order-total">
 
-                    <span>Total Nominal</span>
+                        <span>Total Nominal</span>
 
-                    <strong id="orderTotal">
-                        Rp 0
-                    </strong>
+                        <strong id="orderTotal">
+                            Rp 0
+                        </strong>
 
-                </div>
+                    </div>
 
                 </div>
 
@@ -488,8 +503,7 @@
                         id="customerNotes"
                         name="notes"
                         rows="3"
-                        placeholder="Contoh: Tolong packing lebih aman, warna sesuai pesanan, dll."
-                    >{{ old('notes') }}</textarea>
+                        placeholder="Contoh: Tolong packing lebih aman, warna sesuai pesanan, dll.">{{ old('notes') }}</textarea>
 
                 </div>
 
@@ -514,15 +528,13 @@
                 <button
                     type="button"
                     class="modal-cancel"
-                    id="cancelAddOrder"
-                >
+                    id="cancelAddOrder">
                     Cancel
                 </button>
 
                 <button
                     type="submit"
-                    class="modal-save"
-                >
+                    class="modal-save">
                     Save Order
                 </button>
 
@@ -609,7 +621,6 @@
 @push('scripts')
 
 <script>
-
     // ==========================
     // MODAL
     // ==========================
@@ -619,25 +630,25 @@
     const closeAddOrderModal = document.getElementById('closeAddOrderModal');
     const cancelAddOrder = document.getElementById('cancelAddOrder');
 
-    openAddOrderModal.addEventListener('click', function () {
+    openAddOrderModal.addEventListener('click', function() {
         addOrderModal.classList.add('active');
     });
 
-    closeAddOrderModal.addEventListener('click', function () {
+    closeAddOrderModal.addEventListener('click', function() {
         addOrderModal.classList.remove('active');
     });
 
-    cancelAddOrder.addEventListener('click', function () {
+    cancelAddOrder.addEventListener('click', function() {
         addOrderModal.classList.remove('active');
     });
 
-    addOrderModal.addEventListener('click', function (event) {
+    addOrderModal.addEventListener('click', function(event) {
         if (event.target === addOrderModal) {
             addOrderModal.classList.remove('active');
         }
     });
 
-    document.addEventListener('keydown', function (event) {
+    document.addEventListener('keydown', function(event) {
         if (event.key === 'Escape') {
             if (confirmOrderModal.classList.contains('active')) {
                 confirmOrderModal.classList.remove('active');
@@ -683,14 +694,14 @@
     }
 
     function findGroup(id) {
-        return catalog.find(function (group) {
+        return catalog.find(function(group) {
             return String(group.id) === String(id);
         });
     }
 
     const groupOptionsHtml =
         '<option value="">Pilih produk</option>' +
-        catalog.map(function (group) {
+        catalog.map(function(group) {
             return `<option value="${group.id}">${escapeHtml(group.name)}</option>`;
         }).join('');
 
@@ -774,7 +785,7 @@
         variantSelect.disabled = false;
         variantSelect.innerHTML =
             '<option value="">Pilih varian</option>' +
-            group.variants.map(function (variant) {
+            group.variants.map(function(variant) {
                 return `<option value="${variant.id}">${escapeHtml(variant.name)} — ${escapeHtml(variant.sku)}</option>`;
             }).join('');
 
@@ -792,9 +803,11 @@
         const variantId = item.querySelector('.variant-select').value;
         const thumbnail = item.querySelector('.product-thumbnail');
 
-        const variant = group
-            ? group.variants.find(function (v) { return String(v.id) === String(variantId); })
-            : null;
+        const variant = group ?
+            group.variants.find(function(v) {
+                return String(v.id) === String(variantId);
+            }) :
+            null;
 
         if (variant && variant.image) {
             thumbnail.src = variant.image;
@@ -814,7 +827,7 @@
 
         let total = 0;
 
-        orderItems.querySelectorAll('.order-item').forEach(function (item) {
+        orderItems.querySelectorAll('.order-item').forEach(function(item) {
 
             const group = findGroup(item.querySelector('.product-select').value);
             const qty = Number(item.querySelector('.quantity-input').value) || 0;
@@ -832,7 +845,7 @@
     // EVENT: PRODUK / VARIAN / QTY
     // ==========================
 
-    orderItems.addEventListener('change', function (event) {
+    orderItems.addEventListener('change', function(event) {
 
         const item = event.target.closest('.order-item');
 
@@ -850,7 +863,7 @@
         }
     });
 
-    orderItems.addEventListener('input', function (event) {
+    orderItems.addEventListener('input', function(event) {
         if (event.target.classList.contains('quantity-input')) {
             calculateOrderTotal();
         }
@@ -861,11 +874,11 @@
     // TAMBAH & HAPUS PRODUK
     // ==========================
 
-    addProductButton.addEventListener('click', function () {
+    addProductButton.addEventListener('click', function() {
         createItemRow();
     });
 
-    orderItems.addEventListener('click', function (event) {
+    orderItems.addEventListener('click', function(event) {
 
         const removeButton = event.target.closest('.remove-item-button');
 
@@ -891,7 +904,7 @@
     const confirmOrderModal = document.getElementById('confirmOrderModal');
 
     function assignItemNames() {
-        orderItems.querySelectorAll('.order-item').forEach(function (item, index) {
+        orderItems.querySelectorAll('.order-item').forEach(function(item, index) {
             item.querySelector('.variant-select').name = `items[${index}][product_id]`;
             item.querySelector('.quantity-input').name = `items[${index}][qty]`;
         });
@@ -902,12 +915,12 @@
     }
 
     // Klik Save Order -> tampilkan konfirmasi (form belum dikirim)
-    addOrderForm.addEventListener('submit', function (event) {
+    addOrderForm.addEventListener('submit', function(event) {
 
         event.preventDefault();
 
-        const orderNo  = document.getElementById('orderId').value.trim();
-        const date     = document.getElementById('orderDate').value;
+        const orderNo = document.getElementById('orderId').value.trim();
+        const date = document.getElementById('orderDate').value;
         const platform = document.getElementById('orderPlatform');
         const customer = document.getElementById('customerName').value.trim();
 
@@ -919,7 +932,7 @@
 
         const rows = Array.from(orderItems.querySelectorAll('.order-item'));
 
-        const incomplete = rows.some(function (row) {
+        const incomplete = rows.some(function(row) {
             return !row.querySelector('.variant-select').value;
         });
 
@@ -929,16 +942,16 @@
         }
 
         // Isi ringkasan
-        document.getElementById('confirmOrderNo').textContent  = orderNo;
-        document.getElementById('confirmDate').textContent     = date;
+        document.getElementById('confirmOrderNo').textContent = orderNo;
+        document.getElementById('confirmDate').textContent = date;
         document.getElementById('confirmPlatform').textContent = selectedText(platform);
         document.getElementById('confirmCustomer').textContent = customer;
-        document.getElementById('confirmTotal').textContent    = orderTotal.textContent;
+        document.getElementById('confirmTotal').textContent = orderTotal.textContent;
 
-        document.getElementById('confirmItems').innerHTML = rows.map(function (row) {
+        document.getElementById('confirmItems').innerHTML = rows.map(function(row) {
             const product = selectedText(row.querySelector('.product-select'));
             const variant = selectedText(row.querySelector('.variant-select'));
-            const qty     = row.querySelector('.quantity-input').value;
+            const qty = row.querySelector('.quantity-input').value;
 
             return `<div>
                         <span>${escapeHtml(product)} — ${escapeHtml(variant)}</span>
@@ -950,12 +963,12 @@
     });
 
     // Batal -> tutup konfirmasi, kembali ke form
-    document.getElementById('cancelConfirm').addEventListener('click', function () {
+    document.getElementById('cancelConfirm').addEventListener('click', function() {
         confirmOrderModal.classList.remove('active');
     });
 
     // Save -> kirim form sungguhan
-    document.getElementById('confirmSave').addEventListener('click', function () {
+    document.getElementById('confirmSave').addEventListener('click', function() {
         assignItemNames();
         addOrderForm.submit();
     });
@@ -965,7 +978,6 @@
     // ==========================
 
     createItemRow();
-
 </script>
 
 @endpush

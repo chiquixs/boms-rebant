@@ -68,6 +68,20 @@ class OrderController extends Controller
         return view('admin.orders.show', compact('order'));
     }
 
+    public function complete(Order $order)
+    {
+        if ($order->status !== Order::STATUS_READY_TO_PACK) {
+            return back()->with('error', 'Order hanya bisa diselesaikan dari status Ready to Pack.');
+        }
+
+        $order->update([
+            'status'       => Order::STATUS_COMPLETED,
+            'completed_at' => now(),
+        ]);
+
+        return back()->with('success', 'Order ' . $order->platform_order_no . ' berhasil ditandai selesai.');
+    }
+
     // ========== TAHAP 2: SIMPAN DATA ==========
     public function store(Request $request)
     {
@@ -138,9 +152,9 @@ class OrderController extends Controller
 
             $order->items()->createMany($rows);
             ActivityLog::record('create', 'order', $order->id, 'Order baru ditambahkan.', [
-            'title'    => $order->platform_order_no,
-            'subtitle' => 'Status New',
-        ]);
+                'title'    => $order->platform_order_no,
+                'subtitle' => 'Status New',
+            ]);
             $this->stockService->allocateForNewOrder($order);
         });
 
