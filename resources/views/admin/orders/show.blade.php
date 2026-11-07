@@ -1,14 +1,24 @@
 @extends('layouts.admin')
 
 @section('title', 'Detail Order - REBANT BOMS')
+@if (session('success'))
+<div style="margin-bottom:16px;padding:12px 14px;background:#E8F3E3;color:#2F5D24;border-radius:12px;font-size:13px;">
+    {{ session('success') }}
+</div>
+@endif
 
+@if (session('error'))
+<div style="margin-bottom:16px;padding:12px 14px;background:#FDECEA;color:#C0392B;border-radius:12px;font-size:13px;">
+    {{ session('error') }}
+</div>
+@endif
 @section('content')
 
 @php
-    // Urutan status untuk progress bar
-    $steps = ['NEW', 'WAITING_PRODUCTION', 'READY_TO_PACK', 'COMPLETED'];
-    $currentStep = array_search($order->status, $steps);
-    $currentStep = $currentStep === false ? 0 : $currentStep;
+// Urutan status untuk progress bar
+$steps = ['NEW', 'WAITING_PRODUCTION', 'READY_TO_PACK', 'COMPLETED'];
+$currentStep = array_search($order->status, $steps);
+$currentStep = $currentStep === false ? 0 : $currentStep;
 @endphp
 
 {{-- =========================
@@ -22,12 +32,12 @@
         <a href="{{ route('admin.orders.index') }}" class="back-to-orders">
 
             <svg width="15" height="15"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="2">
-                <path d="M19 12H5"/>
-                <path d="m12 19-7-7 7-7"/>
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2">
+                <path d="M19 12H5" />
+                <path d="m12 19-7-7 7-7" />
             </svg>
 
             Back to Orders
@@ -78,14 +88,14 @@
 
             <div class="detail-card-icon">
                 <svg width="18" height="18"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="1.8">
-                    <path d="M6 2h9l5 5v15H6z"/>
-                    <path d="M14 2v6h6"/>
-                    <path d="M9 13h6"/>
-                    <path d="M9 17h6"/>
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8">
+                    <path d="M6 2h9l5 5v15H6z" />
+                    <path d="M14 2v6h6" />
+                    <path d="M9 13h6" />
+                    <path d="M9 17h6" />
                 </svg>
             </div>
 
@@ -137,12 +147,12 @@
 
             <div class="detail-card-icon">
                 <svg width="18" height="18"
-                     viewBox="0 0 24 24"
-                     fill="none"
-                     stroke="currentColor"
-                     stroke-width="1.8">
-                    <circle cx="12" cy="8" r="4"/>
-                    <path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/>
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 21c0-4 3.5-7 8-7s8 3 8 7" />
                 </svg>
             </div>
 
@@ -187,13 +197,13 @@
 
         <div class="detail-card-icon">
             <svg width="18" height="18"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="1.8">
-                <path d="M21 8l-9 5-9-5"/>
-                <path d="M3 8l9-5 9 5v8l-9 5-9-5V8Z"/>
-                <path d="M12 13v8"/>
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8">
+                <path d="M21 8l-9 5-9-5" />
+                <path d="M3 8l9-5 9 5v8l-9 5-9-5V8Z" />
+                <path d="M12 13v8" />
             </svg>
         </div>
 
@@ -219,62 +229,61 @@
 
                 @foreach ($order->items as $item)
 
-                    <tr>
+                <tr>
 
-                        <td>
+                    <td>
 
-                            <div class="detail-product">
+                        <div class="detail-product">
 
-                                <img
-                                    src="{{ $item->product->image_url ?? asset('images/login-illustration.png') }}"
-                                    alt="{{ $item->product->group->name }}"
-                                    class="detail-product-image"
-                                >
+                            <img
+                                src="{{ $item->product->image_url ?? asset('images/login-illustration.png') }}"
+                                alt="{{ $item->product->group->name }}"
+                                class="detail-product-image">
 
-                                <div>
-                                    <strong>
-                                        {{ $item->product->group->name }}
-                                    </strong>
+                            <div>
+                                <strong>
+                                    {{ $item->product->group->name }}
+                                </strong>
 
-                                    {{-- sesuaikan: kolom kode/SKU di product_groups jika ada --}}
-                                    <span>
-                                        SKU Product: {{ $item->product->group->sku ?? '-' }}
-                                    </span>
-                                </div>
-
+                                {{-- sesuaikan: kolom kode/SKU di product_groups jika ada --}}
+                                <span>
+                                    SKU Product: {{ $item->product->group->sku ?? '-' }}
+                                </span>
                             </div>
 
-                        </td>
+                        </div>
 
-                        <td>
-                            <span class="detail-variant-name">
-                                {{ $item->product->variant_name ?: '-' }}
-                            </span>
-                        </td>
+                    </td>
 
-                        <td>
-                            <span class="detail-variant-sku">
-                                {{ $item->product->sku }}
-                            </span>
-                        </td>
+                    <td>
+                        <span class="detail-variant-name">
+                            {{ $item->product->variant_name ?: '-' }}
+                        </span>
+                    </td>
 
-                        <td>
-                            Rp{{ number_format($item->unit_price, 0, ',', '.') }}
-                        </td>
+                    <td>
+                        <span class="detail-variant-sku">
+                            {{ $item->product->sku }}
+                        </span>
+                    </td>
 
-                        <td>
-                            <span class="detail-quantity">
-                                {{ $item->qty }}
-                            </span>
-                        </td>
+                    <td>
+                        Rp{{ number_format($item->unit_price, 0, ',', '.') }}
+                    </td>
 
-                        <td>
-                            <strong>
-                                Rp{{ number_format($item->subtotal, 0, ',', '.') }}
-                            </strong>
-                        </td>
+                    <td>
+                        <span class="detail-quantity">
+                            {{ $item->qty }}
+                        </span>
+                    </td>
 
-                    </tr>
+                    <td>
+                        <strong>
+                            Rp{{ number_format($item->subtotal, 0, ',', '.') }}
+                        </strong>
+                    </td>
+
+                </tr>
 
                 @endforeach
 
@@ -314,12 +323,12 @@
 
         <div class="detail-card-icon">
             <svg width="18" height="18"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="1.8">
-                <circle cx="12" cy="12" r="9"/>
-                <path d="m8 12 2.5 2.5L16 9"/>
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8">
+                <circle cx="12" cy="12" r="9" />
+                <path d="m8 12 2.5 2.5L16 9" />
             </svg>
         </div>
 
@@ -404,13 +413,13 @@
 
         <div class="status-information-icon">
             <svg width="16" height="16"
-                 viewBox="0 0 24 24"
-                 fill="none"
-                 stroke="currentColor"
-                 stroke-width="2">
-                <circle cx="12" cy="12" r="9"/>
-                <path d="M12 11v5"/>
-                <path d="M12 8h.01"/>
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 11v5" />
+                <path d="M12 8h.01" />
             </svg>
         </div>
 
@@ -426,6 +435,23 @@
         </div>
 
     </div>
+
+    @if ($order->status === \App\Models\Order::STATUS_READY_TO_PACK)
+
+    <form action="{{ route('admin.orders.complete', $order) }}" method="POST"
+        onsubmit="return confirm('Tandai order {{ $order->platform_order_no }} sebagai selesai?');"
+        style="margin-top:16px;">
+        @csrf
+
+        <button type="submit" class="procurement-receive-button" style="width:100%; justify-content:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="m5 12 4 4L19 6" />
+            </svg>
+            Tandai Selesai (Completed)
+        </button>
+    </form>
+
+    @endif
 
 </div>
 

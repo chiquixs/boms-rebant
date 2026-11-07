@@ -11,10 +11,6 @@ use App\Models\ProductStockMovement;
 
 class OrderStockService
 {
-    /**
-     * Dipanggil sekali, langsung setelah order + order_items dibuat.
-     * HARUS dipanggil di dalam DB::transaction() yang sama dengan pembuatan order.
-     */
     public function allocateForNewOrder(Order $order): void
     {
         $order->load('items');
@@ -22,9 +18,7 @@ class OrderStockService
         $allReady = true;
 
         foreach ($order->items as $item) {
-            $needsProduction = $this->allocateItem($item, $order);
-
-            if ($needsProduction) {
+            if (! $this->tryAllocateItem($item, $order)) {
                 $allReady = false;
             }
         }
@@ -37,16 +31,26 @@ class OrderStockService
     }
 
     /**
-     * Return true jika item ini masih butuh produksi (belum bisa dialokasikan penuh).
+     * Coba alokasikan 1 item MTS. Return true jika SIAP (sudah teralokasi penuh),
+     * false jika masih butuh produksi (production_request dibuat/sudah ada).
      */
-    private function allocateItem(OrderItem $item, Order $order): bool
+    public function tryAllocateItem(OrderItem $item, Order $order): bool
     {
         if ($item->production_method === 'MTO') {
-            $this->createProductionRequest($item, $order, $item->qty);
+            // MTO tidak pernah lewat stok produk jadi. "Siap" ditentukan oleh
+            // production_request yang terkait, bukan di sini.
+            if (! $item->productionRequest) {
+                $this->createProductionRequest($item, $order, $item->qty);
+            }
+
+            return false;
+        }
+
+        // Sudah teralokasi sebelumnya? Tidak perlu alokasi ulang.
+        if ($item->allocation && $item->allocation->status === OrderItemAllocation::STATUS_RESERVED) {
             return true;
         }
 
-        // MTS — lock baris produk, supaya aman dari order lain yang diproses bersamaan
         $product = Product::where('id', $item->product_id)->lockForUpdate()->firstOrFail();
 
         $reserved = OrderItemAllocation::where('product_id', $product->id)
@@ -63,19 +67,17 @@ class OrderStockService
                 'status'        => OrderItemAllocation::STATUS_RESERVED,
             ]);
 
-            return false;
+            return true;
         }
 
-        // Stok tidak cukup -> minta produksi untuk kekurangannya saja
-        $shortage = $item->qty - max($available, 0);
+        // Stok masih kurang. Buat production_request untuk kekurangannya
+        // kalau belum ada request aktif untuk item ini.
+        if (! $item->productionRequest) {
+            $shortage = $item->qty - max($available, 0);
+            $this->createProductionRequest($item, $order, $shortage);
+        }
 
-        $this->createProductionRequest($item, $order, $shortage);
-
-        return true;
-
-        // TODO (modul Produksi): setelah production_request source=ORDER ini
-        // COMPLETED dan menambah stok produk, panggil ulang allocateItem()
-        // untuk item ini, lalu cek apakah seluruh order sudah bisa markReadyToPack().
+        return false;
     }
 
     private function createProductionRequest(OrderItem $item, Order $order, int $qty): void
@@ -104,18 +106,64 @@ class OrderStockService
     }
 
     /**
-     * Konsumsi semua alokasi RESERVED milik order ini: kurangi stok produk jadi
-     * tepat satu kali, catat movement OUT, lalu set order ke READY_TO_PACK.
+     * Dipanggil setelah sesi produksi MTS (RESTOCK atau ORDER-MTS) menambah
+     * stok produk. Coba alokasikan ulang item order terkait, lalu cek
+     * apakah seluruh order sudah siap READY_TO_PACK.
      */
+    public function retryAllocationAfterProduction(ProductionRequest $pr): void
+    {
+        if (! $pr->order_item_id) {
+            return; // RESTOCK murni, tidak ada order terkait
+        }
+
+        $item = $pr->orderItem()->with('order')->first();
+        if (! $item) {
+            return;
+        }
+
+        $this->tryAllocateItem($item, $item->order);
+        $this->checkOrderReadiness($item->order);
+    }
+
+    /**
+     * Cek apakah SEMUA item dalam order sudah siap (MTS: punya allocation
+     * RESERVED; MTO: production_request terkait sudah COMPLETED).
+     * Kalau semua siap, pindahkan order ke READY_TO_PACK.
+     */
+    public function checkOrderReadiness(Order $order): void
+    {
+        if ($order->status === Order::STATUS_READY_TO_PACK || $order->status === Order::STATUS_COMPLETED) {
+            return;
+        }
+
+        $order->load(['items.allocation', 'items.productionRequest']);
+
+        $allReady = $order->items->every(function ($item) {
+            if ($item->production_method === 'MTO') {
+                return $item->productionRequest
+                    && $item->productionRequest->status === ProductionRequest::STATUS_COMPLETED;
+            }
+
+            return $item->allocation && $item->allocation->status === OrderItemAllocation::STATUS_RESERVED;
+        });
+
+        if ($allReady) {
+            $this->markReadyToPack($order);
+        }
+    }
+
     public function markReadyToPack(Order $order): void
     {
         $order->load('items.allocation');
 
         foreach ($order->items as $item) {
+
             $allocation = $item->allocation;
 
+            // MTO tidak pernah punya allocation / stock movement produk jadi.
+            // Cukup "diakui siap" lewat production_request COMPLETED, tidak ada aksi stok di sini.
             if (! $allocation || $allocation->status !== OrderItemAllocation::STATUS_RESERVED) {
-                continue; // item MTO, atau belum teralokasi -> tidak kurangi stok produk jadi
+                continue;
             }
 
             $product = Product::where('id', $allocation->product_id)->lockForUpdate()->firstOrFail();

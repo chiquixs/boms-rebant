@@ -42,3 +42,13 @@
         display: none;
     }
 }
+
+.pe-pill-take {
+    display: inline-block;
+    padding: 2px 8px;
+    background: #DCEEDD;
+    color: #2F5D24;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}

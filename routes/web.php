@@ -119,6 +119,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
             Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
             Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+            Route::post('/orders/{order}/complete', [OrderController::class, 'complete'])->name('orders.complete');
 
 
             /*
@@ -247,6 +248,18 @@ Route::middleware('auth')->group(function () {
             Route::get('/history', function () {
                 return view('produksi.history.index');
             })->name('history.index');
+
+            Route::get('/queue/{productionRequest:request_no}/materials', [ProductionQueueController::class, 'materials'])
+                ->name('queue.materials');
+
+            Route::post('/queue/{productionRequest:request_no}/execute', [ProductionQueueController::class, 'execute'])
+                ->name('queue.execute');
+
+            Route::post('/queue/{productionRequest:request_no}/shortage', [ProductionQueueController::class, 'shortage'])
+                ->name('queue.shortage');
+
+            Route::post('/queue/{productionRequest:request_no}/start', [ProductionQueueController::class, 'start'])
+                ->name('queue.start');
         });
 
 

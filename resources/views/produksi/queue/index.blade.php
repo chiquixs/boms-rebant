@@ -220,7 +220,7 @@
 
 {{-- Modal Detail Produksi (hanya baca) --}}
 @include('produksi.queue._detail-modal')
-
+@include('produksi.queue._start-modal')
 @endsection
 
 
@@ -301,8 +301,8 @@
                 label: 'Mulai Produksi'
             },
             IN_PROCESS: {
-                key: 'continue',
-                label: 'Lanjutkan Produksi'
+                key: 'finish',
+                label: 'Selesai'
             },
             COMPLETED: {
                 key: 'detail',
@@ -891,7 +891,6 @@
         els.body.addEventListener('click', function(event) {
 
             const button = event.target.closest('button[data-action]');
-
             if (!button) return;
 
             const action = button.dataset.action;
@@ -908,27 +907,33 @@
                 return row.request_no === requestNo;
             });
 
-            // Mulai / Lanjutkan Produksi -> modal eksekusi
-            if (action === 'start' || action === 'continue') {
+            // WAITING -> modal info (read-only) + konfirmasi mulai
+            if (action === 'start') {
+                if (item && window.ProductionStartModal) {
+                    window.ProductionStartModal.open(item);
+                    return;
+                }
+                showToast('Modal mulai produksi belum termuat.');
+                return;
+            }
 
+            // IN_PROCESS -> modal form (input pemakaian + hasil), langsung selesaikan
+            if (action === 'finish') {
                 if (item && window.ProductionExecutionModal) {
                     window.ProductionExecutionModal.open(item);
                     return;
                 }
-
-                showToast('Modal eksekusi belum termuat. Pastikan partial modal eksekusi sudah terpasang di halaman ini.');
+                showToast('Modal eksekusi belum termuat.');
                 return;
             }
 
-            // Lihat Detail -> modal detail produksi
+            // COMPLETED -> modal detail (read-only)
             if (action === 'detail') {
-
                 if (item && window.ProductionDetailModal) {
                     window.ProductionDetailModal.open(item);
                     return;
                 }
-
-                showToast('Modal detail belum termuat. Pastikan partial modal detail sudah terpasang di halaman ini.');
+                showToast('Modal detail belum termuat.');
             }
         });
 
@@ -951,10 +956,23 @@
             render();
 
             showToast(
-                'Simulasi: ' + detail.requestNo +
-                (detail.status === 'COMPLETED' ? ' diselesaikan.' : ' progres disimpan.') +
-                ' Belum tersimpan ke database.'
+                'Produksi ' + detail.requestNo +
+                (detail.status === 'COMPLETED' ? ' berhasil diselesaikan.' : ' progres berhasil disimpan.')
             );
+        });
+
+        document.addEventListener('production-queue:started', function(event) {
+
+            const item = state.all.find(function(row) {
+                return row.request_no === event.detail.requestNo;
+            });
+
+            if (!item) return;
+
+            item.status = 'IN_PROCESS';
+            render();
+
+            showToast('Produksi ' + event.detail.requestNo + ' dimulai. Klik "Selesai" setelah hasil siap dicatat.');
         });
 
         // ==========================================
