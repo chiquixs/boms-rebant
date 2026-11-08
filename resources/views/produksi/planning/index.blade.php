@@ -21,10 +21,10 @@
 {{-- Penanda data demonstrasi (hilang saat USE_MOCK = false) --}}
 <div class="sp-demo" id="spDemo" hidden>
     <svg width="16" height="16" viewBox="0 0 24 24"
-         fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="9"/>
-        <path d="M12 8v5"/>
-        <path d="M12 16.5h.01"/>
+        fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 8v5" />
+        <path d="M12 16.5h.01" />
     </svg>
     <span>
         Data demonstrasi. Angka stok, request, dan produk di halaman ini belum berasal dari
@@ -43,10 +43,10 @@
         <div class="pq-stat-head">
             <div class="pq-stat-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24"
-                     fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/>
-                    <path d="m3 8 9 5 9-5"/>
-                    <path d="M12 13v8"/>
+                    fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z" />
+                    <path d="m3 8 9 5 9-5" />
+                    <path d="M12 13v8" />
                 </svg>
             </div>
             <span class="pq-stat-label">Total Produk</span>
@@ -60,10 +60,10 @@
         <div class="pq-stat-head">
             <div class="pq-stat-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24"
-                     fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 3 2 20h20L12 3Z"/>
-                    <path d="M12 10v4"/>
-                    <path d="M12 17h.01"/>
+                    fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 3 2 20h20L12 3Z" />
+                    <path d="M12 10v4" />
+                    <path d="M12 17h.01" />
                 </svg>
             </div>
             <span class="pq-stat-label">Stok di Bawah Minimum</span>
@@ -77,9 +77,9 @@
         <div class="pq-stat-head">
             <div class="pq-stat-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24"
-                     fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 3v18h18"/>
-                    <path d="m7 15 4-4 3 3 5-6"/>
+                    fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3v18h18" />
+                    <path d="m7 15 4-4 3 3 5-6" />
                 </svg>
             </div>
             <span class="pq-stat-label">Perlu Diproduksi (MTS)</span>
@@ -93,9 +93,9 @@
         <div class="pq-stat-head">
             <div class="pq-stat-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24"
-                     fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 12a9 9 0 1 1-3-6.7"/>
-                    <path d="M21 4v5h-5"/>
+                    fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12a9 9 0 1 1-3-6.7" />
+                    <path d="M21 4v5h-5" />
                 </svg>
             </div>
             <span class="pq-stat-label">Permintaan Produksi Aktif</span>
@@ -132,9 +132,9 @@
 
     <label class="pq-search">
         <svg width="18" height="18" viewBox="0 0 24 24"
-             fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="7"/>
-            <path d="m20 20-3.5-3.5"/>
+            fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="7" />
+            <path d="m20 20-3.5-3.5" />
         </svg>
 
         <input
@@ -142,15 +142,14 @@
             id="spSearch"
             placeholder="Cari nama produk, SKU, atau variasi..."
             autocomplete="off"
-            aria-label="Cari nama produk, SKU, atau variasi"
-        >
+            aria-label="Cari nama produk, SKU, atau variasi">
 
         <button type="button" class="sp-search-clear" id="spSearchClear"
-                aria-label="Hapus pencarian" title="Hapus pencarian" hidden>
+            aria-label="Hapus pencarian" title="Hapus pencarian" hidden>
             <svg width="12" height="12" viewBox="0 0 24 24"
-                 fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M18 6 6 18"/>
-                <path d="m6 6 12 12"/>
+                fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
             </svg>
         </button>
     </label>
@@ -215,9 +214,9 @@
     <div class="pq-state" id="spEmpty" hidden>
         <div class="pq-state-icon">
             <svg width="24" height="24" viewBox="0 0 24 24"
-                 fill="none" stroke="currentColor" stroke-width="1.8">
-                <circle cx="11" cy="11" r="7"/>
-                <path d="m20 20-3.5-3.5"/>
+                fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" />
             </svg>
         </div>
         <h3>Tidak ada produk ditemukan</h3>
@@ -230,10 +229,10 @@
     <div class="pq-state error" id="spError" hidden>
         <div class="pq-state-icon">
             <svg width="24" height="24" viewBox="0 0 24 24"
-                 fill="none" stroke="currentColor" stroke-width="1.8">
-                <circle cx="12" cy="12" r="9"/>
-                <path d="M12 7v6"/>
-                <path d="M12 16.5h.01"/>
+                fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v6" />
+                <path d="M12 16.5h.01" />
             </svg>
         </div>
         <h3>Data gagal dimuat</h3>
@@ -306,10 +305,10 @@
 
             <div class="pe-header-icon">
                 <svg width="22" height="22" viewBox="0 0 24 24"
-                     fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/>
-                    <path d="m3 8 9 5 9-5"/>
-                    <path d="M12 13v8"/>
+                    fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M21 8 12 3 3 8v8l9 5 9-5V8Z" />
+                    <path d="m3 8 9 5 9-5" />
+                    <path d="M12 13v8" />
                 </svg>
             </div>
 
@@ -320,9 +319,9 @@
 
             <button type="button" class="pe-close" id="spdClose" aria-label="Tutup">
                 <svg width="18" height="18" viewBox="0 0 24 24"
-                     fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M18 6 6 18"/>
-                    <path d="m6 6 12 12"/>
+                    fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
                 </svg>
             </button>
 
@@ -403,9 +402,9 @@
 
             <div class="pe-header-icon">
                 <svg width="22" height="22" viewBox="0 0 24 24"
-                     fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M3 3v18h18"/>
-                    <path d="m7 15 4-4 3 3 5-6"/>
+                    fill="none" stroke="currentColor" stroke-width="1.8">
+                    <path d="M3 3v18h18" />
+                    <path d="m7 15 4-4 3 3 5-6" />
                 </svg>
             </div>
 
@@ -416,9 +415,9 @@
 
             <button type="button" class="pe-close" id="spmClose" aria-label="Tutup">
                 <svg width="18" height="18" viewBox="0 0 24 24"
-                     fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M18 6 6 18"/>
-                    <path d="m6 6 12 12"/>
+                    fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
                 </svg>
             </button>
 
@@ -492,7 +491,7 @@
 
                 <div class="pe-input-group" id="spmQtyGroup">
                     <input type="number" id="spmQty" min="1" step="1" inputmode="numeric"
-                           placeholder="0" aria-label="Jumlah diminta">
+                        placeholder="0" aria-label="Jumlah diminta">
                     <span>pcs</span>
                 </div>
                 <span class="pe-field-error" id="spmQtyError" hidden></span>
@@ -507,8 +506,8 @@
                 <p class="pe-section-desc">Opsional.</p>
 
                 <textarea class="sp-textarea" id="spmNotes" rows="3" maxlength="500"
-                          placeholder="Catatan untuk tim produksi (opsional)..."
-                          aria-label="Catatan produksi"></textarea>
+                    placeholder="Catatan untuk tim produksi (opsional)..."
+                    aria-label="Catatan produksi"></textarea>
 
             </section>
 
@@ -530,1225 +529,1357 @@
 @push('scripts')
 
 <script>
-(function () {
+    (function() {
 
-    'use strict';
-
-
-    // ==========================================
-    // KONFIGURASI
-    // ==========================================
-
-    // true = pakai data demonstrasi di bawah (backend belum ada).
-    const USE_MOCK = true;
-
-    const SP_CONFIG = {
-
-        perPage: 8,
-
-        searchDelay: 250,
-
-        // Nilai source untuk request isi ulang stok MTS.
-        // Constraint database (production_requests_source_check) hanya
-        // mengizinkan 'ORDER' dan 'RESTOCK'. Konfirmasikan ke backend.
-        mtsSource: 'RESTOCK'
-    };
-
-    // Status stok hanya dua kondisi:
-    //   LOW  : current_stock < min_stock
-    //   SAFE : current_stock >= min_stock
-    // "Perlu Diproduksi" bukan status stok, tetapi rekomendasi > 0.
-    const STATUS_META = {
-        SAFE: { label: 'Stok Aman',   cls: 'done sp-ok' },
-        LOW:  { label: 'Stok Rendah', cls: 'urgent sp-low' }
-    };
-
-    const REQUEST_STATUS_META = {
-        WAITING:    { label: 'WAITING',    cls: 'waiting' },
-        IN_PROCESS: { label: 'IN_PROCESS', cls: 'progress' }
-    };
-
-    const ACTIVE_STATUSES = ['WAITING', 'IN_PROCESS'];
-
-    // KOREKSI: ikon panah pada tombol Varian
-    const CHEVRON =
-        '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="m6 9 6 6 6-6"/></svg>';
-
-    const PLACEHOLDER_ICON =
-        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">' +
-        '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m21 16-5-5-8 9"/></svg>';
+        'use strict';
 
 
-    // ==========================================
-    // DATA SIMULASI (MOCK)
-    // Hanya untuk demonstrasi. Bukan data database.
-    // Bentuk field mengikuti products, product_groups, categories,
-    // dan production_requests.
-    // ==========================================
+        // ==========================================
+        // KONFIGURASI
+        // ==========================================
 
-    const MOCK_IMG = "{{ asset('images/produk.jpg') }}";
+        // true = pakai data demonstrasi di bawah (backend belum ada).
+        const USE_MOCK = false;
 
-    const CAT = {
-        meja:   { id: 1, name: 'Meja' },
-        kursi:  { id: 2, name: 'Kursi' },
-        lemari: { id: 3, name: 'Lemari' },
-        rak:    { id: 4, name: 'Rak' }
-    };
+        const SP_CONFIG = {
 
-    const GROUP = {
-        kerja:  { id: 1, name: 'Meja Kerja Minimalis',   category: CAT.meja,   image_path: MOCK_IMG },
-        kursi:  { id: 2, name: 'Kursi Kantor Ergonomis', category: CAT.kursi,  image_path: MOCK_IMG },
-        lemari: { id: 3, name: 'Lemari Pakaian 2 Pintu', category: CAT.lemari, image_path: null },
-        rak:    { id: 4, name: 'Rak Buku 5 Susun',       category: CAT.rak,    image_path: MOCK_IMG },
-        makan:  { id: 5, name: 'Meja Makan Lipat',       category: CAT.meja,   image_path: null }
-    };
+            perPage: 8,
 
-    function mockProduct(id, group, variant, sku, current, min, target, image, active) {
-        return {
-            id: id,
-            group_id: group.id,
-            group: group,
-            variant_name: variant,
-            sku: sku,
-            current_stock: current,
-            min_stock: min,
-            target_stock: target,
-            image_path: image,
-            is_active: active !== false
+            searchDelay: 250,
+
+            // Nilai source untuk request isi ulang stok MTS.
+            // Constraint database (production_requests_source_check) hanya
+            // mengizinkan 'ORDER' dan 'RESTOCK'. Konfirmasikan ke backend.
+            mtsSource: 'RESTOCK'
         };
-    }
 
-    const MOCK_PRODUCTS = [
-        mockProduct(1,  GROUP.kerja,  'Walnut',  'MJK-WLN', 4,  10, 30, MOCK_IMG),
-        mockProduct(2,  GROUP.kerja,  'Putih',   'MJK-WHT', 18, 10, 30, null),
-        mockProduct(3,  GROUP.kerja,  'Natural', 'MJK-NAT', 32, 10, 30, MOCK_IMG),
-        mockProduct(4,  GROUP.kursi,  'Hitam',   'KRS-BLK', 6,  12, 40, MOCK_IMG),
-        mockProduct(5,  GROUP.kursi,  'Abu-abu', 'KRS-GRY', 25, 12, 40, null),
-        mockProduct(6,  GROUP.kursi,  'Biru',    'KRS-BLU', 41, 12, 40, MOCK_IMG),
-        mockProduct(7,  GROUP.lemari, 'Jati',    'LMR-JTI', 2,  5,  15, null),
-        mockProduct(8,  GROUP.lemari, 'Putih',   'LMR-WHT', 9,  5,  15, null),
-        mockProduct(9,  GROUP.rak,    'Oak',     'RAK-OAK', 12, 8,  20, null),
-        mockProduct(10, GROUP.rak,    'Hitam',   'RAK-BLK', 20, 8,  20, MOCK_IMG),
-        mockProduct(11, GROUP.rak,    'Putih',   'RAK-WHT', 3,  8,  20, null),
-        mockProduct(12, GROUP.makan,  'Natural', 'MMK-NAT', 14, 6,  16, null),
-        mockProduct(13, GROUP.makan,  'Lama',    'MMK-OLD', 0,  4,  10, null, false)
-    ];
+        // Status stok hanya dua kondisi:
+        //   LOW  : current_stock < min_stock
+        //   SAFE : current_stock >= min_stock
+        // "Perlu Diproduksi" bukan status stok, tetapi rekomendasi > 0.
+        const STATUS_META = {
+            SAFE: {
+                label: 'Stok Aman',
+                cls: 'done sp-ok'
+            },
+            LOW: {
+                label: 'Stok Rendah',
+                cls: 'urgent sp-low'
+            }
+        };
 
-    // Request milik produk nonaktif atau berstatus COMPLETED tidak dihitung.
-    const MOCK_REQUESTS = [
-        { id: 1, product_id: 1,  request_no: 'PR-20261020-001', source: 'MTS_MIN_STOCK', qty_requested: 10, qty_produced: 0,  status: 'WAITING' },
-        { id: 2, product_id: 4,  request_no: 'PR-20261019-004', source: 'MTS_MIN_STOCK', qty_requested: 34, qty_produced: 10, status: 'IN_PROCESS' },
-        { id: 3, product_id: 11, request_no: 'PR-20261020-002', source: 'MTS_MIN_STOCK', qty_requested: 10, qty_produced: 0,  status: 'WAITING' },
-        { id: 4, product_id: 9,  request_no: 'PR-20261015-009', source: 'MTS_MIN_STOCK', qty_requested: 20, qty_produced: 20, status: 'COMPLETED' }
-    ];
+        const REQUEST_STATUS_META = {
+            WAITING: {
+                label: 'WAITING',
+                cls: 'waiting'
+            },
+            IN_PROCESS: {
+                label: 'IN_PROCESS',
+                cls: 'progress'
+            }
+        };
+
+        const ACTIVE_STATUSES = ['WAITING', 'IN_PROCESS'];
+
+        // KOREKSI: ikon panah pada tombol Varian
+        const CHEVRON =
+            '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="m6 9 6 6 6-6"/></svg>';
+
+        const PLACEHOLDER_ICON =
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">' +
+            '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m21 16-5-5-8 9"/></svg>';
 
 
-    // ==========================================
-    // LAPISAN DATA (API)
-    // Semua akses data lewat objek ini. Saat backend siap, ganti isi
-    // fungsi (mis. fetch ke endpoint proyek) tanpa menyentuh UI.
-    // Simulasi: ?mock=error | empty | savefail
-    // ==========================================
+        // ==========================================
+        // DATA SIMULASI (MOCK)
+        // Hanya untuk demonstrasi. Bukan data database.
+        // Bentuk field mengikuti products, product_groups, categories,
+        // dan production_requests.
+        // ==========================================
 
-    const flag = new URLSearchParams(window.location.search).get('mock');
+        const MOCK_IMG = "{{ asset('images/produk.jpg') }}";
 
-    function wait(ms) {
-        return new Promise(function (resolve) { setTimeout(resolve, ms); });
-    }
+        const CAT = {
+            meja: {
+                id: 1,
+                name: 'Meja'
+            },
+            kursi: {
+                id: 2,
+                name: 'Kursi'
+            },
+            lemari: {
+                id: 3,
+                name: 'Lemari'
+            },
+            rak: {
+                id: 4,
+                name: 'Rak'
+            }
+        };
 
-    const api = {
+        const GROUP = {
+            kerja: {
+                id: 1,
+                name: 'Meja Kerja Minimalis',
+                category: CAT.meja,
+                image_path: MOCK_IMG
+            },
+            kursi: {
+                id: 2,
+                name: 'Kursi Kantor Ergonomis',
+                category: CAT.kursi,
+                image_path: MOCK_IMG
+            },
+            lemari: {
+                id: 3,
+                name: 'Lemari Pakaian 2 Pintu',
+                category: CAT.lemari,
+                image_path: null
+            },
+            rak: {
+                id: 4,
+                name: 'Rak Buku 5 Susun',
+                category: CAT.rak,
+                image_path: MOCK_IMG
+            },
+            makan: {
+                id: 5,
+                name: 'Meja Makan Lipat',
+                category: CAT.meja,
+                image_path: null
+            }
+        };
 
-        // products + product_groups + categories. Field gambar sudah
-        // berupa URL yang bisa dipakai langsung oleh <img>.
-        getProducts: async function () {
-            await wait(450);
-            if (flag === 'error') throw new Error('mock error');
-            if (flag === 'empty') return [];
-            return MOCK_PRODUCTS.map(function (p) { return Object.assign({}, p); });
-        },
-
-        // production_requests. Diambil terpisah dari produk supaya jumlah
-        // tidak terhitung ganda akibat JOIN. Di backend, agregasi per
-        // product_id sebaiknya memakai subquery GROUP BY.
-        getProductionRequests: async function () {
-            await wait(300);
-            if (flag === 'error') throw new Error('mock error');
-            if (flag === 'empty') return [];
-            return MOCK_REQUESTS.map(function (r) { return Object.assign({}, r); });
-        },
-
-        // Membuat record production_requests. Simulasi saja.
-        // request_no, requested_by, dan status awal WAITING diisi backend.
-        // Backend juga perlu menghitung ulang rekomendasi dan menolak
-        // request jika rekomendasinya sudah 0.
-        createProductionRequest: async function (payload) {
-            await wait(600);
-            if (flag === 'savefail') throw new Error('mock save error');
-            return { simulated: true, payload: payload };
+        function mockProduct(id, group, variant, sku, current, min, target, image, active) {
+            return {
+                id: id,
+                group_id: group.id,
+                group: group,
+                variant_name: variant,
+                sku: sku,
+                current_stock: current,
+                min_stock: min,
+                target_stock: target,
+                image_path: image,
+                is_active: active !== false
+            };
         }
-    };
+
+        const MOCK_PRODUCTS = [
+            mockProduct(1, GROUP.kerja, 'Walnut', 'MJK-WLN', 4, 10, 30, MOCK_IMG),
+            mockProduct(2, GROUP.kerja, 'Putih', 'MJK-WHT', 18, 10, 30, null),
+            mockProduct(3, GROUP.kerja, 'Natural', 'MJK-NAT', 32, 10, 30, MOCK_IMG),
+            mockProduct(4, GROUP.kursi, 'Hitam', 'KRS-BLK', 6, 12, 40, MOCK_IMG),
+            mockProduct(5, GROUP.kursi, 'Abu-abu', 'KRS-GRY', 25, 12, 40, null),
+            mockProduct(6, GROUP.kursi, 'Biru', 'KRS-BLU', 41, 12, 40, MOCK_IMG),
+            mockProduct(7, GROUP.lemari, 'Jati', 'LMR-JTI', 2, 5, 15, null),
+            mockProduct(8, GROUP.lemari, 'Putih', 'LMR-WHT', 9, 5, 15, null),
+            mockProduct(9, GROUP.rak, 'Oak', 'RAK-OAK', 12, 8, 20, null),
+            mockProduct(10, GROUP.rak, 'Hitam', 'RAK-BLK', 20, 8, 20, MOCK_IMG),
+            mockProduct(11, GROUP.rak, 'Putih', 'RAK-WHT', 3, 8, 20, null),
+            mockProduct(12, GROUP.makan, 'Natural', 'MMK-NAT', 14, 6, 16, null),
+            mockProduct(13, GROUP.makan, 'Lama', 'MMK-OLD', 0, 4, 10, null, false)
+        ];
+
+        // Request milik produk nonaktif atau berstatus COMPLETED tidak dihitung.
+        const MOCK_REQUESTS = [{
+                id: 1,
+                product_id: 1,
+                request_no: 'PR-20261020-001',
+                source: 'MTS_MIN_STOCK',
+                qty_requested: 10,
+                qty_produced: 0,
+                status: 'WAITING'
+            },
+            {
+                id: 2,
+                product_id: 4,
+                request_no: 'PR-20261019-004',
+                source: 'MTS_MIN_STOCK',
+                qty_requested: 34,
+                qty_produced: 10,
+                status: 'IN_PROCESS'
+            },
+            {
+                id: 3,
+                product_id: 11,
+                request_no: 'PR-20261020-002',
+                source: 'MTS_MIN_STOCK',
+                qty_requested: 10,
+                qty_produced: 0,
+                status: 'WAITING'
+            },
+            {
+                id: 4,
+                product_id: 9,
+                request_no: 'PR-20261015-009',
+                source: 'MTS_MIN_STOCK',
+                qty_requested: 20,
+                qty_produced: 20,
+                status: 'COMPLETED'
+            }
+        ];
 
 
-    // ==========================================
-    // STATE + ELEMEN
-    // ==========================================
+        // ==========================================
+        // LAPISAN DATA (API)
+        // Semua akses data lewat objek ini. Saat backend siap, ganti isi
+        // fungsi (mis. fetch ke endpoint proyek) tanpa menyentuh UI.
+        // Simulasi: ?mock=error | empty | savefail
+        // ==========================================
 
-    const state = {
-        products: [],
-        requests: [],
-        view: [],
-        tab: 'ALL',
-        search: '',
-        category: '',
-        status: '',
-        page: 1,
-        loading: true,
-        failed: false,
-        simCounter: 0,
-        groups: [],      // KOREKSI: produk (product_groups) beserta variannya
-        expanded: {}     // KOREKSI: id produk yang daftar variannya sedang dibuka
-    };
+        const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.content;
 
-    function $(id) { return document.getElementById(id); }
-
-    const els = {
-        demo:       $('spDemo'),
-
-        statTotal:  $('spStatTotal'),
-        statLow:    $('spStatLow'),
-        statNeed:   $('spStatNeed'),
-        statActive: $('spStatActive'),
-
-        tabs:    $('spTabs'),
-        tabAll:  $('spTabAll'),
-        tabSafe: $('spTabSafe'),
-        tabLow:  $('spTabLow'),
-        tabNeed: $('spTabNeed'),
-
-        search:      $('spSearch'),
-        searchClear: $('spSearchClear'),
-        category:    $('spFilterCategory'),
-        status:      $('spFilterStatus'),
-        reset:       $('spReset'),
-
-        count:    $('spCount'),
-        wrapper:  $('spTableWrapper'),
-        body:     $('spTableBody'),
-        empty:    $('spEmpty'),
-        emptyTxt: $('spEmptyText'),
-        emptyRst: $('spEmptyReset'),
-        error:    $('spError'),
-        retry:    $('spRetry'),
-
-        footer:     $('spFooter'),
-        info:       $('spInfo'),
-        pagination: $('spPagination'),
-
-        insight:  $('spInsight'),
-        bar:      $('spBar'),
-        lgSafe:   $('spLgSafe'),
-        lgLow:    $('spLgLow'),
-        lgNeed:   $('spLgNeed'),
-        top:      $('spTop'),
-        sumLow:   $('spSumLow'),
-        sumActive: $('spSumActive'),
-        sumRec:   $('spSumRec'),
-
-        toast:  $('spToast')
-    };
-
-    els.demo.hidden = !USE_MOCK;
-
-
-    // ==========================================
-    // HELPER
-    // ==========================================
-
-    function esc(value) {
-        return String(value == null ? '' : value)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
-    }
-
-    function fmt(n) {
-        return new Intl.NumberFormat('id-ID').format(n);
-    }
-
-    function fullName(p) {
-        return p.group.name + (p.variant_name ? ' - ' + p.variant_name : '');
-    }
-
-    // "SKU: KSP-001 · Hitam / XL" (varian hanya jika ada)
-    function skuLine(p) {
-        return 'SKU: ' + p.sku + (p.variant_name ? ' \u00b7 ' + p.variant_name : '');
-    }
-
-    // Gambar variasi lebih dulu, lalu gambar grup sebagai cadangan.
-    function imageOf(p) {
-        return p.image_path || (p.group && p.group.image_path) || '';
-    }
-
-    function thumbInner(p) {
-        const src = imageOf(p);
-        return src
-            ? '<img src="' + esc(src) + '" alt="' + esc(fullName(p)) + '" loading="lazy">'
-            : PLACEHOLDER_ICON;
-    }
-
-    // Jika gambar gagal dimuat, ganti dengan ikon.
-    document.addEventListener('error', function (event) {
-        const img = event.target;
-        if (img && img.tagName === 'IMG' && img.parentNode && img.parentNode.classList.contains('sp-thumb')) {
-            img.parentNode.innerHTML = PLACEHOLDER_ICON;
-        }
-    }, true);
-
-    let toastTimer = null;
-
-    function toast(message) {
-        els.toast.textContent = message;
-        els.toast.classList.add('show');
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(function () {
-            els.toast.classList.remove('show');
-        }, 4200);
-    }
-
-    function findProduct(id) {
-        return state.view.find(function (p) { return p.id === id; });
-    }
-
-
-    // ==========================================
-    // PERHITUNGAN (satu sumber untuk semua bagian halaman)
-    // ==========================================
-
-    function activeRequestsOf(productId) {
-        return state.requests.filter(function (r) {
-            return r.product_id === productId && ACTIVE_STATUSES.indexOf(r.status) !== -1;
-        });
-    }
-
-    // Sisa request = qty_requested - qty_produced (tidak boleh negatif).
-    // Bagian yang sudah diproduksi sudah masuk ke current_stock lewat
-    // proses produksi, jadi hanya sisanya yang dihitung agar tidak ganda.
-    function remainingOf(request) {
-        return Math.max(0, Number(request.qty_requested) - Number(request.qty_produced || 0));
-    }
-
-    // kebutuhan_dasar = max(0, target_stock - current_stock)
-    // rekomendasi_mts = max(0, kebutuhan_dasar - sisa request aktif)
-    function compute() {
-
-        state.view = state.products
-            .filter(function (p) { return p.is_active; })
-            .map(function (p) {
-
-                const actives = activeRequestsOf(p.id);
-                const planned = actives.reduce(function (sum, r) { return sum + remainingOf(r); }, 0);
-                const base = Math.max(0, p.target_stock - p.current_stock);
-                const rec = Math.max(0, base - planned);
-
-                return Object.assign({}, p, {
-                    actives: actives,
-                    planned: planned,
-                    base: base,
-                    rec: rec,
-                    status: p.current_stock < p.min_stock ? 'LOW' : 'SAFE'
-                });
+        async function fetchJson(url, options = {}) {
+            const res = await fetch(url, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': CSRF_TOKEN,
+                    ...(options.headers || {}),
+                },
+                ...options,
             });
 
-        buildGroups();
-    }
-
-    // KOREKSI: kelompokkan varian (products) per produk (product_groups).
-    // Status produk dihitung dari status tiap varian, BUKAN dari stok gabungan:
-    // Stok Rendah bila minimal satu varian punya current_stock < min_stock.
-    function buildGroups() {
-
-        const byId = {};
-        state.groups = [];
-
-        state.view.forEach(function (p) {
-            let g = byId[p.group.id];
-            if (!g) {
-                g = byId[p.group.id] = {
-                    id: p.group.id,
-                    group: p.group,
-                    category: p.group.category,
-                    variants: []
-                };
-                state.groups.push(g);
-            }
-            g.variants.push(p);
-        });
-
-        state.groups.forEach(function (g) {
-            g.variants.sort(function (a, b) { return String(a.sku).localeCompare(String(b.sku)); });
-            g.low = g.variants.filter(function (v) { return v.status === 'LOW'; });
-            g.recTotal = g.variants.reduce(function (sum, v) { return sum + v.rec; }, 0);
-            g.needCount = g.variants.filter(function (v) { return v.rec > 0; }).length;
-            g.status = g.low.length ? 'LOW' : 'SAFE';
-        });
-
-        state.groups.sort(function (a, b) { return a.group.name.localeCompare(b.group.name); });
-    }
-
-    // KOREKSI: g = satu produk (kelompok varian)
-    function inGroup(g, key) {
-        if (key === 'SAFE') return g.status === 'SAFE';
-        if (key === 'LOW')  return g.status === 'LOW';
-        if (key === 'NEED') return g.recTotal > 0;
-        return true;
-    }
-
-
-    // ==========================================
-    // STATISTIK + TAB + INSIGHT
-    // Semua dihitung dari state.view (dataset yang sama dengan tabel).
-    // ==========================================
-
-    function renderSummary() {
-
-        const v = state.view;
-        const dash = state.failed;
-
-        const low = v.filter(function (p) { return p.status === 'LOW'; }).length;
-        const safe = v.filter(function (p) { return p.status === 'SAFE'; }).length;
-        const needRec = v.filter(function (p) { return p.rec > 0; }).length;
-
-        // KOREKSI: tab dihitung per produk
-        const g = state.groups;
-        const gSafe = g.filter(function (x) { return x.status === 'SAFE'; }).length;
-        const gLow = g.filter(function (x) { return x.status === 'LOW'; }).length;
-        const gNeed = g.filter(function (x) { return x.recTotal > 0; }).length;
-
-        const activeRequests = state.requests.filter(function (r) {
-            return ACTIVE_STATUSES.indexOf(r.status) !== -1;
-        }).length;
-
-        els.statTotal.textContent  = dash ? '-' : g.length;
-        els.statLow.textContent    = dash ? '-' : low;
-        els.statNeed.textContent   = dash ? '-' : needRec;
-        els.statActive.textContent = dash ? '-' : activeRequests;
-
-        els.tabAll.textContent  = g.length;
-        els.tabSafe.textContent = gSafe;
-        els.tabLow.textContent  = gLow;
-        els.tabNeed.textContent = gNeed;
-
-        // Insight
-        els.insight.hidden = dash || state.loading || !v.length;
-
-        const total = v.length || 1;
-        els.bar.innerHTML =
-            '<span class="safe" style="width:' + (safe / total * 100) + '%"></span>' +
-            '<span class="low"  style="width:' + (low / total * 100) + '%"></span>';
-
-        els.lgSafe.textContent = safe;
-        els.lgLow.textContent = low;
-        els.lgNeed.textContent = needRec;
-
-        const top = v.filter(function (p) { return p.rec > 0; })
-            .sort(function (a, b) { return b.rec - a.rec; })
-            .slice(0, 3);
-
-        // Item hanya membuka Detail. Request dibuat dari baris tabel.
-        els.top.innerHTML = top.length
-            ? top.map(function (p) {
-                return '<button type="button" data-top="' + p.id + '">' +
-                    '<span class="sp-thumb">' + thumbInner(p) + '</span>' +
-                    '<span class="sp-top-text"><strong>' + esc(p.group.name) + '</strong>' +
-                    '<small>' + esc(skuLine(p)) + '</small></span>' +
-                    '<b>+' + fmt(p.rec) + '</b></button>';
-            }).join('')
-            : '<p class="sp-top-empty">Tidak ada produk yang perlu diproduksi.</p>';
-
-        els.sumLow.textContent = low;
-        els.sumActive.textContent = v.filter(function (p) { return p.planned > 0; }).length;
-        els.sumRec.textContent = fmt(v.reduce(function (sum, p) { return sum + p.rec; }, 0));
-    }
-
-
-    // ==========================================
-    // FILTER
-    // ==========================================
-
-    function hasFilter() {
-        return !!(state.search.trim() || state.category || state.status || state.tab !== 'ALL');
-    }
-
-    // KOREKSI: pencarian dan filter bekerja pada tingkat produk. Produk cocok
-    // jika nama produk, atau SKU / nama varian salah satu variannya, cocok.
-    function getFiltered() {
-
-        const q = state.search.trim().toLowerCase();
-
-        return state.groups.filter(function (g) {
-
-            if (!inGroup(g, state.tab)) return false;
-            if (state.status && !inGroup(g, state.status)) return false;
-            if (state.category && String(g.category.id) !== state.category) return false;
-
-            if (q) {
-                // Nama produk, SKU, dan variasi
-                const haystack = [g.group.name].concat(g.variants.map(function (v) {
-                    return v.sku + ' ' + (v.variant_name || '');
-                })).join(' ').toLowerCase();
-                if (haystack.indexOf(q) === -1) return false;
+            if (!res.ok) {
+                const body = await res.json().catch(() => null);
+                throw new Error(body?.message || 'Request gagal (' + res.status + ')');
             }
 
+            return res.json();
+        }
+
+        const api = {
+
+            getProducts: function() {
+                return fetchJson('{{ route("produksi.planning.products") }}');
+            },
+
+            getProductionRequests: function() {
+                return fetchJson('{{ route("produksi.planning.requests") }}');
+            },
+
+            createProductionRequest: function(payload) {
+                return fetchJson('{{ route("produksi.planning.store") }}', {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                });
+            }
+        };
+
+
+        // ==========================================
+        // STATE + ELEMEN
+        // ==========================================
+
+        const state = {
+            products: [],
+            requests: [],
+            view: [],
+            tab: 'ALL',
+            search: '',
+            category: '',
+            status: '',
+            page: 1,
+            loading: true,
+            failed: false,
+            simCounter: 0,
+            groups: [], // KOREKSI: produk (product_groups) beserta variannya
+            expanded: {} // KOREKSI: id produk yang daftar variannya sedang dibuka
+        };
+
+        function $(id) {
+            return document.getElementById(id);
+        }
+
+        const els = {
+            demo: $('spDemo'),
+
+            statTotal: $('spStatTotal'),
+            statLow: $('spStatLow'),
+            statNeed: $('spStatNeed'),
+            statActive: $('spStatActive'),
+
+            tabs: $('spTabs'),
+            tabAll: $('spTabAll'),
+            tabSafe: $('spTabSafe'),
+            tabLow: $('spTabLow'),
+            tabNeed: $('spTabNeed'),
+
+            search: $('spSearch'),
+            searchClear: $('spSearchClear'),
+            category: $('spFilterCategory'),
+            status: $('spFilterStatus'),
+            reset: $('spReset'),
+
+            count: $('spCount'),
+            wrapper: $('spTableWrapper'),
+            body: $('spTableBody'),
+            empty: $('spEmpty'),
+            emptyTxt: $('spEmptyText'),
+            emptyRst: $('spEmptyReset'),
+            error: $('spError'),
+            retry: $('spRetry'),
+
+            footer: $('spFooter'),
+            info: $('spInfo'),
+            pagination: $('spPagination'),
+
+            insight: $('spInsight'),
+            bar: $('spBar'),
+            lgSafe: $('spLgSafe'),
+            lgLow: $('spLgLow'),
+            lgNeed: $('spLgNeed'),
+            top: $('spTop'),
+            sumLow: $('spSumLow'),
+            sumActive: $('spSumActive'),
+            sumRec: $('spSumRec'),
+
+            toast: $('spToast')
+        };
+
+        els.demo.hidden = !USE_MOCK;
+
+
+        // ==========================================
+        // HELPER
+        // ==========================================
+
+        function esc(value) {
+            return String(value == null ? '' : value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function fmt(n) {
+            return new Intl.NumberFormat('id-ID').format(n);
+        }
+
+        function fullName(p) {
+            return p.group.name + (p.variant_name ? ' - ' + p.variant_name : '');
+        }
+
+        // "SKU: KSP-001 · Hitam / XL" (varian hanya jika ada)
+        function skuLine(p) {
+            return 'SKU: ' + p.sku + (p.variant_name ? ' \u00b7 ' + p.variant_name : '');
+        }
+
+        // Gambar variasi lebih dulu, lalu gambar grup sebagai cadangan.
+        function imageOf(p) {
+            return p.image_path || (p.group && p.group.image_path) || '';
+        }
+
+        function thumbInner(p) {
+            const src = imageOf(p);
+            return src ?
+                '<img src="' + esc(src) + '" alt="' + esc(fullName(p)) + '" loading="lazy">' :
+                PLACEHOLDER_ICON;
+        }
+
+        // Jika gambar gagal dimuat, ganti dengan ikon.
+        document.addEventListener('error', function(event) {
+            const img = event.target;
+            if (img && img.tagName === 'IMG' && img.parentNode && img.parentNode.classList.contains('sp-thumb')) {
+                img.parentNode.innerHTML = PLACEHOLDER_ICON;
+            }
+        }, true);
+
+        let toastTimer = null;
+
+        function toast(message) {
+            els.toast.textContent = message;
+            els.toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(function() {
+                els.toast.classList.remove('show');
+            }, 4200);
+        }
+
+        function findProduct(id) {
+            return state.view.find(function(p) {
+                return p.id === id;
+            });
+        }
+
+
+        // ==========================================
+        // PERHITUNGAN (satu sumber untuk semua bagian halaman)
+        // ==========================================
+
+        function activeRequestsOf(productId) {
+            return state.requests.filter(function(r) {
+                return r.product_id === productId && ACTIVE_STATUSES.indexOf(r.status) !== -1;
+            });
+        }
+
+        // Sisa request = qty_requested - qty_produced (tidak boleh negatif).
+        // Bagian yang sudah diproduksi sudah masuk ke current_stock lewat
+        // proses produksi, jadi hanya sisanya yang dihitung agar tidak ganda.
+        function remainingOf(request) {
+            return Math.max(0, Number(request.qty_requested) - Number(request.qty_produced || 0));
+        }
+
+        // kebutuhan_dasar = max(0, target_stock - current_stock)
+        // rekomendasi_mts = max(0, kebutuhan_dasar - sisa request aktif)
+        function compute() {
+
+            state.view = state.products
+                .filter(function(p) {
+                    return p.is_active;
+                })
+                .map(function(p) {
+
+                    const actives = activeRequestsOf(p.id);
+                    const planned = actives.reduce(function(sum, r) {
+                        return sum + remainingOf(r);
+                    }, 0);
+                    const base = Math.max(0, p.target_stock - p.current_stock);
+                    const rec = Math.max(0, base - planned);
+
+                    return Object.assign({}, p, {
+                        actives: actives,
+                        planned: planned,
+                        base: base,
+                        rec: rec,
+                        status: p.current_stock < p.min_stock ? 'LOW' : 'SAFE'
+                    });
+                });
+
+            buildGroups();
+        }
+
+        // KOREKSI: kelompokkan varian (products) per produk (product_groups).
+        // Status produk dihitung dari status tiap varian, BUKAN dari stok gabungan:
+        // Stok Rendah bila minimal satu varian punya current_stock < min_stock.
+        function buildGroups() {
+
+            const byId = {};
+            state.groups = [];
+
+            state.view.forEach(function(p) {
+                let g = byId[p.group.id];
+                if (!g) {
+                    g = byId[p.group.id] = {
+                        id: p.group.id,
+                        group: p.group,
+                        category: p.group.category,
+                        variants: []
+                    };
+                    state.groups.push(g);
+                }
+                g.variants.push(p);
+            });
+
+            state.groups.forEach(function(g) {
+                g.variants.sort(function(a, b) {
+                    return String(a.sku).localeCompare(String(b.sku));
+                });
+                g.low = g.variants.filter(function(v) {
+                    return v.status === 'LOW';
+                });
+                g.recTotal = g.variants.reduce(function(sum, v) {
+                    return sum + v.rec;
+                }, 0);
+                g.needCount = g.variants.filter(function(v) {
+                    return v.rec > 0;
+                }).length;
+                g.status = g.low.length ? 'LOW' : 'SAFE';
+            });
+
+            state.groups.sort(function(a, b) {
+                return a.group.name.localeCompare(b.group.name);
+            });
+        }
+
+        // KOREKSI: g = satu produk (kelompok varian)
+        function inGroup(g, key) {
+            if (key === 'SAFE') return g.status === 'SAFE';
+            if (key === 'LOW') return g.status === 'LOW';
+            if (key === 'NEED') return g.recTotal > 0;
             return true;
-        });
-    }
-
-    function fillCategoryFilter() {
-
-        const seen = {};
-        const list = [];
-
-        state.view.forEach(function (p) {
-            const c = p.group.category;
-            if (c && !seen[c.id]) {
-                seen[c.id] = true;
-                list.push(c);
-            }
-        });
-
-        list.sort(function (a, b) { return a.name.localeCompare(b.name); });
-
-        els.category.innerHTML = '<option value="">Semua Kategori</option>' +
-            list.map(function (c) {
-                return '<option value="' + c.id + '">' + esc(c.name) + '</option>';
-            }).join('');
-    }
-
-
-    // ==========================================
-    // RENDER TABEL
-    // ==========================================
-
-    function skeletonRows() {
-        let html = '';
-        for (let i = 0; i < 5; i++) {
-            html += '<tr>';
-            for (let c = 0; c < 6; c++) {
-                html += '<td><span class="pq-skeleton"></span></td>';
-            }
-            html += '</tr>';
         }
-        return html;
-    }
 
-    // KOREKSI: gambar produk (grup), cadangan gambar varian pertama.
-    function groupThumb(g) {
-        let src = g.group.image_path || '';
-        if (!src) {
-            const withImage = g.variants.filter(function (v) { return v.image_path; })[0];
-            src = withImage ? withImage.image_path : '';
+
+        // ==========================================
+        // STATISTIK + TAB + INSIGHT
+        // Semua dihitung dari state.view (dataset yang sama dengan tabel).
+        // ==========================================
+
+        function renderSummary() {
+
+            const v = state.view;
+            const dash = state.failed;
+
+            const low = v.filter(function(p) {
+                return p.status === 'LOW';
+            }).length;
+            const safe = v.filter(function(p) {
+                return p.status === 'SAFE';
+            }).length;
+            const needRec = v.filter(function(p) {
+                return p.rec > 0;
+            }).length;
+
+            // KOREKSI: tab dihitung per produk
+            const g = state.groups;
+            const gSafe = g.filter(function(x) {
+                return x.status === 'SAFE';
+            }).length;
+            const gLow = g.filter(function(x) {
+                return x.status === 'LOW';
+            }).length;
+            const gNeed = g.filter(function(x) {
+                return x.recTotal > 0;
+            }).length;
+
+            const activeRequests = state.requests.filter(function(r) {
+                return ACTIVE_STATUSES.indexOf(r.status) !== -1;
+            }).length;
+
+            els.statTotal.textContent = dash ? '-' : g.length;
+            els.statLow.textContent = dash ? '-' : low;
+            els.statNeed.textContent = dash ? '-' : needRec;
+            els.statActive.textContent = dash ? '-' : activeRequests;
+
+            els.tabAll.textContent = g.length;
+            els.tabSafe.textContent = gSafe;
+            els.tabLow.textContent = gLow;
+            els.tabNeed.textContent = gNeed;
+
+            // Insight
+            els.insight.hidden = dash || state.loading || !v.length;
+
+            const total = v.length || 1;
+            els.bar.innerHTML =
+                '<span class="safe" style="width:' + (safe / total * 100) + '%"></span>' +
+                '<span class="low"  style="width:' + (low / total * 100) + '%"></span>';
+
+            els.lgSafe.textContent = safe;
+            els.lgLow.textContent = low;
+            els.lgNeed.textContent = needRec;
+
+            const top = v.filter(function(p) {
+                    return p.rec > 0;
+                })
+                .sort(function(a, b) {
+                    return b.rec - a.rec;
+                })
+                .slice(0, 3);
+
+            // Item hanya membuka Detail. Request dibuat dari baris tabel.
+            els.top.innerHTML = top.length ?
+                top.map(function(p) {
+                    return '<button type="button" data-top="' + p.id + '">' +
+                        '<span class="sp-thumb">' + thumbInner(p) + '</span>' +
+                        '<span class="sp-top-text"><strong>' + esc(p.group.name) + '</strong>' +
+                        '<small>' + esc(skuLine(p)) + '</small></span>' +
+                        '<b>+' + fmt(p.rec) + '</b></button>';
+                }).join('') :
+                '<p class="sp-top-empty">Tidak ada produk yang perlu diproduksi.</p>';
+
+            els.sumLow.textContent = low;
+            els.sumActive.textContent = v.filter(function(p) {
+                return p.planned > 0;
+            }).length;
+            els.sumRec.textContent = fmt(v.reduce(function(sum, p) {
+                return sum + p.rec;
+            }, 0));
         }
-        return src
-            ? '<img src="' + esc(src) + '" alt="' + esc(g.group.name) + '" loading="lazy">'
-            : PLACEHOLDER_ICON;
-    }
 
-    // KOREKSI: peringatan merah di tingkat produk. Dihitung dari varian yang
-    // current_stock < min_stock (bukan stok gabungan).
-    function lowWarningHtml(g) {
 
-        if (!g.low.length) return '';
+        // ==========================================
+        // FILTER
+        // ==========================================
 
-        return '<div class="sp-lowwarn">' +
-            '<strong>' + g.low.length + ' Varian Low Stock</strong>' +
-            g.low.map(function (v) {
-                return '<span>' + esc(v.variant_name || v.sku) + ' (' + fmt(v.current_stock) + ' / min ' + fmt(v.min_stock) + ')</span>';
-            }).join('') +
-            '</div>';
-    }
+        function hasFilter() {
+            return !!(state.search.trim() || state.category || state.status || state.tab !== 'ALL');
+        }
 
-    // KOREKSI: progress bar stok satu varian. Skala = target_stock.
-    // Merah bila di bawah minimum, hijau bila aman. Penuh jika >= target.
-    function stockBarHtml(v) {
+        // KOREKSI: pencarian dan filter bekerja pada tingkat produk. Produk cocok
+        // jika nama produk, atau SKU / nama varian salah satu variannya, cocok.
+        function getFiltered() {
 
-        const low = v.current_stock < v.min_stock;
-        const pct = v.target_stock > 0
-            ? Math.min(100, Math.max(0, v.current_stock / v.target_stock * 100))
-            : (v.current_stock > 0 ? 100 : 0);
-        const minPct = v.target_stock > 0
-            ? Math.min(100, Math.max(0, v.min_stock / v.target_stock * 100))
-            : 0;
+            const q = state.search.trim().toLowerCase();
 
-        return '<div class="sp-vstock">' +
-            '<div class="sp-vstock-top"><b class="' + (low ? 'low' : 'ok') + '">' + fmt(v.current_stock) + '</b>' +
+            return state.groups.filter(function(g) {
+
+                if (!inGroup(g, state.tab)) return false;
+                if (state.status && !inGroup(g, state.status)) return false;
+                if (state.category && String(g.category.id) !== state.category) return false;
+
+                if (q) {
+                    // Nama produk, SKU, dan variasi
+                    const haystack = [g.group.name].concat(g.variants.map(function(v) {
+                        return v.sku + ' ' + (v.variant_name || '');
+                    })).join(' ').toLowerCase();
+                    if (haystack.indexOf(q) === -1) return false;
+                }
+
+                return true;
+            });
+        }
+
+        function fillCategoryFilter() {
+
+            const seen = {};
+            const list = [];
+
+            state.view.forEach(function(p) {
+                const c = p.group.category;
+                if (c && !seen[c.id]) {
+                    seen[c.id] = true;
+                    list.push(c);
+                }
+            });
+
+            list.sort(function(a, b) {
+                return a.name.localeCompare(b.name);
+            });
+
+            els.category.innerHTML = '<option value="">Semua Kategori</option>' +
+                list.map(function(c) {
+                    return '<option value="' + c.id + '">' + esc(c.name) + '</option>';
+                }).join('');
+        }
+
+
+        // ==========================================
+        // RENDER TABEL
+        // ==========================================
+
+        function skeletonRows() {
+            let html = '';
+            for (let i = 0; i < 5; i++) {
+                html += '<tr>';
+                for (let c = 0; c < 6; c++) {
+                    html += '<td><span class="pq-skeleton"></span></td>';
+                }
+                html += '</tr>';
+            }
+            return html;
+        }
+
+        // KOREKSI: gambar produk (grup), cadangan gambar varian pertama.
+        function groupThumb(g) {
+            let src = g.group.image_path || '';
+            if (!src) {
+                const withImage = g.variants.filter(function(v) {
+                    return v.image_path;
+                })[0];
+                src = withImage ? withImage.image_path : '';
+            }
+            return src ?
+                '<img src="' + esc(src) + '" alt="' + esc(g.group.name) + '" loading="lazy">' :
+                PLACEHOLDER_ICON;
+        }
+
+        // KOREKSI: peringatan merah di tingkat produk. Dihitung dari varian yang
+        // current_stock < min_stock (bukan stok gabungan).
+        function lowWarningHtml(g) {
+
+            if (!g.low.length) return '';
+
+            return '<div class="sp-lowwarn">' +
+                '<strong>' + g.low.length + ' Varian Low Stock</strong>' +
+                g.low.map(function(v) {
+                    return '<span>' + esc(v.variant_name || v.sku) + ' (' + fmt(v.current_stock) + ' / min ' + fmt(v.min_stock) + ')</span>';
+                }).join('') +
+                '</div>';
+        }
+
+        // KOREKSI: progress bar stok satu varian. Skala = target_stock.
+        // Merah bila di bawah minimum, hijau bila aman. Penuh jika >= target.
+        function stockBarHtml(v) {
+
+            const low = v.current_stock < v.min_stock;
+            const pct = v.target_stock > 0 ?
+                Math.min(100, Math.max(0, v.current_stock / v.target_stock * 100)) :
+                (v.current_stock > 0 ? 100 : 0);
+            const minPct = v.target_stock > 0 ?
+                Math.min(100, Math.max(0, v.min_stock / v.target_stock * 100)) :
+                0;
+
+            return '<div class="sp-vstock">' +
+                '<div class="sp-vstock-top"><b class="' + (low ? 'low' : 'ok') + '">' + fmt(v.current_stock) + '</b>' +
                 '<small>min ' + fmt(v.min_stock) + ' &middot; target ' + fmt(v.target_stock) + '</small></div>' +
-            '<div class="sp-vbar ' + (low ? 'low' : 'ok') + '" role="img" aria-label="Stok ' + v.current_stock +
+                '<div class="sp-vbar ' + (low ? 'low' : 'ok') + '" role="img" aria-label="Stok ' + v.current_stock +
                 ', minimum ' + v.min_stock + ', target ' + v.target_stock + '">' +
                 '<span style="width:' + pct.toFixed(1) + '%"></span>' +
                 '<i style="left:' + minPct.toFixed(1) + '%"></i></div>' +
-            '</div>';
-    }
+                '</div>';
+        }
 
-    // KOREKSI: satu baris varian (stok, status, rekomendasi, dan aksi per SKU).
-    function variantItemHtml(v) {
+        // KOREKSI: satu baris varian (stok, status, rekomendasi, dan aksi per SKU).
+        function variantItemHtml(v) {
 
-        const meta = STATUS_META[v.status];
+            const meta = STATUS_META[v.status];
 
-        const rec = v.rec > 0
-            ? '<span class="sp-rec">+' + fmt(v.rec) + '</span>'
-            : '<span class="sp-rec-none">&mdash;</span>';
+            const rec = v.rec > 0 ?
+                '<span class="sp-rec">+' + fmt(v.rec) + '</span>' :
+                '<span class="sp-rec-none">&mdash;</span>';
 
-        const note = v.planned > 0
-            ? '<span class="sp-rec-note">Sudah direncanakan: ' + fmt(v.planned) + '</span>'
-            : '';
+            const note = v.planned > 0 ?
+                '<span class="sp-rec-note">Sudah direncanakan: ' + fmt(v.planned) + '</span>' :
+                '';
 
-        return '<div class="sp-vitem' + (v.status === 'LOW' ? ' low' : '') + '">' +
-            '<span class="pv-sku">' + esc(v.sku) + '</span>' +
-            '<strong title="' + esc(v.variant_name || '-') + '">' + esc(v.variant_name || '-') + '</strong>' +
-            stockBarHtml(v) +
-            '<span class="pq-badge ' + meta.cls + '">' + meta.label + '</span>' +
-            '<div class="sp-vrec">' + rec + note + '</div>' +
-            '<div class="sp-actions">' +
+            return '<div class="sp-vitem' + (v.status === 'LOW' ? ' low' : '') + '">' +
+                '<span class="pv-sku">' + esc(v.sku) + '</span>' +
+                '<strong title="' + esc(v.variant_name || '-') + '">' + esc(v.variant_name || '-') + '</strong>' +
+                stockBarHtml(v) +
+                '<span class="pq-badge ' + meta.cls + '">' + meta.label + '</span>' +
+                '<div class="sp-vrec">' + rec + note + '</div>' +
+                '<div class="sp-actions">' +
                 '<button type="button" class="sp-action outline" data-act="detail" data-id="' + v.id + '">Detail</button>' +
                 '<button type="button" class="sp-action primary" data-act="mts" data-id="' + v.id + '"' +
-                    (v.rec > 0 ? '' : ' disabled title="Tidak ada kebutuhan produksi"') + '>Buat Permintaan Produksi</button>' +
-            '</div>' +
-            '</div>';
-    }
+                (v.rec > 0 ? '' : ' disabled title="Tidak ada kebutuhan produksi"') + '>Buat Permintaan Produksi</button>' +
+                '</div>' +
+                '</div>';
+        }
 
-    function variantRowHtml(g) {
-        return '<tr class="pv-detail-row" id="spVariants' + g.id + '"><td colspan="6"><div class="pv-detail">' +
-            '<div class="pv-detail-head"><strong>Varian Produk</strong><span>' + g.variants.length + ' varian tersedia</span></div>' +
-            '<div class="sp-vlist">' + g.variants.map(variantItemHtml).join('') + '</div>' +
-            '</div></td></tr>';
-    }
+        function variantRowHtml(g) {
+            return '<tr class="pv-detail-row" id="spVariants' + g.id + '"><td colspan="6"><div class="pv-detail">' +
+                '<div class="pv-detail-head"><strong>Varian Produk</strong><span>' + g.variants.length + ' varian tersedia</span></div>' +
+                '<div class="sp-vlist">' + g.variants.map(variantItemHtml).join('') + '</div>' +
+                '</div></td></tr>';
+        }
 
-    // KOREKSI: satu baris = satu produk (product_groups).
-    function rowHtml(g, number) {
+        // KOREKSI: satu baris = satu produk (product_groups).
+        function rowHtml(g, number) {
 
-        const open = !!state.expanded[g.id];
-        const meta = STATUS_META[g.status];
-        const skus = g.variants.map(function (v) { return v.sku; });
-        const skuText = 'SKU: ' + skus.slice(0, 2).join(', ') + (skus.length > 2 ? ' +' + (skus.length - 2) : '');
+            const open = !!state.expanded[g.id];
+            const meta = STATUS_META[g.status];
+            const skus = g.variants.map(function(v) {
+                return v.sku;
+            });
+            const skuText = 'SKU: ' + skus.slice(0, 2).join(', ') + (skus.length > 2 ? ' +' + (skus.length - 2) : '');
 
-        const rec = g.recTotal > 0
-            ? '<span class="sp-rec">+' + fmt(g.recTotal) + '</span>' +
-              '<span class="sp-rec-note">dari ' + g.needCount + ' varian</span>'
-            : '<span class="sp-rec-none">&mdash;</span>';
+            const rec = g.recTotal > 0 ?
+                '<span class="sp-rec">+' + fmt(g.recTotal) + '</span>' +
+                '<span class="sp-rec-note">dari ' + g.needCount + ' varian</span>' :
+                '<span class="sp-rec-none">&mdash;</span>';
 
-        return '' +
-            '<tr class="sp-group-row' + (open ? ' open' : '') + '">' +
+            return '' +
+                '<tr class="sp-group-row' + (open ? ' open' : '') + '">' +
                 '<td class="center">' + number + '</td>' +
                 '<td><div class="sp-product">' +
-                    '<span class="sp-thumb">' + groupThumb(g) + '</span>' +
-                    '<div class="sp-product-text"><strong title="' + esc(g.group.name) + '">' + esc(g.group.name) + '</strong>' +
-                    '<small>' + esc(skuText) + '</small></div>' +
+                '<span class="sp-thumb">' + groupThumb(g) + '</span>' +
+                '<div class="sp-product-text"><strong title="' + esc(g.group.name) + '">' + esc(g.group.name) + '</strong>' +
+                '<small>' + esc(skuText) + '</small></div>' +
                 '</div></td>' +
                 '<td>' + esc(g.category ? g.category.name : '-') + '</td>' +
                 '<td><button type="button" class="pv-btn' + (open ? ' open' : '') + '" data-toggle="' + g.id + '"' +
-                    ' aria-expanded="' + (open ? 'true' : 'false') + '" aria-controls="spVariants' + g.id + '">' +
-                    g.variants.length + ' Varian' + CHEVRON + '</button>' +
-                    lowWarningHtml(g) + '</td>' +
+                ' aria-expanded="' + (open ? 'true' : 'false') + '" aria-controls="spVariants' + g.id + '">' +
+                g.variants.length + ' Varian' + CHEVRON + '</button>' +
+                lowWarningHtml(g) + '</td>' +
                 '<td class="center">' + rec + '</td>' +
                 '<td class="center"><span class="pq-badge ' + meta.cls + '">' + meta.label + '</span></td>' +
-            '</tr>' +
-            (open ? variantRowHtml(g) : '');
-    }
-
-    function render() {
-
-        els.error.hidden = true;
-        els.empty.hidden = true;
-        els.footer.hidden = true;
-        els.wrapper.hidden = false;
-        els.reset.hidden = !hasFilter();
-
-        els.tabs.querySelectorAll('.sp-tab').forEach(function (tab) {
-            const on = tab.getAttribute('data-tab') === state.tab;
-            tab.classList.toggle('active', on);
-            tab.setAttribute('aria-selected', on ? 'true' : 'false');
-        });
-
-        if (state.loading) {
-            els.body.innerHTML = skeletonRows();
-            els.count.textContent = 'Memuat...';
-            return;
+                '</tr>' +
+                (open ? variantRowHtml(g) : '');
         }
 
-        if (state.failed) {
-            els.wrapper.hidden = true;
-            els.error.hidden = false;
-            els.count.textContent = '0 produk';
-            return;
-        }
-
-        const filtered = getFiltered();
-        els.count.textContent = filtered.length + ' produk';
-
-        if (!filtered.length) {
-            els.wrapper.hidden = true;
-            els.empty.hidden = false;
-            els.emptyTxt.textContent = state.view.length
-                ? 'Tidak ada produk yang sesuai dengan pencarian, tab, atau filter.'
-                : 'Belum ada produk aktif di Master Produk & SKU.';
-            els.emptyRst.hidden = !hasFilter();
-            return;
-        }
-
-        const pages = Math.ceil(filtered.length / SP_CONFIG.perPage);
-        if (state.page > pages) state.page = pages;
-
-        const start = (state.page - 1) * SP_CONFIG.perPage;
-        const slice = filtered.slice(start, start + SP_CONFIG.perPage);
-
-        els.body.innerHTML = slice.map(function (g, i) {
-            return rowHtml(g, start + i + 1);
-        }).join('');
-
-        els.footer.hidden = false;
-        els.info.textContent = 'Menampilkan ' + (start + 1) + '-' + (start + slice.length) +
-            ' dari ' + filtered.length + ' produk';
-
-        renderPagination(pages);
-    }
-
-    function renderPagination(pages) {
-
-        if (pages <= 1) {
-            els.pagination.innerHTML = '';
-            return;
-        }
-
-        let html = '<button type="button" data-page="' + (state.page - 1) + '"' +
-            (state.page === 1 ? ' disabled' : '') + ' aria-label="Sebelumnya">&lsaquo;</button>';
-
-        for (let p = 1; p <= pages; p++) {
-            html += '<button type="button" data-page="' + p + '" class="' +
-                (p === state.page ? 'active' : '') + '">' + p + '</button>';
-        }
-
-        html += '<button type="button" data-page="' + (state.page + 1) + '"' +
-            (state.page === pages ? ' disabled' : '') + ' aria-label="Berikutnya">&rsaquo;</button>';
-
-        els.pagination.innerHTML = html;
-    }
-
-    function refreshAll() {
-        compute();
-        renderSummary();
-        render();
-    }
-
-
-    // ==========================================
-    // MODAL HELPER (buka/tutup, Esc, fokus)
-    // ==========================================
-
-    function createModal(overlay, options) {
-
-        const settings = options || {};
-        let opener = null;
-
-        function focusables() {
-            return Array.prototype.slice.call(overlay.querySelectorAll(
-                'button:not([disabled]):not([hidden]), select:not([disabled]), input:not([disabled]), textarea:not([disabled])'
-            )).filter(function (el) { return el.offsetParent !== null; });
-        }
-
-        function open() {
-            opener = document.activeElement;
-            overlay.hidden = false;
-            document.body.style.overflow = 'hidden';
-            const first = focusables()[0];
-            if (first) first.focus();
-        }
-
-        function close() {
-            if (settings.canClose && !settings.canClose()) return;
-            overlay.hidden = true;
-            document.body.style.overflow = '';
-            if (opener && opener.focus && document.contains(opener)) opener.focus();
-            opener = null;
-            if (settings.onClose) settings.onClose();
-        }
-
-        overlay.addEventListener('mousedown', function (event) {
-            if (event.target === overlay && settings.backdrop !== false) close();
-        });
-
-        overlay.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                close();
-                return;
-            }
-            if (event.key !== 'Tab') return;
-            const list = focusables();
-            if (!list.length) return;
-            const first = list[0];
-            const last = list[list.length - 1];
-            if (event.shiftKey && document.activeElement === first) {
-                event.preventDefault();
-                last.focus();
-            } else if (!event.shiftKey && document.activeElement === last) {
-                event.preventDefault();
-                first.focus();
-            }
-        });
-
-        return { open: open, close: close };
-    }
-
-
-    // ==========================================
-    // MODAL DETAIL PRODUK
-    // ==========================================
-
-    const D = {
-        overlay:  $('spdOverlay'),
-        sku:      $('spdSku'),
-        thumb:    $('spdThumb'),
-        name:     $('spdName'),
-        variant:  $('spdVariant'),
-        status:   $('spdStatus'),
-        current:  $('spdCurrent'),
-        min:      $('spdMin'),
-        target:   $('spdTarget'),
-        rec:      $('spdRec'),
-        requests: $('spdRequests'),
-        close:    $('spdClose'),
-        done:     $('spdDone')
-    };
-
-    const detailModal = createModal(D.overlay);
-
-    function openDetail(id) {
-
-        const p = findProduct(id);
-        if (!p) return;
-
-        const meta = STATUS_META[p.status];
-
-        D.sku.textContent = p.sku;
-        D.thumb.innerHTML = thumbInner(p);
-        D.name.textContent = p.group.name;
-        D.variant.textContent = 'Variasi: ' + (p.variant_name || '-') +
-            ' \u00b7 Kategori: ' + (p.group.category ? p.group.category.name : '-');
-        D.status.className = 'pq-badge ' + meta.cls;
-        D.status.textContent = meta.label;
-        D.current.textContent = fmt(p.current_stock);
-        D.min.textContent = fmt(p.min_stock);
-        D.target.textContent = fmt(p.target_stock);
-        D.rec.textContent = p.rec > 0 ? '+' + fmt(p.rec) : 'Tidak perlu';
-
-        D.requests.innerHTML = p.actives.length
-            ? p.actives.map(function (r) {
-                const rm = REQUEST_STATUS_META[r.status] || { label: r.status, cls: 'normal' };
-                return '<div class="sp-req"><div><strong>' + esc(r.request_no || 'Draf simulasi') + '</strong>' +
-                    '<small>Diminta ' + fmt(r.qty_requested) + ' &middot; diproduksi ' + fmt(r.qty_produced || 0) +
-                    ' &middot; sisa ' + fmt(remainingOf(r)) + '</small></div>' +
-                    '<span class="pq-badge ' + rm.cls + '">' + esc(rm.label) + '</span></div>';
-            }).join('')
-            : '<p class="sp-empty-line">Tidak ada request produksi aktif untuk produk ini.</p>';
-
-        detailModal.open();
-    }
-
-    D.close.addEventListener('click', detailModal.close);
-    D.done.addEventListener('click', detailModal.close);
-
-
-    // ==========================================
-    // MODAL BUAT PERMINTAAN PRODUKSI (MTS)
-    // Produk selalu berasal dari baris yang diklik (mts.productId).
-    // Tidak ada input pilihan produk di modal.
-    // ==========================================
-
-    const M = {
-        overlay:  $('spmOverlay'),
-        error:    $('spmError'),
-        thumb:    $('spmThumb'),
-        name:     $('spmName'),
-        variant:  $('spmVariant'),
-        status:   $('spmStatus'),
-        current:  $('spmCurrent'),
-        target:   $('spmTarget'),
-        planned:  $('spmPlanned'),
-        rec:      $('spmRec'),
-        notice:   $('spmNotice'),
-        qty:      $('spmQty'),
-        qtyGroup: $('spmQtyGroup'),
-        qtyErr:   $('spmQtyError'),
-        over:     $('spmOver'),
-        notes:    $('spmNotes'),
-        save:     $('spmSave'),
-        cancel:   $('spmCancel'),
-        close:    $('spmClose')
-    };
-
-    // productId hanya diisi saat modal dibuka dari baris tabel.
-    const mts = { saving: false, productId: null };
-
-    const mtsModal = createModal(M.overlay, {
-        backdrop: false,
-        canClose: function () { return !mts.saving; },
-        onClose: function () { mts.productId = null; }
-    });
-
-    function openMts(productId) {
-
-        const p = findProduct(productId);
-
-        if (!p) {
-            toast('Pilih produk melalui tabel terlebih dahulu.');
-            return;
-        }
-
-        if (p.rec <= 0) {
-            toast('Produk ini tidak membutuhkan produksi tambahan.');
-            return;
-        }
-
-        mts.productId = p.id;
-
-        clearMtsErrors();
-        M.notes.value = '';
-
-        fillMts(p);
-        M.qty.value = p.rec;
-        checkOver();
-
-        mtsModal.open();
-    }
-
-    function clearMtsErrors() {
-        M.error.hidden = true;
-        M.qtyErr.hidden = true;
-        M.qtyGroup.classList.remove('invalid');
-    }
-
-    // Mengisi informasi produk (read-only) dari produk terpilih.
-    function fillMts(p) {
-
-        const meta = STATUS_META[p.status];
-
-        M.thumb.innerHTML = thumbInner(p);
-        M.name.textContent = p.group.name;
-        M.variant.textContent = skuLine(p);
-        M.status.className = 'pq-badge ' + meta.cls;
-        M.status.textContent = meta.label;
-
-        M.current.textContent = fmt(p.current_stock);
-        M.target.textContent = fmt(p.target_stock);
-        M.planned.textContent = fmt(p.planned);
-        M.rec.textContent = p.rec > 0 ? '+' + fmt(p.rec) : 'Tidak perlu';
-
-        if (p.actives.length) {
-            M.notice.hidden = false;
-            M.notice.textContent = 'Produk ini sudah punya ' + p.actives.length +
-                ' request aktif. Hanya sisa yang belum diproduksi (' + fmt(p.planned) +
-                ') yang dikurangkan dari kebutuhan.';
-        } else {
-            M.notice.hidden = true;
-        }
-    }
-
-    function checkOver() {
-
-        const p = mts.productId ? findProduct(mts.productId) : null;
-        const qty = Number(M.qty.value);
-
-        if (p && qty > p.rec && p.rec > 0) {
-            M.over.hidden = false;
-            M.over.textContent = 'Jumlah melebihi rekomendasi (' + fmt(p.rec) +
-                '). Pastikan tidak terjadi produksi berlebih.';
-        } else {
-            M.over.hidden = true;
-        }
-    }
-
-    function showMtsError(message) {
-        M.error.textContent = message;
-        M.error.hidden = false;
-        M.overlay.querySelector('.pe-body').scrollTop = 0;
-    }
-
-    function validateQty() {
-
-        M.qtyErr.hidden = true;
-        M.qtyGroup.classList.remove('invalid');
-
-        const raw = M.qty.value;
-        const qty = Number(raw);
-
-        if (raw === '' || isNaN(qty) || qty <= 0 || Math.floor(qty) !== qty) {
-            M.qtyErr.textContent = 'Jumlah harus berupa bilangan bulat lebih dari 0.';
-            M.qtyErr.hidden = false;
-            M.qtyGroup.classList.add('invalid');
-            return null;
-        }
-
-        return qty;
-    }
-
-    async function saveMts() {
-
-        M.error.hidden = true;
-
-        // Tanpa konteks produk dari tabel, request tidak dikirim.
-        if (!mts.productId) {
-            showMtsError('Pilih produk melalui tabel terlebih dahulu.');
-            return;
-        }
-
-        const productId = mts.productId;
-        const qty = validateQty();
-
-        if (qty === null) return;
-
-        mts.saving = true;
-        M.save.disabled = true;
-        M.cancel.disabled = true;
-        M.save.textContent = 'Menyimpan...';
-
-        try {
-
-            // Hitung ulang dengan data terbaru sebelum menyimpan agar tidak
-            // terjadi request ganda atau berlebih. Request simulasi yang sudah
-            // dibuat di halaman ini dipertahankan (hanya untuk mode demo).
-            const sims = state.requests.filter(function (r) { return r.simulated; });
-            state.requests = (await api.getProductionRequests()).concat(sims);
-            compute();
-
-            const fresh = findProduct(productId);
-
-            if (!fresh || fresh.rec <= 0) {
-
-                if (fresh) fillMts(fresh);
-
-                refreshAll();
-
-                showMtsError('Rekomendasi terbaru untuk produk ini sudah 0 karena ada request aktif ' +
-                    'atau stok sudah memenuhi target. Request tidak dibuat.');
-
-                return;
-            }
-
-            fillMts(fresh);
-            checkOver();
-
-            // request_no, requested_by, dan status awal WAITING diisi backend.
-            // Catatan: tabel production_requests saat ini belum punya kolom catatan.
-            const payload = {
-                product_id: productId,
-                qty_requested: qty,
-                source: SP_CONFIG.mtsSource,
-                notes: M.notes.value.trim() || null
-            };
-
-            const result = await api.createProductionRequest(payload);
-
-            // SIMULASI: tambahkan request sementara agar ringkasan dan tabel
-            // ikut berubah. Dengan backend asli, muat ulang data dari server.
-            state.requests.push({
-                id: 'sim-' + (++state.simCounter),
-                product_id: payload.product_id,
-                request_no: null,
-                source: payload.source,
-                qty_requested: payload.qty_requested,
-                qty_produced: 0,
-                status: 'WAITING',
-                simulated: true
+        function render() {
+
+            els.error.hidden = true;
+            els.empty.hidden = true;
+            els.footer.hidden = true;
+            els.wrapper.hidden = false;
+            els.reset.hidden = !hasFilter();
+
+            els.tabs.querySelectorAll('.sp-tab').forEach(function(tab) {
+                const on = tab.getAttribute('data-tab') === state.tab;
+                tab.classList.toggle('active', on);
+                tab.setAttribute('aria-selected', on ? 'true' : 'false');
             });
 
-            mts.saving = false;
-            mtsModal.close();
-            refreshAll();
+            if (state.loading) {
+                els.body.innerHTML = skeletonRows();
+                els.count.textContent = 'Memuat...';
+                return;
+            }
 
-            document.dispatchEvent(new CustomEvent('stock-planning:request-created', {
-                detail: result.payload
-            }));
+            if (state.failed) {
+                els.wrapper.hidden = true;
+                els.error.hidden = false;
+                els.count.textContent = '0 produk';
+                return;
+            }
 
-            toast('Simulasi: permintaan ' + fmt(qty) + ' pcs ' +
-                fullName(fresh) + ' sudah disiapkan. Belum tersimpan ke database dan belum tampil di Production Queue.');
+            const filtered = getFiltered();
+            els.count.textContent = filtered.length + ' produk';
 
-        } catch (error) {
-            showMtsError('Permintaan gagal disimpan. Coba lagi.');
-        } finally {
-            mts.saving = false;
-            M.save.disabled = false;
-            M.cancel.disabled = false;
-            M.save.textContent = 'Buat Permintaan';
+            if (!filtered.length) {
+                els.wrapper.hidden = true;
+                els.empty.hidden = false;
+                els.emptyTxt.textContent = state.view.length ?
+                    'Tidak ada produk yang sesuai dengan pencarian, tab, atau filter.' :
+                    'Belum ada produk aktif di Master Produk & SKU.';
+                els.emptyRst.hidden = !hasFilter();
+                return;
+            }
+
+            const pages = Math.ceil(filtered.length / SP_CONFIG.perPage);
+            if (state.page > pages) state.page = pages;
+
+            const start = (state.page - 1) * SP_CONFIG.perPage;
+            const slice = filtered.slice(start, start + SP_CONFIG.perPage);
+
+            els.body.innerHTML = slice.map(function(g, i) {
+                return rowHtml(g, start + i + 1);
+            }).join('');
+
+            els.footer.hidden = false;
+            els.info.textContent = 'Menampilkan ' + (start + 1) + '-' + (start + slice.length) +
+                ' dari ' + filtered.length + ' produk';
+
+            renderPagination(pages);
         }
-    }
 
-    M.qty.addEventListener('input', function () {
-        M.qtyErr.hidden = true;
-        M.qtyGroup.classList.remove('invalid');
-        checkOver();
-    });
-    M.save.addEventListener('click', saveMts);
-    M.cancel.addEventListener('click', mtsModal.close);
-    M.close.addEventListener('click', mtsModal.close);
+        function renderPagination(pages) {
+
+            if (pages <= 1) {
+                els.pagination.innerHTML = '';
+                return;
+            }
+
+            let html = '<button type="button" data-page="' + (state.page - 1) + '"' +
+                (state.page === 1 ? ' disabled' : '') + ' aria-label="Sebelumnya">&lsaquo;</button>';
+
+            for (let p = 1; p <= pages; p++) {
+                html += '<button type="button" data-page="' + p + '" class="' +
+                    (p === state.page ? 'active' : '') + '">' + p + '</button>';
+            }
+
+            html += '<button type="button" data-page="' + (state.page + 1) + '"' +
+                (state.page === pages ? ' disabled' : '') + ' aria-label="Berikutnya">&rsaquo;</button>';
+
+            els.pagination.innerHTML = html;
+        }
+
+        function refreshAll() {
+            compute();
+            renderSummary();
+            render();
+        }
 
 
-    // ==========================================
-    // EVENT HALAMAN
-    // ==========================================
+        // ==========================================
+        // MODAL HELPER (buka/tutup, Esc, fokus)
+        // ==========================================
 
-    let searchTimer = null;
+        function createModal(overlay, options) {
 
-    function syncSearchClear() {
-        els.searchClear.hidden = els.search.value === '';
-    }
+            const settings = options || {};
+            let opener = null;
 
-    els.search.addEventListener('input', function () {
+            function focusables() {
+                return Array.prototype.slice.call(overlay.querySelectorAll(
+                    'button:not([disabled]):not([hidden]), select:not([disabled]), input:not([disabled]), textarea:not([disabled])'
+                )).filter(function(el) {
+                    return el.offsetParent !== null;
+                });
+            }
 
-        syncSearchClear();
+            function open() {
+                opener = document.activeElement;
+                overlay.hidden = false;
+                document.body.style.overflow = 'hidden';
+                const first = focusables()[0];
+                if (first) first.focus();
+            }
 
-        clearTimeout(searchTimer);
-        searchTimer = setTimeout(function () {
-            state.search = els.search.value;
+            function close() {
+                if (settings.canClose && !settings.canClose()) return;
+                overlay.hidden = true;
+                document.body.style.overflow = '';
+                if (opener && opener.focus && document.contains(opener)) opener.focus();
+                opener = null;
+                if (settings.onClose) settings.onClose();
+            }
+
+            overlay.addEventListener('mousedown', function(event) {
+                if (event.target === overlay && settings.backdrop !== false) close();
+            });
+
+            overlay.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    close();
+                    return;
+                }
+                if (event.key !== 'Tab') return;
+                const list = focusables();
+                if (!list.length) return;
+                const first = list[0];
+                const last = list[list.length - 1];
+                if (event.shiftKey && document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
+            });
+
+            return {
+                open: open,
+                close: close
+            };
+        }
+
+
+        // ==========================================
+        // MODAL DETAIL PRODUK
+        // ==========================================
+
+        const D = {
+            overlay: $('spdOverlay'),
+            sku: $('spdSku'),
+            thumb: $('spdThumb'),
+            name: $('spdName'),
+            variant: $('spdVariant'),
+            status: $('spdStatus'),
+            current: $('spdCurrent'),
+            min: $('spdMin'),
+            target: $('spdTarget'),
+            rec: $('spdRec'),
+            requests: $('spdRequests'),
+            close: $('spdClose'),
+            done: $('spdDone')
+        };
+
+        const detailModal = createModal(D.overlay);
+
+        function openDetail(id) {
+
+            const p = findProduct(id);
+            if (!p) return;
+
+            const meta = STATUS_META[p.status];
+
+            D.sku.textContent = p.sku;
+            D.thumb.innerHTML = thumbInner(p);
+            D.name.textContent = p.group.name;
+            D.variant.textContent = 'Variasi: ' + (p.variant_name || '-') +
+                ' \u00b7 Kategori: ' + (p.group.category ? p.group.category.name : '-');
+            D.status.className = 'pq-badge ' + meta.cls;
+            D.status.textContent = meta.label;
+            D.current.textContent = fmt(p.current_stock);
+            D.min.textContent = fmt(p.min_stock);
+            D.target.textContent = fmt(p.target_stock);
+            D.rec.textContent = p.rec > 0 ? '+' + fmt(p.rec) : 'Tidak perlu';
+
+            D.requests.innerHTML = p.actives.length ?
+                p.actives.map(function(r) {
+                    const rm = REQUEST_STATUS_META[r.status] || {
+                        label: r.status,
+                        cls: 'normal'
+                    };
+                    return '<div class="sp-req"><div><strong>' + esc(r.request_no || 'Draf simulasi') + '</strong>' +
+                        '<small>Diminta ' + fmt(r.qty_requested) + ' &middot; diproduksi ' + fmt(r.qty_produced || 0) +
+                        ' &middot; sisa ' + fmt(remainingOf(r)) + '</small></div>' +
+                        '<span class="pq-badge ' + rm.cls + '">' + esc(rm.label) + '</span></div>';
+                }).join('') :
+                '<p class="sp-empty-line">Tidak ada request produksi aktif untuk produk ini.</p>';
+
+            detailModal.open();
+        }
+
+        D.close.addEventListener('click', detailModal.close);
+        D.done.addEventListener('click', detailModal.close);
+
+
+        // ==========================================
+        // MODAL BUAT PERMINTAAN PRODUKSI (MTS)
+        // Produk selalu berasal dari baris yang diklik (mts.productId).
+        // Tidak ada input pilihan produk di modal.
+        // ==========================================
+
+        const M = {
+            overlay: $('spmOverlay'),
+            error: $('spmError'),
+            thumb: $('spmThumb'),
+            name: $('spmName'),
+            variant: $('spmVariant'),
+            status: $('spmStatus'),
+            current: $('spmCurrent'),
+            target: $('spmTarget'),
+            planned: $('spmPlanned'),
+            rec: $('spmRec'),
+            notice: $('spmNotice'),
+            qty: $('spmQty'),
+            qtyGroup: $('spmQtyGroup'),
+            qtyErr: $('spmQtyError'),
+            over: $('spmOver'),
+            notes: $('spmNotes'),
+            save: $('spmSave'),
+            cancel: $('spmCancel'),
+            close: $('spmClose')
+        };
+
+        // productId hanya diisi saat modal dibuka dari baris tabel.
+        const mts = {
+            saving: false,
+            productId: null
+        };
+
+        const mtsModal = createModal(M.overlay, {
+            backdrop: false,
+            canClose: function() {
+                return !mts.saving;
+            },
+            onClose: function() {
+                mts.productId = null;
+            }
+        });
+
+        function openMts(productId) {
+
+            const p = findProduct(productId);
+
+            if (!p) {
+                toast('Pilih produk melalui tabel terlebih dahulu.');
+                return;
+            }
+
+            if (p.rec <= 0) {
+                toast('Produk ini tidak membutuhkan produksi tambahan.');
+                return;
+            }
+
+            mts.productId = p.id;
+
+            clearMtsErrors();
+            M.notes.value = '';
+
+            fillMts(p);
+            M.qty.value = p.rec;
+            checkOver();
+
+            mtsModal.open();
+        }
+
+        function clearMtsErrors() {
+            M.error.hidden = true;
+            M.qtyErr.hidden = true;
+            M.qtyGroup.classList.remove('invalid');
+        }
+
+        // Mengisi informasi produk (read-only) dari produk terpilih.
+        function fillMts(p) {
+
+            const meta = STATUS_META[p.status];
+
+            M.thumb.innerHTML = thumbInner(p);
+            M.name.textContent = p.group.name;
+            M.variant.textContent = skuLine(p);
+            M.status.className = 'pq-badge ' + meta.cls;
+            M.status.textContent = meta.label;
+
+            M.current.textContent = fmt(p.current_stock);
+            M.target.textContent = fmt(p.target_stock);
+            M.planned.textContent = fmt(p.planned);
+            M.rec.textContent = p.rec > 0 ? '+' + fmt(p.rec) : 'Tidak perlu';
+
+            if (p.actives.length) {
+                M.notice.hidden = false;
+                M.notice.textContent = 'Produk ini sudah punya ' + p.actives.length +
+                    ' request aktif. Hanya sisa yang belum diproduksi (' + fmt(p.planned) +
+                    ') yang dikurangkan dari kebutuhan.';
+            } else {
+                M.notice.hidden = true;
+            }
+        }
+
+        function checkOver() {
+
+            const p = mts.productId ? findProduct(mts.productId) : null;
+            const qty = Number(M.qty.value);
+
+            if (p && qty > p.rec && p.rec > 0) {
+                M.over.hidden = false;
+                M.over.textContent = 'Jumlah melebihi rekomendasi (' + fmt(p.rec) +
+                    '). Pastikan tidak terjadi produksi berlebih.';
+            } else {
+                M.over.hidden = true;
+            }
+        }
+
+        function showMtsError(message) {
+            M.error.textContent = message;
+            M.error.hidden = false;
+            M.overlay.querySelector('.pe-body').scrollTop = 0;
+        }
+
+        function validateQty() {
+
+            M.qtyErr.hidden = true;
+            M.qtyGroup.classList.remove('invalid');
+
+            const raw = M.qty.value;
+            const qty = Number(raw);
+
+            if (raw === '' || isNaN(qty) || qty <= 0 || Math.floor(qty) !== qty) {
+                M.qtyErr.textContent = 'Jumlah harus berupa bilangan bulat lebih dari 0.';
+                M.qtyErr.hidden = false;
+                M.qtyGroup.classList.add('invalid');
+                return null;
+            }
+
+            return qty;
+        }
+
+        async function saveMts() {
+
+            M.error.hidden = true;
+
+            // Tanpa konteks produk dari tabel, request tidak dikirim.
+            if (!mts.productId) {
+                showMtsError('Pilih produk melalui tabel terlebih dahulu.');
+                return;
+            }
+
+            const productId = mts.productId;
+            const qty = validateQty();
+
+            if (qty === null) return;
+
+            mts.saving = true;
+            M.save.disabled = true;
+            M.cancel.disabled = true;
+            M.save.textContent = 'Menyimpan...';
+
+            try {
+
+                // Hitung ulang dengan data terbaru sebelum menyimpan agar tidak
+                // terjadi request ganda atau berlebih. Request simulasi yang sudah
+                // dibuat di halaman ini dipertahankan (hanya untuk mode demo).
+                state.requests = await api.getProductionRequests();
+                compute();
+
+                const fresh = findProduct(productId);
+
+                if (!fresh || fresh.rec <= 0) {
+
+                    if (fresh) fillMts(fresh);
+
+                    refreshAll();
+
+                    showMtsError('Rekomendasi terbaru untuk produk ini sudah 0 karena ada request aktif ' +
+                        'atau stok sudah memenuhi target. Request tidak dibuat.');
+
+                    return;
+                }
+
+                fillMts(fresh);
+                checkOver();
+
+                // request_no, requested_by, dan status awal WAITING diisi backend.
+                // Catatan: tabel production_requests saat ini belum punya kolom catatan.
+                const payload = {
+                    product_id: productId,
+                    qty_requested: qty,
+                    source: SP_CONFIG.mtsSource,
+                    notes: M.notes.value.trim() || null
+                };
+
+                const result = await api.createProductionRequest(payload);
+
+                // Muat ulang data asli dari server supaya tabel & ringkasan konsisten
+                // dengan database (termasuk request_no yang baru di-generate backend).
+                state.requests = await api.getProductionRequests();
+
+                mts.saving = false;
+                mtsModal.close();
+                refreshAll();
+
+                document.dispatchEvent(new CustomEvent('stock-planning:request-created', {
+                    detail: {
+                        productId: payload.product_id,
+                        requestNo: result.request_no
+                    }
+                }));
+
+                toast('Permintaan produksi ' + result.request_no + ' (' + fmt(qty) + ' pcs ' + fullName(fresh) + ') berhasil dibuat.');
+
+            } catch (error) {
+                showMtsError('Permintaan gagal disimpan. Coba lagi.');
+            } finally {
+                mts.saving = false;
+                M.save.disabled = false;
+                M.cancel.disabled = false;
+                M.save.textContent = 'Buat Permintaan';
+            }
+        }
+
+        M.qty.addEventListener('input', function() {
+            M.qtyErr.hidden = true;
+            M.qtyGroup.classList.remove('invalid');
+            checkOver();
+        });
+        M.save.addEventListener('click', saveMts);
+        M.cancel.addEventListener('click', mtsModal.close);
+        M.close.addEventListener('click', mtsModal.close);
+
+
+        // ==========================================
+        // EVENT HALAMAN
+        // ==========================================
+
+        let searchTimer = null;
+
+        function syncSearchClear() {
+            els.searchClear.hidden = els.search.value === '';
+        }
+
+        els.search.addEventListener('input', function() {
+
+            syncSearchClear();
+
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(function() {
+                state.search = els.search.value;
+                state.page = 1;
+                render();
+            }, SP_CONFIG.searchDelay);
+        });
+
+        // Ikon X: hanya mengosongkan pencarian. Tab, kategori, dan status
+        // tidak disentuh.
+        els.searchClear.addEventListener('click', function() {
+
+            clearTimeout(searchTimer);
+
+            els.search.value = '';
+            state.search = '';
+            state.page = 1;
+
+            syncSearchClear();
+            render();
+
+            els.search.focus();
+        });
+
+        els.category.addEventListener('change', function() {
+            state.category = els.category.value;
             state.page = 1;
             render();
-        }, SP_CONFIG.searchDelay);
-    });
+        });
 
-    // Ikon X: hanya mengosongkan pencarian. Tab, kategori, dan status
-    // tidak disentuh.
-    els.searchClear.addEventListener('click', function () {
-
-        clearTimeout(searchTimer);
-
-        els.search.value = '';
-        state.search = '';
-        state.page = 1;
-
-        syncSearchClear();
-        render();
-
-        els.search.focus();
-    });
-
-    els.category.addEventListener('change', function () {
-        state.category = els.category.value;
-        state.page = 1;
-        render();
-    });
-
-    els.status.addEventListener('change', function () {
-        state.status = els.status.value;
-        state.page = 1;
-        render();
-    });
-
-    els.tabs.addEventListener('click', function (event) {
-        const tab = event.target.closest('.sp-tab');
-        if (!tab) return;
-        state.tab = tab.getAttribute('data-tab');
-        state.page = 1;
-        render();
-    });
-
-    function resetFilters() {
-
-        clearTimeout(searchTimer);
-
-        state.search = '';
-        state.category = '';
-        state.status = '';
-        state.tab = 'ALL';
-        state.page = 1;
-        els.search.value = '';
-        els.category.value = '';
-        els.status.value = '';
-
-        syncSearchClear();
-        render();
-    }
-
-    els.reset.addEventListener('click', resetFilters);
-    els.emptyRst.addEventListener('click', resetFilters);
-
-    els.pagination.addEventListener('click', function (event) {
-        const button = event.target.closest('button[data-page]');
-        if (!button || button.disabled) return;
-        state.page = Number(button.getAttribute('data-page'));
-        render();
-    });
-
-    els.body.addEventListener('click', function (event) {
-
-        // KOREKSI: buka / tutup daftar varian produk
-        const toggle = event.target.closest('button[data-toggle]');
-        if (toggle) {
-            const gid = Number(toggle.getAttribute('data-toggle'));
-            state.expanded[gid] = !state.expanded[gid];
+        els.status.addEventListener('change', function() {
+            state.status = els.status.value;
+            state.page = 1;
             render();
-            const again = els.body.querySelector('button[data-toggle="' + gid + '"]');
-            if (again) again.focus();
-            return;
+        });
+
+        els.tabs.addEventListener('click', function(event) {
+            const tab = event.target.closest('.sp-tab');
+            if (!tab) return;
+            state.tab = tab.getAttribute('data-tab');
+            state.page = 1;
+            render();
+        });
+
+        function resetFilters() {
+
+            clearTimeout(searchTimer);
+
+            state.search = '';
+            state.category = '';
+            state.status = '';
+            state.tab = 'ALL';
+            state.page = 1;
+            els.search.value = '';
+            els.category.value = '';
+            els.status.value = '';
+
+            syncSearchClear();
+            render();
         }
 
-        const button = event.target.closest('button[data-act]');
-        if (!button || button.disabled) return;
+        els.reset.addEventListener('click', resetFilters);
+        els.emptyRst.addEventListener('click', resetFilters);
 
-        const id = Number(button.getAttribute('data-id'));
+        els.pagination.addEventListener('click', function(event) {
+            const button = event.target.closest('button[data-page]');
+            if (!button || button.disabled) return;
+            state.page = Number(button.getAttribute('data-page'));
+            render();
+        });
 
-        if (button.getAttribute('data-act') === 'detail') openDetail(id);
-        if (button.getAttribute('data-act') === 'mts') openMts(id);
-    });
+        els.body.addEventListener('click', function(event) {
 
-    // Item rekomendasi tertinggi hanya membuka Detail.
-    els.top.addEventListener('click', function (event) {
-        const button = event.target.closest('button[data-top]');
-        if (button) openDetail(Number(button.getAttribute('data-top')));
-    });
+            // KOREKSI: buka / tutup daftar varian produk
+            const toggle = event.target.closest('button[data-toggle]');
+            if (toggle) {
+                const gid = Number(toggle.getAttribute('data-toggle'));
+                state.expanded[gid] = !state.expanded[gid];
+                render();
+                const again = els.body.querySelector('button[data-toggle="' + gid + '"]');
+                if (again) again.focus();
+                return;
+            }
 
-    els.retry.addEventListener('click', loadData);
+            const button = event.target.closest('button[data-act]');
+            if (!button || button.disabled) return;
+
+            const id = Number(button.getAttribute('data-id'));
+
+            if (button.getAttribute('data-act') === 'detail') openDetail(id);
+            if (button.getAttribute('data-act') === 'mts') openMts(id);
+        });
+
+        // Item rekomendasi tertinggi hanya membuka Detail.
+        els.top.addEventListener('click', function(event) {
+            const button = event.target.closest('button[data-top]');
+            if (button) openDetail(Number(button.getAttribute('data-top')));
+        });
+
+        els.retry.addEventListener('click', loadData);
 
 
-    // ==========================================
-    // MUAT DATA
-    // ==========================================
+        // ==========================================
+        // MUAT DATA
+        // ==========================================
 
-    async function loadData() {
+        async function loadData() {
 
-        state.loading = true;
-        state.failed = false;
-        els.insight.hidden = true;
-        render();
+            state.loading = true;
+            state.failed = false;
+            els.insight.hidden = true;
+            render();
 
-        try {
-            const results = await Promise.all([
-                api.getProducts(),
-                api.getProductionRequests()
-            ]);
+            try {
+                const results = await Promise.all([
+                    api.getProducts(),
+                    api.getProductionRequests()
+                ]);
 
-            state.products = results[0];
-            state.requests = results[1];
+                state.products = results[0];
+                state.requests = results[1];
 
-            compute();
-            fillCategoryFilter();
+                compute();
+                fillCategoryFilter();
 
-        } catch (error) {
-            state.products = [];
-            state.requests = [];
-            state.view = [];
-            state.groups = [];
-            state.failed = true;
+            } catch (error) {
+                state.products = [];
+                state.requests = [];
+                state.view = [];
+                state.groups = [];
+                state.failed = true;
+            }
+
+            state.loading = false;
+            renderSummary();
+            render();
         }
 
-        state.loading = false;
-        renderSummary();
-        render();
-    }
+        syncSearchClear();
+        loadData();
 
-    syncSearchClear();
-    loadData();
-
-})();
+    })();
 </script>
 
 @endpush
