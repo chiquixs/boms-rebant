@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\ProcurementController;
 use App\Http\Controllers\Admin\MaterialShortageController;
 use App\Http\Controllers\Produksi\ProductionQueueController;
+use App\Http\Controllers\Produksi\StockPlanningController;
 
 /*
 |--------------------------------------------------------------------------
@@ -244,6 +245,15 @@ Route::middleware('auth')->group(function () {
             Route::get('/planning', function () {
                 return view('produksi.planning.index');
             })->name('planning.index');
+
+            Route::get('/planning/products', [StockPlanningController::class, 'products'])
+                ->name('planning.products');
+
+            Route::get('/planning/requests', [StockPlanningController::class, 'requests'])
+                ->name('planning.requests');
+
+            Route::post('/planning', [StockPlanningController::class, 'store'])
+                ->name('planning.store');
 
             Route::get('/history', function () {
                 return view('produksi.history.index');

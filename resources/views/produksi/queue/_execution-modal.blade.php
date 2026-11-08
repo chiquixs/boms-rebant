@@ -463,6 +463,7 @@
             item: null,
             materials: [],
             remaining: 0,
+            planQty: 0,
             dirty: false,
             saving: false,
             reported: false,
@@ -552,7 +553,7 @@
 
         function piecesNeeded(material) {
             const count = material.piece_count || 1;
-            return count * state.remaining;
+            return count * state.planQty;
         }
 
         function isSheetMaterial(material) {
@@ -560,12 +561,12 @@
         }
 
         function theoreticalNeedOf(material) {
-            return material.qty_per_unit * state.remaining;
+            return material.qty_per_unit * state.planQty;
         }
 
         // Estimasi kebutuhan = qty_per_unit x sisa target produksi
         function needOf(material) {
-            const raw = material.qty_per_unit * state.remaining;
+            const raw = material.qty_per_unit * state.planQty;
             return material.is_discrete ? Math.ceil(raw) : round2(raw);
         }
 
@@ -696,14 +697,14 @@
             }
         }
 
-        function renderMaterials() {
+        function renderCheckTable() {
 
             const rows = state.materials;
 
             // 2. Cek material
             els.checkDesc.textContent =
-                'Estimasi kebutuhan bahan untuk ' + state.remaining +
-                ' pcs yang belum diproduksi, dibandingkan dengan stok yang tersedia.';
+                'Estimasi kebutuhan bahan untuk ' + state.planQty +
+                ' pcs yang akan diproduksi pada sesi ini, dibandingkan dengan stok yang tersedia.';
 
             els.checkBody.innerHTML = rows.map(function(m, i) {
 
@@ -722,16 +723,13 @@
                 let needCell;
 
                 if (isSheet) {
-                    // Material lembaran: tampilkan 3 angka terpisah, jangan dicampur.
                     needCell =
                         '<div><strong>' + fmt(theoretical) + ' ' + esc(m.unit) + '</strong> <small style="color:#8A8D86;">(estimasi konsumsi)</small></div>' +
                         '<div><small>' + fmt(piecesNeeded(m)) + ' potongan</small></div>' +
                         '<div style="margin-top:4px;"><span class="pe-pill-take">Ambil: ' + fmt(practical) + ' ' + esc(m.unit) + ' utuh</span></div>';
                 } else if (m.is_discrete) {
-                    // Diskrit tapi bukan lembaran (batang, pcs): cukup 1 angka, sudah pasti bulat secara alami.
                     needCell = fmt(practical) + ' ' + esc(m.unit);
                 } else {
-                    // Kontinu (ml, kg, dst): satu angka saja.
                     needCell = fmt(practical) + ' ' + esc(m.unit);
                 }
 
@@ -754,6 +752,12 @@
             els.shortageText.textContent = 'Kekurangan ' + shortList.map(function(m) {
                 return m.name + ' sebanyak ' + fmt(round2(needOf(m) - m.current_stock)) + ' ' + m.unit;
             }).join(', ') + '.';
+        }
+
+        function renderMaterials() {
+            const rows = state.materials; 
+            // 2. Cek material
+            renderCheckTable();
 
             // 3. Pemakaian aktual (prefill: kebutuhan, maksimal sebesar stok)
             els.usageList.innerHTML = rows.map(function(m) {
@@ -777,6 +781,7 @@
                     ' id="peUsage' + m.raw_material_id + '"' +
                     ' data-material-id="' + m.raw_material_id + '"' +
                     ' data-discrete="' + (m.is_discrete ? '1' : '0') + '"' +
+                    ' data-touched="0"' +
                     ' value="' + prefill + '">' +
                     '<span>' + esc(m.unit) + '</span>' +
                     '</div>' +
@@ -816,6 +821,36 @@
 
             els.qtyHint.textContent =
                 'Isi jumlah barang jadi yang selesai pada sesi ini (maksimal ' + state.remaining + ' pcs).';
+        }
+
+        function updateEstimatesFromQty() {
+
+            const raw = els.qty.value.trim();
+            const qty = Number(raw);
+
+            state.planQty = (raw !== '' && isFinite(qty) && qty >= 0) ? Math.min(qty, state.remaining) : 0;
+
+            renderCheckTable();
+
+            // Update hint & prefill tiap input bahan — prefill HANYA kalau user belum pernah edit manual
+            els.usageList.querySelectorAll('input').forEach(function(input) {
+
+                const material = state.materials.find(function(m) {
+                    return String(m.raw_material_id) === input.dataset.materialId;
+                });
+
+                const hintEl = input.closest('.pe-usage-row').querySelector('.pe-hint');
+
+                hintEl.textContent = material.is_discrete ?
+                    'Kebutuhan teoritis ' + fmt(theoreticalNeedOf(material)) + ' ' + esc(material.unit) +
+                    ' \u00B7 disarankan ambil ' + fmt(needOf(material)) + ' ' + esc(material.unit) + ' utuh' :
+                    'Estimasi: ' + fmt(needOf(material)) + ' ' + esc(material.unit);
+
+                if (input.dataset.touched !== '1') {
+                    const prefill = Math.min(needOf(material), material.is_discrete ? Math.floor(material.current_stock) : material.current_stock);
+                    input.value = prefill;
+                }
+            });
         }
 
         function resetShortageButton() {
@@ -890,6 +925,7 @@
 
             state.item = item;
             state.remaining = Math.max(0, item.qty_requested - item.qty_produced);
+            state.planQty = state.remaining;
             state.dirty = false;
             state.saving = false;
             state.reported = false;
@@ -1210,11 +1246,18 @@
         });
 
         // Tandai ada perubahan yang belum disimpan
-        els.content.addEventListener('input', function() {
+        els.content.addEventListener('input', function(event) {
             state.dirty = true;
+
+            if (event.target.matches('#peUsageList input')) {
+                event.target.dataset.touched = '1';
+            }
         });
 
-        els.qty.addEventListener('input', updateQtyHint);
+        els.qty.addEventListener('input', function() {
+            updateQtyHint();
+            updateEstimatesFromQty();
+        });
 
         document.addEventListener('keydown', function(event) {
 
