@@ -285,8 +285,7 @@ Route::middleware('auth')->group(function () {
         ->group(function () {
 
             Route::get('/dashboard', function () {
-
-                return 'Dashboard Bisnis Owner';
+                return view('owner.dashboard.index');
             })->name('dashboard');
         });
 });

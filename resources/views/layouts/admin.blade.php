@@ -20,7 +20,9 @@
         'resources/css/procurement-detail.css',
         'resources/css/suppliers.css',
         'resources/css/activity-logs.css',
-        'resources/css/dashboard.css'
+        'resources/css/dashboard.css',
+        'resources/css/owner.css',
+        'resources/css/owner-dashboard.css'
     ])
 
     @stack('styles')
