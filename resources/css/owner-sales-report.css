@@ -1,0 +1,743 @@
+
+/* =========================================
+   OWNER SALES REPORT
+========================================= */
+
+.sales-report-page {
+    width: 100%;
+    color: #252823;
+}
+
+.sales-report-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 26px;
+}
+
+.page-eyebrow {
+    color: #829b73;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    margin: 0 0 7px;
+}
+
+.sales-report-heading h1 {
+    font-size: 25px;
+    font-weight: 700;
+    margin: 0;
+    color: #252823;
+}
+
+.page-description {
+    color: #8a8d86;
+    font-size: 13px;
+    margin: 8px 0 0;
+}
+
+/* TOOLBAR */
+
+.report-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    padding: 19px 21px;
+    background: #ffffff;
+    border: 1px solid #e7e9e4;
+    border-radius: 13px;
+    margin-bottom: 14px;
+}
+
+.report-filter {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.filter-field label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #777d72;
+}
+
+.filter-field input {
+    height: 39px;
+    min-width: 155px;
+    padding: 0 10px;
+    border: 1px solid #e3e7df;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #343a31;
+    font-family: inherit;
+    font-size: 12px;
+    outline: none;
+}
+
+.filter-field input:focus {
+    border-color: #9dba8c;
+    box-shadow: 0 0 0 3px rgba(157, 186, 140, 0.13);
+}
+
+.filter-button {
+    height: 39px;
+    padding: 0 18px;
+    border: none;
+    border-radius: 8px;
+    background: #526a48;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.filter-button:hover {
+    background: #405638;
+}
+
+.export-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.export-button {
+    height: 37px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #e5e8e1;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #555b50;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.export-button span {
+    font-size: 15px;
+}
+
+.export-button:hover {
+    background: #f4f7f1;
+    border-color: #9dba8c;
+}
+
+.report-period-label {
+    color: #858a80;
+    font-size: 11px;
+    margin: 0 0 16px 2px;
+}
+
+/* SUMMARY */
+
+.report-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.report-summary-card {
+    background: #ffffff;
+    border: 1px solid #e7e9e4;
+    border-radius: 12px;
+    padding: 18px 19px;
+    min-width: 0;
+}
+
+.summary-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.summary-label {
+    color: #858a80;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.summary-icon {
+    width: 31px;
+    height: 31px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.revenue-icon {
+    color: #526a48;
+    background: #e8f0e3;
+}
+
+.product-icon {
+    color: #a48632;
+    background: #fff5d8;
+}
+
+.transaction-icon {
+    color: #718a9b;
+    background: #eaf1f5;
+}
+
+.average-icon {
+    color: #987b9c;
+    background: #f3eaf4;
+}
+
+.report-summary-card h2 {
+    font-size: 21px;
+    font-weight: 700;
+    margin: 15px 0 6px;
+    color: #252823;
+    overflow-wrap: anywhere;
+}
+
+.summary-note {
+    color: #a0a39c;
+    font-size: 10px;
+    margin: 0;
+}
+
+/* PANELS */
+
+.report-chart-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+    gap: 16px;
+    margin-bottom: 17px;
+}
+
+.report-panel {
+    background: #ffffff;
+    border: 1px solid #e7e9e4;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 17px;
+    min-width: 0;
+}
+
+.report-chart-grid .report-panel {
+    margin-bottom: 0;
+}
+
+.panel-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.panel-heading h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #30352e;
+    margin: 0;
+}
+
+.panel-heading p {
+    color: #999d95;
+    font-size: 10px;
+    margin: 6px 0 0;
+}
+
+.panel-tag {
+    padding: 6px 10px;
+    background: #edf3e9;
+    color: #627b56;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* SALES CHART */
+
+.sales-chart {
+    min-height: 225px;
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 18px 4px 0;
+    border-bottom: 1px solid #e9ece6;
+    overflow-x: auto;
+}
+
+.chart-column {
+    flex: 1;
+    min-width: 28px;
+    height: 190px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}
+
+.chart-bar-area {
+    width: 100%;
+    height: 155px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.chart-bar {
+    width: min(32px, 75%);
+    min-height: 3px;
+    background: #9dba8c;
+    border-radius: 6px 6px 0 0;
+    position: relative;
+    transition: height 0.3s ease;
+}
+
+.chart-bar:hover {
+    background: #526a48;
+}
+
+.chart-bar-value {
+    position: absolute;
+    top: -19px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #7e8578;
+    font-size: 9px;
+    white-space: nowrap;
+}
+
+.chart-label {
+    color: #999d95;
+    font-size: 9px;
+    white-space: nowrap;
+    margin-bottom: 8px;
+}
+
+.chart-empty {
+    width: 100%;
+    align-self: center;
+    text-align: center;
+    color: #a0a39c;
+    font-size: 12px;
+}
+
+/* PLATFORM CHART */
+
+.platform-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    padding-top: 12px;
+}
+
+.platform-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.platform-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.platform-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #555b50;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.platform-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.shopee-dot {
+    background: #e99a72;
+}
+
+.tiktok-dot {
+    background: #526a48;
+}
+
+.platform-value {
+    color: #343a31;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.platform-progress {
+    width: 100%;
+    height: 9px;
+    border-radius: 20px;
+    background: #f0f1ed;
+    overflow: hidden;
+}
+
+.platform-progress-fill {
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.3s ease;
+}
+
+.shopee-fill {
+    background: #e99a72;
+}
+
+.tiktok-fill {
+    background: #526a48;
+}
+
+.platform-percentage {
+    color: #999d95;
+    font-size: 10px;
+    text-align: right;
+}
+
+/* TABLES */
+
+.product-performance-panel,
+.transaction-panel {
+    margin-bottom: 17px;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.report-table thead th {
+    padding: 12px 13px;
+    background: #f7f8f5;
+    color: #858a80;
+    font-size: 10px;
+    font-weight: 600;
+    border-bottom: 1px solid #e9ece6;
+}
+
+.report-table tbody td {
+    padding: 14px 13px;
+    color: #555b50;
+    font-size: 11px;
+    border-bottom: 1px solid #f0f1ed;
+}
+
+.report-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.report-table tbody tr:hover {
+    background: #fbfcfa;
+}
+
+.rank-number {
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 7px;
+    background: #edf3e9;
+    color: #526a48;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.product-name-cell {
+    color: #343a31 !important;
+    font-weight: 600;
+}
+
+.platform-pill {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.shopee-pill {
+    background: #fff0e9;
+    color: #c87950;
+}
+
+.tiktok-pill {
+    background: #edf3e9;
+    color: #526a48;
+}
+
+.completed-badge {
+    padding: 6px 10px;
+    border-radius: 20px;
+    background: #e8f2e5;
+    color: #55764c;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-completed {
+    display: inline-block;
+    padding: 5px 9px;
+    background: #e8f2e5;
+    color: #55764c;
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.empty-table {
+    text-align: center !important;
+    padding: 30px !important;
+    color: #a0a39c !important;
+}
+
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding-top: 15px;
+    margin-top: 5px;
+    border-top: 1px solid #f0f1ed;
+    color: #999d95;
+    font-size: 10px;
+}
+
+.report-disclaimer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #8a8f83;
+    background: #f1f5ed;
+    border: 1px solid #e5ecdf;
+    border-radius: 9px;
+    padding: 12px 14px;
+    font-size: 10px;
+    margin-bottom: 10px;
+}
+
+
+/* =========================================
+   TRANSACTION PAGINATION
+========================================= */
+
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.pagination-button {
+    width: 29px;
+    height: 29px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e7e9e4;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #687062;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.pagination-button:hover:not(:disabled) {
+    border-color: #9dba8c;
+    background: #f1f5ed;
+    color: #526a48;
+}
+
+.pagination-button.active {
+    background: #526a48;
+    border-color: #526a48;
+    color: #ffffff;
+}
+
+.pagination-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+    .table-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .pagination-controls {
+        order: 2;
+    }
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+    .report-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .report-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .export-actions {
+        width: 100%;
+    }
+}
+
+@media (max-width: 760px) {
+    .report-chart-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .report-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .report-filter {
+        width: 100%;
+    }
+
+    .filter-field {
+        flex: 1;
+        min-width: 130px;
+    }
+
+    .filter-field input {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .filter-button {
+        align-self: flex-end;
+    }
+
+    .export-actions {
+        flex-wrap: wrap;
+    }
+
+    .table-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .report-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sales-report-heading h1 {
+        font-size: 21px;
+    }
+
+    .report-panel {
+        padding: 15px;
+    }
+}
+
+/* PRINT / PDF */
+
+@media print {
+    @page {
+        size: landscape;
+        margin: 15mm;
+    }
+
+    body {
+        background: #ffffff !important;
+    }
+
+    .sidebar,
+    .topbar,
+    .report-toolbar,
+    .report-disclaimer,
+    .admin-sidebar,
+    .export-actions,
+    .filter-button {
+        display: none !important;
+    }
+
+    .admin-main,
+    .owner-main,
+    .owner-content {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .sales-report-page {
+        width: 100%;
+    }
+
+    .report-panel,
+    .report-summary-card {
+        break-inside: avoid;
+        box-shadow: none !important;
+    }
+
+    .report-chart-grid {
+        grid-template-columns: 1.5fr 1fr;
+    }
+
+    .report-summary-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .table-responsive {
+        overflow: visible;
+    }
+
+    .report-table {
+        white-space: normal;
+    }
+}
+

@@ -287,5 +287,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/dashboard', function () {
                 return view('owner.dashboard.index');
             })->name('dashboard');
+
+            Route::get('/sales-report', function () {
+                return view('owner.sales-report.index');
+            })->name('sales-report');
         });
 });
