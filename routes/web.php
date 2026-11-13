@@ -295,5 +295,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/activity-log', function () {
                 return view('owner.activity-log.index');
             })->name('activity-log');
+
+            Route::get('/user-management', function () {
+                return view('owner.user-management.index');
+            })->name('user-management');
         });
 });
