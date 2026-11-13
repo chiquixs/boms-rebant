@@ -50,8 +50,8 @@
                 <span>Dashboard</span>
             </a>
 
-            <a href="#"
-               class="nav-item">
+            <a href="{{ route('owner.sales-report') }}"
+                class="nav-item {{ request()->is('owner/sales-report') ? 'active' : '' }}">
                 <svg width="19" height="19" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="1.8"
                      stroke-linecap="round" stroke-linejoin="round">
