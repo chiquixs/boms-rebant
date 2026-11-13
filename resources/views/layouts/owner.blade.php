@@ -61,37 +61,15 @@
                 <span>Laporan Penjualan</span>
             </a>
 
-            <div class="nav-group owner-nav-group">
-
-                <div class="nav-parent">
-                    <a href="#"
-                       class="nav-item nav-parent-link">
-                        <svg width="19" height="19" viewBox="0 0 24 24"
-                             fill="none" stroke="currentColor" stroke-width="1.8"
-                             stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m12 3 9 5-9 5-9-5 9-5Z"/>
-                            <path d="m3 8 9 5 9-5"/>
-                            <path d="M3 8v9l9 5 9-5V8"/>
-                        </svg>
-                        <span>Master Data</span>
-                    </a>
-
-                    <button type="button" class="nav-toggle" aria-label="Toggle Master Data">
-                        <svg width="14" height="14" viewBox="0 0 24 24"
-                             fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="m6 9 6 6 6-6"/>
-                        </svg>
-                    </button>
-                </div>
-
-                <div class="nav-submenu">
-                    <a href="#" class="nav-subitem">Produk</a>
-                    <a href="#" class="nav-subitem">Kategori</a>
-                    <a href="#" class="nav-subitem">Bahan Baku</a>
-                    <a href="#" class="nav-subitem">Supplier</a>
-                </div>
-
-            </div>
+            <a href="{{ route('owner.master-data') }}"
+                class="nav-item {{ request()->is('owner/master-data') ? 'active' : '' }}">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m12 3 9 5-9 5-9-5 9-5Z"/>
+                    <path d="m3 8 9 5 9-5"/>
+                    <path d="M3 8v9l9 5 9-5V8"/>
+                </svg>
+                <span>Master Data</span>
+            </a>
 
             <a href="{{ route('owner.user-management') }}"
                 class="nav-item {{ request()->is('owner/user-management') ? 'active' : '' }}">
