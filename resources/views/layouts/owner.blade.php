@@ -93,11 +93,11 @@
 
             </div>
 
-            <a href="#"
-               class="nav-item">
+            <a href="{{ route('owner.activity-log') }}"
+                class="nav-item {{ request()->is('owner/activity-log') ? 'active' : '' }}">
                 <svg width="19" height="19" viewBox="0 0 24 24"
-                     fill="none" stroke="currentColor" stroke-width="1.8"
-                     stroke-linecap="round" stroke-linejoin="round">
+                    fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 12a9 9 0 1 0 3-6.7"/>
                     <path d="M3 3v6h6"/>
                     <path d="M12 7v5l3 2"/>
