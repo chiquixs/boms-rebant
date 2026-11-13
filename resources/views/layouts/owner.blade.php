@@ -93,6 +93,19 @@
 
             </div>
 
+            <a href="{{ route('owner.user-management') }}"
+                class="nav-item {{ request()->is('owner/user-management') ? 'active' : '' }}">
+                <svg width="19" height="19" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="10" cy="7" r="4"/>
+                    <path d="M20 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                <span>User & Access Management</span>
+            </a>
+
             <a href="{{ route('owner.activity-log') }}"
                 class="nav-item {{ request()->is('owner/activity-log') ? 'active' : '' }}">
                 <svg width="19" height="19" viewBox="0 0 24 24"
