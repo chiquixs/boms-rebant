@@ -299,5 +299,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/user-management', function () {
                 return view('owner.user-management.index');
             })->name('user-management');
+
+            Route::get('/master-data', function () {
+                return view('owner.master-data.index');
+            })->name('master-data');
         });
 });
