@@ -301,8 +301,8 @@
                 label: 'Mulai Produksi'
             },
             IN_PROCESS: {
-                key: 'finish',
-                label: 'Selesai'
+                key: 'continue',
+                label: 'Lanjutkan Progres'
             },
             COMPLETED: {
                 key: 'detail',
@@ -884,8 +884,10 @@
 
         // ==========================================
         // AKSI TOMBOL
-        //   Mulai Produksi / Lanjutkan Produksi -> buka modal eksekusi
-        //   Lihat Detail                        -> buka modal detail produksi (hanya baca)
+        //   Mulai Produksi / Lanjutkan Progres -> buka modal eksekusi
+        //   Lihat Detail                       -> buka modal detail produksi (hanya baca)
+        // Status baru menjadi IN_PROCESS setelah user menekan Simpan Progres.
+        // Membuka modal tidak mengubah status.
         // ==========================================
 
         els.body.addEventListener('click', function(event) {
@@ -907,18 +909,8 @@
                 return row.request_no === requestNo;
             });
 
-            // WAITING -> modal info (read-only) + konfirmasi mulai
-            if (action === 'start') {
-                if (item && window.ProductionStartModal) {
-                    window.ProductionStartModal.open(item);
-                    return;
-                }
-                showToast('Modal mulai produksi belum termuat.');
-                return;
-            }
-
-            // IN_PROCESS -> modal form (input pemakaian + hasil), langsung selesaikan
-            if (action === 'finish') {
+            // WAITING / IN_PROCESS -> modal eksekusi (form pemakaian + hasil)
+            if (action === 'start' || action === 'continue') {
                 if (item && window.ProductionExecutionModal) {
                     window.ProductionExecutionModal.open(item);
                     return;
@@ -937,8 +929,8 @@
             }
         });
 
-        // Setelah modal "disimpan" (SIMULASI), perbarui baris di tabel
-        //   Simpan Progres      -> IN_PROCESS -> tombol "Lanjutkan Produksi"
+        // Setelah modal disimpan, perbarui baris di tabel
+        //   Simpan Progres      -> IN_PROCESS -> tombol "Lanjutkan Progres"
         //   Selesaikan Produksi -> COMPLETED  -> tombol "Lihat Detail"
         document.addEventListener('production-execution:saved', function(event) {
 
@@ -948,17 +940,26 @@
                 return row.request_no === detail.requestNo;
             });
 
-            if (!item) return;
+            if (item) {
 
-            item.qty_produced = detail.qtyProduced;
-            item.status = detail.status;
+                item.qty_produced = detail.qtyProduced;
+                item.status = detail.status;
 
-            render();
+                render();
+            }
 
             showToast(
                 'Produksi ' + detail.requestNo +
                 (detail.status === 'COMPLETED' ? ' berhasil diselesaikan.' : ' progres berhasil disimpan.')
             );
+
+            // Ambil data terbaru dari server tanpa tampilan loading
+            queueApi.fetchRequests()
+                .then(function(rows) {
+                    state.all = rows;
+                    render();
+                })
+                .catch(function() {});
         });
 
         document.addEventListener('production-queue:started', function(event) {
@@ -972,7 +973,7 @@
             item.status = 'IN_PROCESS';
             render();
 
-            showToast('Produksi ' + event.detail.requestNo + ' dimulai. Klik "Selesai" setelah hasil siap dicatat.');
+            showToast('Produksi ' + event.detail.requestNo + ' dimulai.');
         });
 
         // ==========================================
