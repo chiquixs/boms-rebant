@@ -464,3 +464,29 @@
         align-items: flex-start;
     }
 }
+
+.ph-badge {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 5px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.ph-badge.in-process {
+    background: #FFF8E1;
+    border: 1px solid #F0DFA8;
+    color: #7A6728;
+}
+
+.ph-table tbody tr.ph-row-progress {
+    background: #FFFDF5;
+}
+
+.ph-table tbody tr.ph-row-progress:hover {
+    background: #FFF9E6;
+}

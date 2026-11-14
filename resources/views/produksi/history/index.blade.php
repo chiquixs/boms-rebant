@@ -12,7 +12,7 @@
 
     <div class="pq-page-header-text">
         <h1>Riwayat Produksi</h1>
-        <p>Pantau catatan produksi yang telah dilakukan, produk yang dihasilkan, jumlah produksi, dan petugas yang mencatat.</p>
+        <p>Pantau catatan produksi yang telah dilakukan, request yang sedang diproses, jumlah produksi, dan petugas yang mencatat.</p>
     </div>
 
 </div>
@@ -37,7 +37,7 @@
             <span class="pq-stat-label">Total Produksi</span>
         </div>
         <strong class="pq-stat-value" id="phStatQty">-</strong>
-        <span class="ph-stat-note">Total unit pada data yang ditampilkan</span>
+        <span class="ph-stat-note">Total unit dari sesi yang ditampilkan</span>
     </div>
 
     <div class="pq-stat progress">
@@ -56,7 +56,7 @@
             <span class="pq-stat-label">Sesi Produksi</span>
         </div>
         <strong class="pq-stat-value" id="phStatSessions">-</strong>
-        <span class="ph-stat-note">Jumlah catatan production_logs</span>
+        <span class="ph-stat-note" id="phStatSessionsNote">Jumlah catatan production_logs</span>
     </div>
 
     <div class="pq-stat done">
@@ -95,7 +95,9 @@
 <p class="ph-explain">
     Satu sesi produksi berarti satu catatan production_logs, bukan satu production_request.
     Satu request bisa memiliki beberapa sesi, dan setiap sesi ditampilkan terpisah.
-    Kartu di atas mengikuti search dan filter yang sedang aktif.
+    Request yang masih berstatus IN_PROCESS ditampilkan di bagian atas dengan penanda
+    "Sedang diproses" dan tidak dihitung ke total produksi, karena jumlahnya akan tercatat
+    per sesi. Kartu di atas mengikuti search dan filter yang sedang aktif.
 </p>
 
 
@@ -127,6 +129,12 @@
         <input type="date" class="ph-date" id="phDateTo" aria-label="Tanggal akhir">
     </div>
 
+    <select class="pq-select" id="phFilterType" aria-label="Filter jenis catatan">
+        <option value="">Semua Jenis</option>
+        <option value="IN_PROCESS">Sedang diproses</option>
+        <option value="LOG">Sesi produksi</option>
+    </select>
+
     <select class="pq-select" id="phFilterProduct" aria-label="Filter produk atau SKU">
         <option value="">Semua Produk / SKU</option>
     </select>
@@ -154,7 +162,7 @@
 
     <div class="pq-card-header">
         <h2>Catatan Produksi</h2>
-        <span class="pq-count" id="phCount">0 sesi</span>
+        <span class="pq-count" id="phCount">0 catatan</span>
     </div>
 
 
@@ -162,7 +170,7 @@
 
         <table class="pq-table ph-table">
 
-            <caption class="pq-sr-only">Daftar riwayat sesi produksi</caption>
+            <caption class="pq-sr-only">Daftar riwayat sesi produksi dan request yang sedang diproses</caption>
 
             <thead>
                 <tr>
@@ -274,7 +282,7 @@
             <section class="pe-section">
 
                 <h3><span>1.</span> Informasi Produksi</h3>
-                <p class="pe-section-desc">Catatan satu sesi produksi.</p>
+                <p class="pe-section-desc" id="phdSectionDesc">Catatan satu sesi produksi.</p>
 
                 <div class="ph-grid">
 
@@ -289,13 +297,18 @@
                     </div>
 
                     <div class="ph-field">
-                        <span>Tanggal Produksi</span>
+                        <span id="phdDateLabel">Tanggal Produksi</span>
                         <strong id="phdDate">-</strong>
                     </div>
 
                     <div class="ph-field">
-                        <span>Jumlah Diproduksi (sesi ini)</span>
+                        <span id="phdQtyLabel">Jumlah Diproduksi (sesi ini)</span>
                         <strong class="accent" id="phdQty">-</strong>
+                    </div>
+
+                    <div class="ph-field">
+                        <span>Status</span>
+                        <strong id="phdStatus">-</strong>
                     </div>
 
                     <div class="ph-field">
@@ -409,6 +422,7 @@
         search: '',
         dateFrom: '',
         dateTo: '',
+        type: '',
         product: '',
         user: '',
         page: 1,
@@ -419,14 +433,16 @@
     function $(id) { return document.getElementById(id); }
 
     const els = {
-        statQty:      $('phStatQty'),
-        statSessions: $('phStatSessions'),
-        statProducts: $('phStatProducts'),
-        statUsers:    $('phStatUsers'),
+        statQty:          $('phStatQty'),
+        statSessions:     $('phStatSessions'),
+        statSessionsNote: $('phStatSessionsNote'),
+        statProducts:     $('phStatProducts'),
+        statUsers:        $('phStatUsers'),
 
         search:    $('phSearch'),
         dateFrom:  $('phDateFrom'),
         dateTo:    $('phDateTo'),
+        type:      $('phFilterType'),
         product:   $('phFilterProduct'),
         user:      $('phFilterUser'),
         reset:     $('phReset'),
@@ -446,6 +462,8 @@
         pagination: $('phPagination')
     };
 
+    const NOTE_DEFAULT = 'Jumlah catatan production_logs';
+
 
     // ==========================================
     // HELPER
@@ -462,6 +480,15 @@
 
     function fmt(n) {
         return new Intl.NumberFormat('id-ID', { maximumFractionDigits: 2 }).format(n);
+    }
+
+    function isInProcess(log) {
+        return log.entry_type === 'IN_PROCESS';
+    }
+
+    // id baris bisa berupa angka (sesi) atau teks "pr-12" (request IN_PROCESS)
+    function numericId(log) {
+        return parseInt(String(log.id).replace(/\D/g, ''), 10) || 0;
     }
 
     // production_date diperlakukan sebagai tanggal (YYYY-MM-DD),
@@ -517,6 +544,15 @@
         return log.recorder ? log.recorder.name : '-';
     }
 
+    // Jumlah untuk ditampilkan di tabel dan detail
+    function qtyText(log) {
+        if (isInProcess(log)) {
+            const req = log.production_request || {};
+            return fmt(log.qty_produced) + ' / ' + fmt(req.qty_requested) + ' pcs';
+        }
+        return fmt(log.qty_produced) + ' pcs';
+    }
+
 
     // ==========================================
     // FILTER
@@ -527,7 +563,8 @@
     }
 
     function hasFilter() {
-        return !!(state.search.trim() || state.dateFrom || state.dateTo || state.product || state.user);
+        return !!(state.search.trim() || state.dateFrom || state.dateTo ||
+            state.type || state.product || state.user);
     }
 
     function getFiltered() {
@@ -541,6 +578,7 @@
             const key = dateKey(log);
             const p = productOf(log);
 
+            if (state.type && log.entry_type !== state.type) return false;
             if (state.dateFrom && key < state.dateFrom) return false;
             if (state.dateTo && key > state.dateTo) return false;
             if (state.product && (!p || String(p.id) !== state.product)) return false;
@@ -563,13 +601,20 @@
         });
     }
 
-    // Terbaru lebih dulu. Jika tanggal sama, record terbaru lebih dulu.
+    // Request yang sedang diproses di paling atas.
+    // Sisanya: terbaru lebih dulu, dan jika tanggal sama, record terbaru lebih dulu.
     function sortLogs(list) {
         return list.slice().sort(function (a, b) {
+
+            const pa = isInProcess(a) ? 0 : 1;
+            const pb = isInProcess(b) ? 0 : 1;
+            if (pa !== pb) return pa - pb;
+
             const da = dateKey(a);
             const db = dateKey(b);
             if (da !== db) return da < db ? 1 : -1;
-            return b.id - a.id;
+
+            return numericId(b) - numericId(a);
         });
     }
 
@@ -606,7 +651,8 @@
     // ==========================================
     // STATISTIK
     // Dihitung dari data yang sedang tampil (sesuai filter).
-    // Satu sesi = satu record production_logs.
+    // Total dan jumlah sesi hanya dari production_logs. Baris IN_PROCESS
+    // tidak dijumlahkan karena qty-nya akumulasi dari sesi-sesinya.
     // ==========================================
 
     function renderStats(filtered) {
@@ -616,24 +662,34 @@
             els.statSessions.textContent = '-';
             els.statProducts.textContent = '-';
             els.statUsers.textContent = '-';
+            els.statSessionsNote.textContent = NOTE_DEFAULT;
             return;
         }
+
+        const sessions = filtered.filter(function (log) { return !isInProcess(log); });
+        const running = filtered.length - sessions.length;
 
         const products = {};
         const users = {};
         let total = 0;
 
-        filtered.forEach(function (log) {
+        sessions.forEach(function (log) {
             total += Number(log.qty_produced) || 0;
+            if (log.recorded_by != null) users[log.recorded_by] = true;
+        });
+
+        filtered.forEach(function (log) {
             const p = productOf(log);
             if (p) products[p.id] = true;
-            users[log.recorded_by] = true;
         });
 
         els.statQty.textContent = fmt(total);
-        els.statSessions.textContent = fmt(filtered.length);
+        els.statSessions.textContent = fmt(sessions.length);
         els.statProducts.textContent = Object.keys(products).length;
         els.statUsers.textContent = Object.keys(users).length;
+        els.statSessionsNote.textContent = running > 0
+            ? running + ' request sedang diproses'
+            : NOTE_DEFAULT;
     }
 
 
@@ -657,13 +713,23 @@
 
         const p = productOf(log);
         const req = log.production_request || {};
+        const running = isInProcess(log);
 
         const notes = log.notes
             ? '<span class="ph-notes" title="' + esc(log.notes) + '">' + esc(log.notes) + '</span>'
             : '<span class="ph-none">&mdash;</span>';
 
+        const badge = running
+            ? '<span class="ph-badge in-process">Sedang diproses</span>'
+            : '';
+
+        const user = log.recorder
+            ? '<div class="ph-user"><span class="ph-avatar">' + esc(initials(userName(log))) + '</span>' +
+              '<span>' + esc(userName(log)) + '</span></div>'
+            : '<span class="ph-none">&mdash;</span>';
+
         return '' +
-            '<tr>' +
+            '<tr' + (running ? ' class="ph-row-progress"' : '') + '>' +
                 '<td class="center">' + number + '</td>' +
                 '<td class="ph-date-cell">' + esc(fmtDate(dateKey(log))) + '</td>' +
                 '<td><div class="ph-product-cell">' +
@@ -672,12 +738,11 @@
                     '<small>SKU: ' + esc(p ? p.sku : '-') + '</small>' +
                     (p && p.variant_name ? '<small>Varian: ' + esc(p.variant_name) + '</small>' : '') +
                     '</div></div></td>' +
-                '<td><span class="pq-request-no">' + esc(req.request_no || '-') + '</span></td>' +
-                '<td class="center"><span class="ph-qty">' + esc(fmt(log.qty_produced)) + ' pcs</span></td>' +
-                '<td><div class="ph-user"><span class="ph-avatar">' + esc(initials(userName(log))) + '</span>' +
-                    '<span>' + esc(userName(log)) + '</span></div></td>' +
+                '<td><span class="pq-request-no">' + esc(req.request_no || '-') + '</span>' + badge + '</td>' +
+                '<td class="center"><span class="ph-qty">' + esc(qtyText(log)) + '</span></td>' +
+                '<td>' + user + '</td>' +
                 '<td>' + notes + '</td>' +
-                '<td class="center"><button type="button" class="ph-action" data-id="' + log.id + '">Detail</button></td>' +
+                '<td class="center"><button type="button" class="ph-action" data-id="' + esc(log.id) + '">Detail</button></td>' +
             '</tr>';
     }
 
@@ -704,7 +769,7 @@
         if (state.failed) {
             els.wrapper.hidden = true;
             els.error.hidden = false;
-            els.count.textContent = '0 sesi';
+            els.count.textContent = '0 catatan';
             renderStats([]);
             return;
         }
@@ -712,7 +777,7 @@
         const filtered = sortLogs(getFiltered());
 
         renderStats(filtered);
-        els.count.textContent = filtered.length + ' sesi';
+        els.count.textContent = filtered.length + ' catatan';
 
         if (!filtered.length) {
             els.wrapper.hidden = true;
@@ -738,7 +803,7 @@
 
         els.footer.hidden = false;
         els.info.textContent = 'Menampilkan ' + (start + 1) + '-' + (start + slice.length) +
-            ' dari ' + filtered.length + ' sesi';
+            ' dari ' + filtered.length + ' catatan';
 
         renderPagination(pages);
     }
@@ -770,23 +835,27 @@
     // ==========================================
 
     const D = {
-        overlay:   $('phdOverlay'),
-        requestNo: $('phdRequestNo'),
-        thumb:     $('phdThumb'),
-        name:      $('phdName'),
-        variant:   $('phdVariant'),
-        request:   $('phdRequest'),
-        sku:       $('phdSku'),
-        date:      $('phdDate'),
-        qty:       $('phdQty'),
-        user:      $('phdUser'),
-        notes:     $('phdNotes'),
-        loading:   $('phdLoading'),
-        error:     $('phdError'),
-        materials: $('phdMaterials'),
-        retry:     $('phdRetry'),
-        close:     $('phdClose'),
-        done:      $('phdDone')
+        overlay:     $('phdOverlay'),
+        requestNo:   $('phdRequestNo'),
+        thumb:       $('phdThumb'),
+        name:        $('phdName'),
+        variant:     $('phdVariant'),
+        sectionDesc: $('phdSectionDesc'),
+        request:     $('phdRequest'),
+        sku:         $('phdSku'),
+        dateLabel:   $('phdDateLabel'),
+        date:        $('phdDate'),
+        qtyLabel:    $('phdQtyLabel'),
+        qty:         $('phdQty'),
+        status:      $('phdStatus'),
+        user:        $('phdUser'),
+        notes:       $('phdNotes'),
+        loading:     $('phdLoading'),
+        error:       $('phdError'),
+        materials:   $('phdMaterials'),
+        retry:       $('phdRetry'),
+        close:       $('phdClose'),
+        done:        $('phdDone')
     };
 
     let opener = null;
@@ -794,7 +863,7 @@
     let detailLog = null;
 
     function findLog(id) {
-        return state.logs.find(function (log) { return log.id === id; });
+        return state.logs.find(function (log) { return String(log.id) === String(id); });
     }
 
     function openDetail(id, trigger) {
@@ -807,6 +876,7 @@
 
         const p = productOf(log);
         const req = log.production_request || {};
+        const running = isInProcess(log);
 
         D.requestNo.textContent = req.request_no || '-';
         D.thumb.innerHTML = thumbInner(log);
@@ -815,9 +885,21 @@
         D.request.textContent = req.request_no || '-';
         D.sku.textContent = p ? p.sku : '-';
         D.date.textContent = fmtDate(dateKey(log));
-        D.qty.textContent = fmt(log.qty_produced) + ' pcs';
+        D.qty.textContent = qtyText(log);
         D.user.textContent = userName(log);
         D.notes.textContent = log.notes || '\u2014';
+
+        if (running) {
+            D.sectionDesc.textContent = 'Request ini masih dalam proses produksi.';
+            D.dateLabel.textContent = 'Mulai Diproses';
+            D.qtyLabel.textContent = 'Progres Produksi';
+            D.status.textContent = 'Sedang diproses';
+        } else {
+            D.sectionDesc.textContent = 'Catatan satu sesi produksi.';
+            D.dateLabel.textContent = 'Tanggal Produksi';
+            D.qtyLabel.textContent = 'Jumlah Diproduksi (sesi ini)';
+            D.status.textContent = 'Sesi tercatat';
+        }
 
         D.overlay.hidden = false;
         document.body.style.overflow = 'hidden';
@@ -829,6 +911,17 @@
     async function loadMaterials() {
 
         const token = ++detailToken;
+
+        // Request yang sedang diproses belum punya sesi log, jadi tidak ada data bahan
+        if (isInProcess(detailLog)) {
+            D.loading.hidden = true;
+            D.error.hidden = true;
+            D.materials.hidden = false;
+            D.materials.innerHTML =
+                '<p class="ph-empty-line">Penggunaan bahan baku dicatat per sesi produksi. ' +
+                'Datanya akan muncul pada catatan sesi setelah produksi dicatat.</p>';
+            return;
+        }
 
         D.loading.hidden = false;
         D.error.hidden = true;
@@ -940,6 +1033,12 @@
         render();
     });
 
+    els.type.addEventListener('change', function () {
+        state.type = els.type.value;
+        state.page = 1;
+        render();
+    });
+
     els.product.addEventListener('change', function () {
         state.product = els.product.value;
         state.page = 1;
@@ -956,12 +1055,14 @@
         state.search = '';
         state.dateFrom = '';
         state.dateTo = '';
+        state.type = '';
         state.product = '';
         state.user = '';
         state.page = 1;
         els.search.value = '';
         els.dateFrom.value = '';
         els.dateTo.value = '';
+        els.type.value = '';
         els.product.value = '';
         els.user.value = '';
         render();
@@ -979,7 +1080,7 @@
 
     els.body.addEventListener('click', function (event) {
         const button = event.target.closest('button[data-id]');
-        if (button) openDetail(Number(button.getAttribute('data-id')), button);
+        if (button) openDetail(button.getAttribute('data-id'), button);
     });
 
     els.retry.addEventListener('click', loadData);
