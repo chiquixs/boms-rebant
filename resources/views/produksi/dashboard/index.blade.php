@@ -33,18 +33,6 @@
 </div>
 
 
-{{-- Penanda data demonstrasi (hanya muncul jika apiUrl kosong) --}}
-<div class="pd-demo" id="pdDemo" hidden>
-    <svg width="16" height="16" viewBox="0 0 24 24"
-         fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="9"/>
-        <path d="M12 8v5"/>
-        <path d="M12 16.5h.01"/>
-    </svg>
-    <span>DEMO. Angka di halaman ini bukan data produksi aktual dan belum berasal dari database.</span>
-</div>
-
-
 {{-- =========================
     KARTU STATISTIK
 ========================= --}}
@@ -114,7 +102,7 @@
             <span class="pq-stat-label">Varian Stok Rendah</span>
         </div>
         <strong class="pq-stat-value" id="pdStatLow"><span class="pq-skeleton pd-sk-value"></span></strong>
-        <span class="pd-stat-note">Stok di bawah minimum</span>
+        <span class="pd-stat-note">Varian MTS di bawah stok minimum</span>
     </a>
 
 </div>
@@ -143,7 +131,7 @@
         <div class="pd-panel-head">
             <div>
                 <h2 id="pdLowTitle">Stok Perlu Perhatian</h2>
-                <p>Varian produk yang stoknya rendah.</p>
+                <p>Varian produk MTS yang stoknya di bawah minimum.</p>
             </div>
             <a class="pd-link" href="{{ route('produksi.planning.index') }}">Buka Planning</a>
         </div>
@@ -206,113 +194,37 @@
 
     // ==========================================
     // KONFIGURASI
+    // Data diambil dari database lewat ProductionDashboardController@data
     // ==========================================
 
     const PD_CONFIG = {
-        // Kosongkan (null) untuk memakai DATA DEMO tanpa backend.
-        apiUrl: null,   // backend belum siap, jadi memakai DATA DEMO
+        apiUrl: '{{ route("produksi.dashboard.data") }}',
         period: 'month',
         listLimit: 5
     };
 
 
     // ==========================================
-    // DATA DEMO
-    // Hanya dipakai saat apiUrl kosong. Selalu diberi label DEMO.
-    // Bentuk datanya sama dengan respons endpoint backend.
-    // ==========================================
-
-    function hoursAgo(h) {
-        return new Date(Date.now() - h * 3600 * 1000).toISOString();
-    }
-
-    function buildMock(period) {
-
-        const factor = period === '30d' ? 3 : (period === '7d' ? 1 : 2);
-
-        return {
-            summary: {
-                active_queue: 8,
-                in_process: 3,
-                produced: 120 * factor,
-                period: period,
-                period_label: period === '30d' ? '30 hari terakhir' : (period === '7d' ? '7 hari terakhir' : 'Bulan ini'),
-                low_stock_variants: 4
-            },
-            priority_requests: [
-                { request_no: 'PR-20261112-001', product_name: 'Frame Kayu Karakter Jepang (10x30)', variant_name: 'V1', sku: 'FKGU-B-N-V1', source: 'ORDER', status: 'IN_PROCESS', qty_requested: 20, qty_produced: 8, remaining: 12 },
-                { request_no: 'PR-20261112-002', product_name: 'Malang Tempo Dulu (30x45)', variant_name: 'Alun alun', sku: 'T29A-1', source: 'ORDER', status: 'WAITING', qty_requested: 15, qty_produced: 0, remaining: 15 },
-                { request_no: 'PR-20261111-004', product_name: 'Modern Line Art Black & White set isi 3 (20x30)', variant_name: 'Cat', sku: 'PBS3-O32-A-1', source: 'ORDER', status: 'IN_PROCESS', qty_requested: 25, qty_produced: 10, remaining: 15 },
-                { request_no: 'PR-20261111-006', product_name: 'Sign Peringatan Hitam (9x30)', variant_name: 'CCTV', sku: 'D6A-1', source: 'RESTOCK', status: 'WAITING', qty_requested: 10, qty_produced: 0, remaining: 10 },
-                { request_no: 'PR-20261110-003', product_name: 'Gantungan Gelang Kayu 2 Sisi', variant_name: 'Natural', sku: 'GG-B-N', source: 'RESTOCK', status: 'WAITING', qty_requested: 12, qty_produced: 0, remaining: 12 }
-            ],
-            low_stock_variants: [
-                { product_name: 'Frame Kayu Karakter Jepang (10x30)', variant_name: 'V2', sku: 'FKGU-B-N-V2', current_stock: 2, min_stock: 10, target_stock: 30 },
-                { product_name: 'Sign Free Wifi (20x20)', variant_name: 'Hitam Putih', sku: 'N6A-1', current_stock: 5, min_stock: 12, target_stock: 24 },
-                { product_name: 'Quotes Black and White (15x20)', variant_name: 'Leave Home', sku: 'I9J-1', current_stock: 8, min_stock: 15, target_stock: 30 },
-                { product_name: 'Basecamp Bola Internasional (9x30)', variant_name: 'Juventus', sku: 'D6E-1', current_stock: 14, min_stock: 20, target_stock: 40 }
-            ],
-            recent_productions: [
-                { id: 41, request_no: 'PR-20261112-001', product_name: 'Frame Kayu Karakter Jepang (10x30)', variant_name: 'V1', sku: 'FKGU-B-N-V1', qty_produced: 8, produced_at: hoursAgo(2), production_date: null, recorded_by: 'Rudi Hartono' },
-                { id: 40, request_no: 'PR-20261111-004', product_name: 'Modern Line Art Black & White set isi 3 (20x30)', variant_name: 'Cat', sku: 'PBS3-O32-A-1', qty_produced: 10, produced_at: hoursAgo(20), production_date: null, recorded_by: 'Rudi Hartono' },
-                { id: 39, request_no: 'PR-20261109-002', product_name: 'Sign Peringatan Hitam (9x30)', variant_name: 'Dilarang Merokok', sku: 'D6A-2', qty_produced: 30, produced_at: hoursAgo(50), production_date: null, recorded_by: 'Sari Wulandari' },
-                { id: 38, request_no: 'PR-20261108-005', product_name: 'Sign Free Wifi (20x20)', variant_name: 'Merah Hitam', sku: 'N6A-3', qty_produced: 35, produced_at: null, production_date: '2026-11-08', recorded_by: null }
-            ],
-            recent_activities: [
-                { type: 'logged', request_no: 'PR-20261112-001', product_name: 'Frame Kayu Karakter Jepang (10x30)', variant_name: 'V1', qty: 8, at: hoursAgo(2), by: 'Rudi Hartono' },
-                { type: 'started', request_no: 'PR-20261112-001', product_name: 'Frame Kayu Karakter Jepang (10x30)', variant_name: 'V1', qty: null, at: hoursAgo(5), by: null },
-                { type: 'completed', request_no: 'PR-20261109-002', product_name: 'Sign Peringatan Hitam (9x30)', variant_name: 'Dilarang Merokok', qty: null, at: hoursAgo(50), by: null },
-                { type: 'created', request_no: 'PR-20261112-002', product_name: 'Malang Tempo Dulu (30x45)', variant_name: 'Alun alun', qty: null, at: hoursAgo(52), by: 'Admin Rebant' }
-            ]
-        };
-    }
-
-
-    // ==========================================
     // LAYER API
-    // Satu-satunya tempat yang bergantung pada backend.
     // ==========================================
 
     const dashboardApi = {
 
-        isMock: !PD_CONFIG.apiUrl,
-
         async fetch(period) {
 
-            if (PD_CONFIG.apiUrl) {
-
-                const response = await fetch(
-                    PD_CONFIG.apiUrl + '?period=' + encodeURIComponent(period),
-                    { headers: { 'Accept': 'application/json' } }
-                );
-
-                if (!response.ok) {
-                    throw new Error('HTTP ' + response.status);
+            const response = await fetch(
+                PD_CONFIG.apiUrl + '?period=' + encodeURIComponent(period),
+                {
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'same-origin'
                 }
+            );
 
-                return await response.json();
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
             }
 
-            // --- Mode demo ---
-            await new Promise(function (resolve) { setTimeout(resolve, 600); });
-
-            const mock = new URLSearchParams(window.location.search).get('mock');
-
-            if (mock === 'error') {
-                throw new Error('Simulasi error');
-            }
-
-            if (mock === 'empty') {
-                return {
-                    summary: { active_queue: 0, in_process: 0, produced: 0, period: period, period_label: 'Bulan ini', low_stock_variants: 0 },
-                    priority_requests: [],
-                    low_stock_variants: [],
-                    recent_productions: [],
-                    recent_activities: []
-                };
-            }
-
-            return buildMock(period);
+            return await response.json();
         }
     };
 
@@ -331,7 +243,6 @@
     const $ = function (id) { return document.getElementById(id); };
 
     const els = {
-        demo: $('pdDemo'),
         period: $('pdPeriod'),
         stats: $('pdStats'),
         grid: $('pdGrid'),
@@ -480,12 +391,12 @@
         }).join('');
     }
 
-    // Aturan status dan bar sama dengan Stock & Production Planning:
-    // LOW jika current_stock < min_stock, skala bar = target_stock.
+    // Satu baris = satu varian produk MTS dengan current_stock < min_stock.
+    // Skala bar = target_stock (atau nilai terbesar jika target kosong).
     function renderLow(items) {
 
         if (!items.length) {
-            els.lowList.innerHTML = emptyHtml('Tidak ada varian dengan stok rendah.');
+            els.lowList.innerHTML = emptyHtml('Tidak ada varian MTS dengan stok rendah.');
             return;
         }
 
@@ -511,6 +422,7 @@
                 '<div class="pd-stock-meta">' +
                 '<span>Stok <b class="' + (isLow ? 'low' : '') + '">' + num(current) + '</b></span>' +
                 '<span>Minimum <b>' + num(min) + '</b></span>' +
+                '<span>Target <b>' + (item.target_stock !== null && item.target_stock !== undefined ? num(target) : '-') + '</b></span>' +
                 '</div></li>';
 
         }).join('');
@@ -587,9 +499,7 @@
 
     function render() {
 
-        els.demo.hidden = !(dashboardApi.isMock && !state.error);
-
-        // Error: satu kartu menggantikan isi dashboard, tanpa angka dummy
+        // Error: satu kartu menggantikan isi dashboard
         els.errorCard.hidden = !state.error;
         els.stats.hidden = state.error;
         els.grid.hidden = state.error;

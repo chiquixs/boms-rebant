@@ -276,6 +276,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/history', [ProductionHistoryController::class, 'page'])->name('history.index');
             Route::get('/history/data', [ProductionHistoryController::class, 'data'])->name('history.data');
             Route::get('/history/{log}/materials', [ProductionHistoryController::class, 'materials'])->name('history.materials');
+            Route::get('/dashboard/data', [ProductionDashboardController::class, 'data'])
+                ->name('dashboard.data');
         });
 
 
