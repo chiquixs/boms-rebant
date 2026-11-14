@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\ProcurementController;
 use App\Http\Controllers\Admin\MaterialShortageController;
 use App\Http\Controllers\Produksi\ProductionQueueController;
 use App\Http\Controllers\Produksi\StockPlanningController;
+use App\Http\Controllers\Produksi\ProductionDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -232,7 +233,7 @@ Route::middleware('auth')->group(function () {
         ->group(function () {
 
             Route::get('/dashboard', function () {
-                return 'Dashboard Produksi';   // ganti nanti kalau sudah ada dashboard
+                return view('produksi.dashboard.index');
             })->name('dashboard');
 
             Route::get('/queue', function () {
