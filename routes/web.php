@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\MaterialShortageController;
 use App\Http\Controllers\Produksi\ProductionQueueController;
 use App\Http\Controllers\Produksi\StockPlanningController;
 use App\Http\Controllers\Produksi\ProductionDashboardController;
+use App\Http\Controllers\Produksi\ProductionHistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -271,6 +272,10 @@ Route::middleware('auth')->group(function () {
 
             Route::post('/queue/{productionRequest:request_no}/start', [ProductionQueueController::class, 'start'])
                 ->name('queue.start');
+            
+            Route::get('/history', [ProductionHistoryController::class, 'page'])->name('history.index');
+            Route::get('/history/data', [ProductionHistoryController::class, 'data'])->name('history.data');
+            Route::get('/history/{log}/materials', [ProductionHistoryController::class, 'materials'])->name('history.materials');
         });
 
 

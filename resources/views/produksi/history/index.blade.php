@@ -18,11 +18,6 @@
 </div>
 
 
-<div class="ph-demo" id="phDemo" hidden>
-    Data demonstrasi. Halaman ini belum terhubung ke database, jadi seluruh catatan di bawah hanya contoh tampilan.
-</div>
-
-
 {{-- =========================
     SUMMARY
 ========================= --}}
@@ -174,7 +169,6 @@
                     <th class="center">No.</th>
                     <th>Tanggal Produksi</th>
                     <th>Produk / SKU</th>
-                    {{-- KOREKSI: kolom "Gambar Produk" dihapus --}}
                     <th>Request Produksi</th>
                     <th class="center">Jumlah Diproduksi</th>
                     <th>Dicatat Oleh</th>
@@ -368,14 +362,8 @@
     // ==========================================
 
     const PH_CONFIG = {
-
         perPage: 8,
-
-        searchDelay: 250,
-
-        // true selama masih memakai DATA SIMULASI di bawah.
-        // Ubah ke false saat sudah terhubung ke backend.
-        isDemo: true
+        searchDelay: 250
     };
 
     const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
@@ -386,131 +374,28 @@
 
 
     // ==========================================
-    // DATA SIMULASI (MOCK)
-    // Hanya untuk demonstrasi. Bukan catatan produksi sungguhan.
-    // Bentuk field mengikuti production_logs, production_requests,
-    // products, product_groups, users, production_log_materials,
-    // dan raw_materials.
+    // LAPISAN DATA (API) - dari database
     // ==========================================
 
-    const MOCK_IMG = "{{ asset('images/produk.jpg') }}";
+    async function fetchJson(url) {
 
-    const USERS = {
-        akmal: { id: 2, name: 'Akmal' },
-        rina:  { id: 5, name: 'Rina Setiawati' },
-        budi:  { id: 6, name: 'Budi Santoso' }
-    };
+        const res = await fetch(url, {
+            headers: { 'Accept': 'application/json' }
+        });
 
-    const GROUP = {
-        kerja:  { id: 1, name: 'Meja Kerja Minimalis',   image_path: MOCK_IMG },
-        kursi:  { id: 2, name: 'Kursi Kantor Ergonomis', image_path: MOCK_IMG },
-        lemari: { id: 3, name: 'Lemari Pakaian 2 Pintu', image_path: null },
-        rak:    { id: 4, name: 'Rak Buku 5 Susun',       image_path: MOCK_IMG }
-    };
+        if (!res.ok) throw new Error('Request failed: ' + res.status);
 
-    const PRODUCT = {
-        wln: { id: 1,  sku: 'MJK-WLN', variant_name: 'Walnut',  image_path: MOCK_IMG, group: GROUP.kerja },
-        wht: { id: 2,  sku: 'MJK-WHT', variant_name: 'Putih',   image_path: null,     group: GROUP.kerja },
-        blk: { id: 4,  sku: 'KRS-BLK', variant_name: 'Hitam',   image_path: MOCK_IMG, group: GROUP.kursi },
-        gry: { id: 5,  sku: 'KRS-GRY', variant_name: 'Abu-abu', image_path: null,     group: GROUP.kursi },
-        jti: { id: 7,  sku: 'LMR-JTI', variant_name: 'Jati',    image_path: null,     group: GROUP.lemari },
-        oak: { id: 9,  sku: 'RAK-OAK', variant_name: 'Oak',     image_path: null,     group: GROUP.rak },
-        rbk: { id: 10, sku: 'RAK-BLK', variant_name: 'Hitam',   image_path: MOCK_IMG, group: GROUP.rak }
-    };
-
-    const REQUEST = {
-        r1: { id: 1, request_no: 'PR-20261019-004', qty_requested: 34, product: PRODUCT.blk },
-        r2: { id: 2, request_no: 'PR-20261015-009', qty_requested: 20, product: PRODUCT.oak },
-        r3: { id: 3, request_no: 'PR-20261012-003', qty_requested: 25, product: PRODUCT.wln },
-        r4: { id: 4, request_no: 'PR-20261008-001', qty_requested: 12, product: PRODUCT.jti },
-        r5: { id: 5, request_no: 'PR-20261005-002', qty_requested: 18, product: PRODUCT.wht },
-        r6: { id: 6, request_no: 'PR-20261003-006', qty_requested: 15, product: PRODUCT.gry },
-        r7: { id: 7, request_no: 'PR-20261001-003', qty_requested: 20, product: PRODUCT.rbk }
-    };
-
-    function mockLog(id, request, user, date, qty, notes) {
-        return {
-            id: id,
-            production_request_id: request.id,
-            recorded_by: user.id,
-            production_date: date,
-            qty_produced: qty,
-            notes: notes || null,
-            production_request: request,
-            recorder: user
-        };
-    }
-
-    // Beberapa request memiliki lebih dari satu sesi produksi.
-    const MOCK_LOGS = [
-        mockLog(1,  REQUEST.r1, USERS.akmal, '2026-10-24', 10, 'Sesi pertama. Rangka dan dudukan selesai, pelapis menunggu pengiriman.'),
-        mockLog(2,  REQUEST.r1, USERS.rina,  '2026-10-22', 12, 'Sesi kedua. Perakitan roda dan sandaran.'),
-        mockLog(3,  REQUEST.r1, USERS.akmal, '2026-10-20', 12, null),
-        mockLog(4,  REQUEST.r2, USERS.budi,  '2026-10-17', 20, 'Selesai satu sesi. Finishing oak berjalan lancar.'),
-        mockLog(5,  REQUEST.r3, USERS.rina,  '2026-10-14', 15, 'Sesi pertama. Cat walnut dua lapis.'),
-        mockLog(6,  REQUEST.r3, USERS.rina,  '2026-10-13', 10, null),
-        mockLog(7,  REQUEST.r4, USERS.akmal, '2026-10-10', 12, 'Papan jati sedikit melengkung pada 1 unit, sudah diganti.'),
-        mockLog(8,  REQUEST.r5, USERS.budi,  '2026-10-08', 8,  null),
-        mockLog(9,  REQUEST.r5, USERS.budi,  '2026-10-07', 10, 'Sesi lanjutan setelah bahan cat datang.'),
-        mockLog(10, REQUEST.r6, USERS.akmal, '2026-10-06', 15, null),
-        mockLog(11, REQUEST.r7, USERS.rina,  '2026-10-04', 12, 'Sesi pertama.'),
-        mockLog(12, REQUEST.r7, USERS.rina,  '2026-10-02', 8,  'Sesi kedua. Target request tercapai.')
-    ];
-
-    const RAW = {
-        mdf: { id: 1, code: 'MDF-12',  name: 'MDF Board 12 mm',  unit: 'pcs' },
-        ply: { id: 3, code: 'PLY-09',  name: 'Plywood 9 mm',     unit: 'pcs' },
-        cat: { id: 2, code: 'CAT-WH',  name: 'Cat Kayu (White)', unit: 'liter' },
-        lem: { id: 5, code: 'LEM-PV',  name: 'Lem Kayu PVAC',    unit: 'kg' },
-        skr: { id: 4, code: 'SKR-30',  name: 'Sekrup 3 cm',      unit: 'box' },
-        amp: { id: 6, code: 'AMP-120', name: 'Amplas 120',       unit: 'lembar' },
-        vrn: { id: 8, code: 'VRN-CL',  name: 'Vernis Clear',     unit: 'liter' }
-    };
-
-    // production_log_materials per sesi. Sesi yang tidak ada di sini
-    // dianggap belum punya catatan pemakaian bahan (id 3, 6, 10).
-    const MOCK_MATERIALS = {
-        1:  [{ raw_material: RAW.ply, qty_used: 10, usage_date: '2026-10-24' }, { raw_material: RAW.skr, qty_used: 1, usage_date: '2026-10-24' }, { raw_material: RAW.lem, qty_used: 2, usage_date: '2026-10-24' }],
-        2:  [{ raw_material: RAW.ply, qty_used: 12, usage_date: '2026-10-22' }, { raw_material: RAW.skr, qty_used: 2, usage_date: '2026-10-22' }],
-        4:  [{ raw_material: RAW.mdf, qty_used: 20, usage_date: '2026-10-17' }, { raw_material: RAW.vrn, qty_used: 3.5, usage_date: '2026-10-17' }, { raw_material: RAW.amp, qty_used: 24, usage_date: '2026-10-17' }],
-        5:  [{ raw_material: RAW.mdf, qty_used: 15, usage_date: '2026-10-14' }, { raw_material: RAW.cat, qty_used: 4, usage_date: '2026-10-14' }],
-        7:  [{ raw_material: RAW.ply, qty_used: 12, usage_date: '2026-10-10' }, { raw_material: RAW.vrn, qty_used: 2, usage_date: '2026-10-10' }],
-        8:  [{ raw_material: RAW.mdf, qty_used: 8, usage_date: '2026-10-08' }],
-        9:  [{ raw_material: RAW.mdf, qty_used: 10, usage_date: '2026-10-07' }, { raw_material: RAW.cat, qty_used: 3, usage_date: '2026-10-07' }],
-        11: [{ raw_material: RAW.ply, qty_used: 12, usage_date: '2026-10-04' }],
-        12: [{ raw_material: RAW.ply, qty_used: 8, usage_date: '2026-10-02' }, { raw_material: RAW.lem, qty_used: 1.5, usage_date: '2026-10-02' }]
-    };
-
-
-    // ==========================================
-    // LAPISAN DATA (API)
-    // Semua akses data lewat objek ini. Saat backend siap, ganti isi
-    // fungsi (mis. fetch ke endpoint proyek) tanpa menyentuh UI.
-    // Simulasi: ?mock=error | empty | detailerror
-    // ==========================================
-
-    const flag = new URLSearchParams(window.location.search).get('mock');
-
-    function wait(ms) {
-        return new Promise(function (resolve) { setTimeout(resolve, ms); });
+        return res.json();
     }
 
     const api = {
 
-        // production_logs + production_requests + products + product_groups + users.
-        // Satu elemen = satu sesi produksi (satu record production_logs).
-        getProductionLogs: async function () {
-            await wait(450);
-            if (flag === 'error') throw new Error('mock error');
-            if (flag === 'empty') return [];
-            return MOCK_LOGS.map(function (log) { return Object.assign({}, log); });
+        getProductionLogs: function () {
+            return fetchJson('{{ route("produksi.history.data") }}');
         },
 
-        // production_log_materials + raw_materials untuk satu sesi.
-        getProductionLogMaterials: async function (logId) {
-            await wait(350);
-            if (flag === 'detailerror') throw new Error('mock detail error');
-            return (MOCK_MATERIALS[logId] || []).map(function (m) { return Object.assign({}, m); });
+        getProductionLogMaterials: function (logId) {
+            return fetchJson('{{ url("produksi/history") }}/' + logId + '/materials');
         }
     };
 
@@ -534,8 +419,6 @@
     function $(id) { return document.getElementById(id); }
 
     const els = {
-        demo:     $('phDemo'),
-
         statQty:      $('phStatQty'),
         statSessions: $('phStatSessions'),
         statProducts: $('phStatProducts'),
@@ -603,7 +486,7 @@
         return p && p.group ? p.group.name : '-';
     }
 
-    // Gambar produk (products.image_path) lebih dulu,
+    // Gambar varian (products.image_path) lebih dulu,
     // lalu gambar grup (product_groups.image_path) sebagai cadangan.
     function imageOf(log) {
         const p = productOf(log);
@@ -707,7 +590,7 @@
                 .sort(function (a, b) { return a.sku.localeCompare(b.sku); })
                 .map(function (p) {
                     return '<option value="' + p.id + '">' +
-                        esc(p.sku + ' \u2014 ' + p.group.name + ' ' + p.variant_name) + '</option>';
+                        esc(p.sku + ' \u2014 ' + p.group.name + (p.variant_name ? ' ' + p.variant_name : '')) + '</option>';
                 }).join('');
 
         els.user.innerHTML = '<option value="">Semua Petugas</option>' +
@@ -762,7 +645,6 @@
         let html = '';
         for (let i = 0; i < 5; i++) {
             html += '<tr>';
-            // KOREKSI: kolom tinggal 8 (kolom Gambar Produk sudah dihapus)
             for (let c = 0; c < 8; c++) {
                 html += '<td><span class="pq-skeleton"></span></td>';
             }
@@ -784,7 +666,6 @@
             '<tr>' +
                 '<td class="center">' + number + '</td>' +
                 '<td class="ph-date-cell">' + esc(fmtDate(dateKey(log))) + '</td>' +
-                // KOREKSI: gambar digabung ke kolom Produk / SKU
                 '<td><div class="ph-product-cell">' +
                     '<span class="ph-thumb">' + thumbInner(log) + '</span>' +
                     '<div class="ph-product"><strong title="' + esc(productName(log)) + '">' + esc(productName(log)) + '</strong>' +
@@ -889,23 +770,23 @@
     // ==========================================
 
     const D = {
-        overlay:  $('phdOverlay'),
+        overlay:   $('phdOverlay'),
         requestNo: $('phdRequestNo'),
-        thumb:    $('phdThumb'),
-        name:     $('phdName'),
-        variant:  $('phdVariant'),
-        request:  $('phdRequest'),
-        sku:      $('phdSku'),
-        date:     $('phdDate'),
-        qty:      $('phdQty'),
-        user:     $('phdUser'),
-        notes:    $('phdNotes'),
-        loading:  $('phdLoading'),
-        error:    $('phdError'),
+        thumb:     $('phdThumb'),
+        name:      $('phdName'),
+        variant:   $('phdVariant'),
+        request:   $('phdRequest'),
+        sku:       $('phdSku'),
+        date:      $('phdDate'),
+        qty:       $('phdQty'),
+        user:      $('phdUser'),
+        notes:     $('phdNotes'),
+        loading:   $('phdLoading'),
+        error:     $('phdError'),
         materials: $('phdMaterials'),
-        retry:    $('phdRetry'),
-        close:    $('phdClose'),
-        done:     $('phdDone')
+        retry:     $('phdRetry'),
+        close:     $('phdClose'),
+        done:      $('phdDone')
     };
 
     let opener = null;
@@ -930,7 +811,7 @@
         D.requestNo.textContent = req.request_no || '-';
         D.thumb.innerHTML = thumbInner(log);
         D.name.textContent = productName(log);
-        D.variant.textContent = 'Variasi: ' + (p ? p.variant_name : '-');
+        D.variant.textContent = 'Variasi: ' + ((p && p.variant_name) || '-');
         D.request.textContent = req.request_no || '-';
         D.sku.textContent = p ? p.sku : '-';
         D.date.textContent = fmtDate(dateKey(log));
@@ -1125,8 +1006,6 @@
         state.loading = false;
         render();
     }
-
-    els.demo.hidden = !PH_CONFIG.isDemo;
 
     loadData();
 
