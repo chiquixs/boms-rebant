@@ -17,6 +17,8 @@ use App\Http\Controllers\Produksi\ProductionQueueController;
 use App\Http\Controllers\Produksi\StockPlanningController;
 use App\Http\Controllers\Produksi\ProductionDashboardController;
 use App\Http\Controllers\Produksi\ProductionHistoryController;
+use App\Http\Controllers\Admin\DashboardController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -109,9 +111,7 @@ Route::middleware('auth')->group(function () {
             |--------------------------------------------------------------------------
             */
 
-            Route::get('/dashboard', function () {
-                return view('admin.dashboard.index');
-            })->name('dashboard');
+            Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
             /*
             |--------------------------------------------------------------------------

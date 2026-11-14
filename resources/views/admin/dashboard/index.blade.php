@@ -34,7 +34,7 @@
                 <path d="M3 10h18"/>
             </svg>
 
-            <span>18 Oktober 2026</span>
+            <span>{{ now()->translatedFormat('d F Y') }}</span>
         </div>
     </div>
 
@@ -69,7 +69,7 @@
                 </span>
 
                 <strong class="dashboard-summary-value">
-                    3
+                    {{ $summary['new_orders'] }}
                 </strong>
 
                 <span class="dashboard-summary-caption">
@@ -117,7 +117,7 @@
                 </span>
 
                 <strong class="dashboard-summary-value">
-                    2
+                    {{ $summary['waiting_production'] }}
                 </strong>
 
                 <span class="dashboard-summary-caption">
@@ -164,7 +164,7 @@
                 </span>
 
                 <strong class="dashboard-summary-value">
-                    2
+                    {{ $summary['low_variants'] }}
                 </strong>
 
                 <span class="dashboard-summary-caption">
@@ -211,7 +211,7 @@
                 </span>
 
                 <strong class="dashboard-summary-value">
-                    1
+                    {{ $summary['restock'] }}
                 </strong>
 
                 <span class="dashboard-summary-caption">
@@ -282,104 +282,37 @@
 
                     <tbody>
 
+                        @forelse ($recentOrders as $order)
                         <tr>
                             <td>
-                                <a href="/admin/orders/ORD-001" class="dashboard-order-id">
-                                    ORD-001
+                                <a href="{{ $order['url'] }}" class="dashboard-order-id">
+                                    {{ $order['order_no'] }}
                                 </a>
                             </td>
 
                             <td>
-                                <span class="dashboard-platform tiktok">
-                                    TikTok Shop
+                                <span class="dashboard-platform {{ $order['platform_class'] }}">
+                                    {{ $order['platform'] }}
                                 </span>
                             </td>
 
                             <td>
-                                Rp120.000
+                                {{ $order['total'] }}
                             </td>
 
                             <td>
-                                <span class="dashboard-status ready">
-                                    Ready to Pack
+                                <span class="dashboard-status {{ $order['status_class'] }}">
+                                    {{ $order['status_label'] }}
                                 </span>
                             </td>
                         </tr>
-
-
+                        @empty
                         <tr>
-                            <td>
-                                <a href="/admin/orders/ORD-002" class="dashboard-order-id">
-                                    ORD-002
-                                </a>
-                            </td>
-
-                            <td>
-                                <span class="dashboard-platform shopee">
-                                    Shopee
-                                </span>
-                            </td>
-
-                            <td>
-                                Rp240.000
-                            </td>
-
-                            <td>
-                                <span class="dashboard-status new">
-                                    New
-                                </span>
+                            <td colspan="4" style="text-align:center;padding:20px;">
+                                Belum ada pesanan yang sedang berjalan.
                             </td>
                         </tr>
-
-
-                        <tr>
-                            <td>
-                                <a href="/admin/orders/ORD-003" class="dashboard-order-id">
-                                    ORD-003
-                                </a>
-                            </td>
-
-                            <td>
-                                <span class="dashboard-platform tiktok">
-                                    TikTok Shop
-                                </span>
-                            </td>
-
-                            <td>
-                                Rp180.000
-                            </td>
-
-                            <td>
-                                <span class="dashboard-status waiting">
-                                    Waiting Production
-                                </span>
-                            </td>
-                        </tr>
-
-
-                        <tr>
-                            <td>
-                                <a href="/admin/orders/ORD-004" class="dashboard-order-id">
-                                    ORD-004
-                                </a>
-                            </td>
-
-                            <td>
-                                <span class="dashboard-platform shopee">
-                                    Shopee
-                                </span>
-                            </td>
-
-                            <td>
-                                Rp96.000
-                            </td>
-
-                            <td>
-                                <span class="dashboard-status new">
-                                    New
-                                </span>
-                            </td>
-                        </tr>
+                        @endforelse
 
                     </tbody>
 
@@ -419,12 +352,13 @@
 
             <div class="dashboard-stock-list">
 
-                {{-- D6A-5 --}}
+                @forelse ($stockAlerts as $alert)
                 <div class="dashboard-stock-item">
 
                     <div class="dashboard-stock-info">
 
-                        <div class="dashboard-stock-icon product">
+                        <div class="dashboard-stock-icon {{ $alert['kind'] }}">
+                            @if ($alert['kind'] === 'product')
                             <svg
                                 width="16"
                                 height="16"
@@ -436,71 +370,7 @@
                                 <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
                                 <path d="m3.3 7 8.7 5 8.7-5"/>
                             </svg>
-                        </div>
-
-                        <div>
-                            <strong>Jagalah Kebersihan</strong>
-                            <span>D6A-5 · Produk Jadi</span>
-                        </div>
-
-                    </div>
-
-                    <div class="dashboard-stock-value">
-                        <strong>20 pcs</strong>
-                        <span>Min. 30 pcs</span>
-                    </div>
-
-                    <span class="dashboard-stock-status low">
-                        Rendah
-                    </span>
-
-                </div>
-
-
-                {{-- D6A-3 --}}
-                <div class="dashboard-stock-item">
-
-                    <div class="dashboard-stock-info">
-
-                        <div class="dashboard-stock-icon product">
-                            <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                            >
-                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
-                                <path d="m3.3 7 8.7 5 8.7-5"/>
-                            </svg>
-                        </div>
-
-                        <div>
-                            <strong>Area Merokok</strong>
-                            <span>D6A-3 · Produk Jadi</span>
-                        </div>
-
-                    </div>
-
-                    <div class="dashboard-stock-value">
-                        <strong>30 pcs</strong>
-                        <span>Min. 30 pcs</span>
-                    </div>
-
-                    <span class="dashboard-stock-status warning">
-                        Perhatian
-                    </span>
-
-                </div>
-
-
-                {{-- CAT HITAM --}}
-                <div class="dashboard-stock-item">
-
-                    <div class="dashboard-stock-info">
-
-                        <div class="dashboard-stock-icon material">
+                            @else
                             <svg
                                 width="16"
                                 height="16"
@@ -513,18 +383,19 @@
                                 <path d="m5 6 7 4 7-4"/>
                                 <path d="M12 10v12"/>
                             </svg>
+                            @endif
                         </div>
 
                         <div>
-                            <strong>Cat Hitam</strong>
-                            <span>Bahan Mentah · NON-SHEET</span>
+                            <strong>{{ $alert['name'] }}</strong>
+                            <span>{{ $alert['sub'] }}</span>
                         </div>
 
                     </div>
 
                     <div class="dashboard-stock-value">
-                        <strong>2 lt</strong>
-                        <span>Safety 3 lt</span>
+                        <strong>{{ $alert['current'] }}</strong>
+                        <span>{{ $alert['threshold'] }}</span>
                     </div>
 
                     <span class="dashboard-stock-status low">
@@ -532,6 +403,11 @@
                     </span>
 
                 </div>
+                @empty
+                <div style="padding:20px;text-align:center;font-size:12px;">
+                    Semua stok dalam kondisi aman.
+                </div>
+                @endforelse
 
             </div>
 
@@ -576,6 +452,7 @@
             <div class="dashboard-procurement-list">
 
                 {{-- RESTOCK --}}
+                @foreach ($restockItems as $item)
                 <div class="dashboard-procurement-item">
 
                     <div class="dashboard-procurement-left">
@@ -595,14 +472,14 @@
                         </div>
 
                         <div>
-                            <strong>Cat Hitam perlu restock</strong>
-                            <span>Stok 2 lt · Safety 3 lt · Target 15 lt</span>
+                            <strong>{{ $item['name'] }} perlu restock</strong>
+                            <span>{{ $item['detail'] }}</span>
                         </div>
                     </div>
 
                     <div class="dashboard-procurement-right">
                         <span class="dashboard-restock-qty">
-                            +13 lt
+                            {{ $item['recommend'] }}
                         </span>
 
                         <span class="dashboard-procurement-status recommendation">
@@ -611,13 +488,31 @@
                     </div>
 
                 </div>
+                @endforeach
 
 
-                {{-- PO ORDERED --}}
+                {{-- PURCHASE ORDER --}}
+                @foreach ($recentPos as $po)
+                @php
+                    $isReceived = $po['status_class'] === 'received';
+                    $poClass = $po['status_class'] === 'partial' ? 'ordered' : $po['status_class'];
+                @endphp
                 <div class="dashboard-procurement-item">
 
                     <div class="dashboard-procurement-left">
-                        <div class="dashboard-procurement-icon po">
+                        <div class="dashboard-procurement-icon {{ $isReceived ? 'received' : 'po' }}">
+                            @if ($isReceived)
+                            <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.8"
+                            >
+                                <path d="M20 6 9 17l-5-5"/>
+                            </svg>
+                            @else
                             <svg
                                 width="16"
                                 height="16"
@@ -631,49 +526,28 @@
                                 <path d="M9 13h6"/>
                                 <path d="M9 17h6"/>
                             </svg>
+                            @endif
                         </div>
 
                         <div>
-                            <strong>PO-0012</strong>
-                            <span>PT Kayu Jaya · Rp850.000</span>
+                            <strong>{{ $po['po_no'] }}</strong>
+                            <span>{{ $po['detail'] }}</span>
                         </div>
                     </div>
 
-                    <span class="dashboard-procurement-status ordered">
-                        Ordered
+                    <span class="dashboard-procurement-status {{ $poClass }}">
+                        {{ $po['status_label'] }}
                     </span>
 
                 </div>
+                @endforeach
 
 
-                {{-- PO RECEIVED --}}
-                <div class="dashboard-procurement-item">
-
-                    <div class="dashboard-procurement-left">
-                        <div class="dashboard-procurement-icon received">
-                            <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.8"
-                            >
-                                <path d="M20 6 9 17l-5-5"/>
-                            </svg>
-                        </div>
-
-                        <div>
-                            <strong>PO-0011</strong>
-                            <span>CV MDF Malang · Rp1.250.000</span>
-                        </div>
-                    </div>
-
-                    <span class="dashboard-procurement-status received">
-                        Received
-                    </span>
-
+                @if ($restockItems->isEmpty() && $recentPos->isEmpty())
+                <div style="padding:20px;text-align:center;font-size:12px;">
+                    Belum ada rekomendasi restock atau purchase order.
                 </div>
+                @endif
 
             </div>
 
@@ -710,80 +584,28 @@
 
             <div class="dashboard-activity-list">
 
-                {{-- ACTIVITY 1 --}}
+                @forelse ($activities as $activity)
                 <div class="dashboard-activity-item">
 
-                    <div class="dashboard-activity-dot procurement"></div>
+                    <div class="dashboard-activity-dot {{ $activity['kind'] }}"></div>
 
                     <div class="dashboard-activity-content">
                         <div class="dashboard-activity-top">
-                            <strong>Mengirim Purchase Order</strong>
-                            <span>10:32</span>
+                            <strong>{{ $activity['title'] }}</strong>
+                            <span>{{ $activity['time'] }}</span>
                         </div>
 
                         <p>
-                            Admin mengirim PO-0012 ke PT Kayu Jaya.
+                            {{ $activity['text'] }}
                         </p>
                     </div>
 
                 </div>
-
-
-                {{-- ACTIVITY 2 --}}
-                <div class="dashboard-activity-item">
-
-                    <div class="dashboard-activity-dot product"></div>
-
-                    <div class="dashboard-activity-content">
-                        <div class="dashboard-activity-top">
-                            <strong>Mengubah Data Produk</strong>
-                            <span>10:05</span>
-                        </div>
-
-                        <p>
-                            Admin memperbarui produk D6A.
-                        </p>
-                    </div>
-
+                @empty
+                <div style="padding:20px;text-align:center;font-size:12px;">
+                    Belum ada aktivitas yang tercatat.
                 </div>
-
-
-                {{-- ACTIVITY 3 --}}
-                <div class="dashboard-activity-item">
-
-                    <div class="dashboard-activity-dot production"></div>
-
-                    <div class="dashboard-activity-content">
-                        <div class="dashboard-activity-top">
-                            <strong>Konfirmasi Produksi Selesai</strong>
-                            <span>09:20</span>
-                        </div>
-
-                        <p>
-                            Produksi menyelesaikan pesanan ORD-001.
-                        </p>
-                    </div>
-
-                </div>
-
-
-                {{-- ACTIVITY 4 --}}
-                <div class="dashboard-activity-item">
-
-                    <div class="dashboard-activity-dot inventory"></div>
-
-                    <div class="dashboard-activity-content">
-                        <div class="dashboard-activity-top">
-                            <strong>Penyesuaian Stok</strong>
-                            <span>08:45</span>
-                        </div>
-
-                        <p>
-                            Admin melakukan penyesuaian stok D6A-1.
-                        </p>
-                    </div>
-
-                </div>
+                @endforelse
 
             </div>
 
