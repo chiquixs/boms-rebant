@@ -1,7 +1,7 @@
 {{-- =========================
     MODAL: EKSEKUSI PRODUKSI & MATERIAL USAGE
-    Dibuka dari tombol "Mulai Produksi" / "Lanjutkan Produksi"
-    di Production Queue. Semua data di sini masih SIMULASI.
+    Dibuka dari tombol "Mulai Produksi" / "Lanjutkan Progres"
+    di Production Queue.
 ========================= --}}
 
 <div class="pe-overlay" id="peOverlay" hidden>
@@ -285,6 +285,7 @@
         {{-- FOOTER --}}
         <div class="pe-footer">
             <button type="button" class="pe-btn pe-btn-secondary" id="peCancel">Batal</button>
+            <button type="button" class="pe-btn pe-btn-outline" id="peSave">Simpan Progres</button>
             <button type="button" class="pe-btn pe-btn-primary" id="peFinish">Selesaikan Produksi</button>
         </div>
 
@@ -392,13 +393,9 @@
 
 
         // ==========================================
-        // LAYER API (SIMULASI)
-        // Ganti isi fungsi ini dengan fetch ke backend saat siap.
+        // LAYER API
+        // Ganti isi fungsi ini sesuai endpoint backend.
         // Fungsi tampilan di bawah tidak perlu diubah.
-        //
-        // Untuk menguji tampilan, tambahkan di URL:
-        //   ?mock=modalerror  -> data bahan baku gagal dimuat
-        //   ?mock=savefail    -> simpan gagal
         // ==========================================
 
 
@@ -518,6 +515,7 @@
 
             formError: $('peFormError'),
             cancel: $('peCancel'),
+            save: $('peSave'),
             finish: $('peFinish')
         };
 
@@ -755,7 +753,7 @@
         }
 
         function renderMaterials() {
-            const rows = state.materials; 
+            const rows = state.materials;
             // 2. Cek material
             renderCheckTable();
 
@@ -863,6 +861,7 @@
 
         function setActionsDisabled(disabled) {
 
+            els.save.disabled = disabled;
             els.finish.disabled = disabled;
         }
 
@@ -940,6 +939,7 @@
 
             document.body.style.overflow = 'hidden';
 
+            els.save.textContent = 'Simpan Progres';
             els.finish.textContent = 'Selesaikan Produksi';
 
             loadMaterials();
@@ -1078,8 +1078,8 @@
         // SIMPAN
         // ==========================================
 
-        // mode: 'progress' -> status IN_PROCESS (tombol di tabel jadi "Lanjutkan Produksi")
-        //       'finish'   -> status COMPLETED   (tombol di tabel jadi "Lihat Detail")
+        // mode: 'progress' -> status tetap IN_PROCESS (tombol di tabel jadi "Lanjutkan Progres")
+        //       'finish'   -> status COMPLETED        (tombol di tabel jadi "Lihat Detail")
         async function handleSubmit(mode) {
 
             if (state.saving) return;
@@ -1108,6 +1108,17 @@
                         state.item.qty_requested + ' pcs. Tetap selesaikan produksi?')) {
                     return;
                 }
+
+            } else if (result.qty <= 0) {
+
+                // Setiap Simpan Progres menjadi satu sesi produksi (production_logs),
+                // jadi hasil sesi minimal 1 pcs.
+                els.qtyGroup.classList.add('invalid');
+                els.qtyError.textContent = 'Isi hasil produksi minimal 1 pcs untuk menyimpan progres.';
+                els.qtyError.hidden = false;
+                els.qty.focus();
+
+                return;
             }
 
             const payload = {
@@ -1136,8 +1147,14 @@
                 setActionsDisabled(false);
                 button.textContent = idleLabel;
 
-                els.formError.textContent = 'Data gagal disimpan. Periksa koneksi lalu coba lagi.';
+                // Input tidak dihapus agar user tidak perlu mengisi ulang
+                els.formError.textContent = (error && !(error instanceof TypeError) && error.message) ?
+                    error.message :
+                    'Data gagal disimpan. Periksa koneksi lalu coba lagi.';
                 els.formError.hidden = false;
+                els.formError.scrollIntoView({
+                    block: 'nearest'
+                });
 
                 return;
             }
@@ -1235,6 +1252,9 @@
             close(false);
         });
         els.retry.addEventListener('click', loadMaterials);
+        els.save.addEventListener('click', function() {
+            handleSubmit('progress');
+        });
         els.finish.addEventListener('click', function() {
             handleSubmit('finish');
         });
