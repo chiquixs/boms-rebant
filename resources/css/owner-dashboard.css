@@ -483,7 +483,6 @@
     stroke: #779968;
     stroke-linecap: round;
     stroke-dasharray: 251.2;
-    stroke-dashoffset: 82.9;
 }
 
 .owner-production-chart-label {
@@ -765,4 +764,54 @@
     .owner-production-status {
         width: 100%;
     }
+}
+
+ .owner-chart {
+    position: relative;
+}
+
+.owner-chart-tooltip {
+    position: absolute;
+    transform: translateX(-50%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .12s ease;
+    background: #fff;
+    border: 1px solid #E5E7E0;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .08);
+    padding: 8px 10px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 5;
+}
+
+.owner-chart-tooltip.show {
+    opacity: 1;
+}
+
+.owner-chart-tooltip .tt-date {
+    font-weight: 600;
+    color: #2B2D28;
+    margin-bottom: 4px;
+}
+
+.owner-chart-tooltip .tt-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #6B6E66;
+}
+
+.owner-chart-tooltip .tt-row strong {
+    margin-left: auto;
+    padding-left: 14px;
+    color: #2B2D28;
+}
+
+.owner-chart-tooltip .tt-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
 }

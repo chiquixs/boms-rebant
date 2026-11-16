@@ -18,6 +18,7 @@ use App\Http\Controllers\Produksi\StockPlanningController;
 use App\Http\Controllers\Produksi\ProductionDashboardController;
 use App\Http\Controllers\Produksi\ProductionHistoryController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Owner\OwnerDashboardController;
 
 
 /*
@@ -272,7 +273,7 @@ Route::middleware('auth')->group(function () {
 
             Route::post('/queue/{productionRequest:request_no}/start', [ProductionQueueController::class, 'start'])
                 ->name('queue.start');
-            
+
             Route::get('/history', [ProductionHistoryController::class, 'page'])->name('history.index');
             Route::get('/history/data', [ProductionHistoryController::class, 'data'])->name('history.data');
             Route::get('/history/{log}/materials', [ProductionHistoryController::class, 'materials'])->name('history.materials');
@@ -292,9 +293,8 @@ Route::middleware('auth')->group(function () {
         ->name('owner.')
         ->group(function () {
 
-            Route::get('/dashboard', function () {
-                return view('owner.dashboard.index');
-            })->name('dashboard');
+            Route::get('/dashboard', [OwnerDashboardController::class, 'index'])->name('dashboard');
+            Route::get('/dashboard/data', [OwnerDashboardController::class, 'data'])->name('dashboard.data');
 
             Route::get('/sales-report', function () {
                 return view('owner.sales-report.index');
