@@ -741,3 +741,53 @@
     }
 }
 
+@media print {
+
+    /* Paksa warna latar ikut tercetak */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Sembunyikan elemen yang tidak perlu di kertas */
+    .sidebar,
+    .owner-sidebar,
+    .topbar,
+    .owner-topbar,
+    .report-toolbar,
+    .pagination-controls {
+        display: none !important;
+    }
+
+    .admin-main,
+    .owner-main,
+    .admin-content,
+    .owner-content {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Jaga grafik dan kartu tidak terpotong antar halaman */
+    .report-panel,
+    .report-summary-card {
+        break-inside: avoid;
+    }
+
+    /* Grafik harus punya tinggi tetap agar batang terlihat */
+    .sales-chart {
+        min-height: 260px;
+    }
+}
+
+.transaction-panel .table-responsive {
+    max-height: 480px;
+    overflow-y: auto;
+}
+
+@media print {
+    .transaction-panel .table-responsive {
+        max-height: none !important;
+        overflow: visible !important;
+    }
+}

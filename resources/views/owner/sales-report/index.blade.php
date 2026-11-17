@@ -1,4 +1,3 @@
-
 @extends('layouts.owner')
 
 @section('title', 'Laporan Penjualan - REBANT BOMS')
@@ -24,12 +23,12 @@
         <div class="report-filter">
             <div class="filter-field">
                 <label for="startDate">Dari tanggal</label>
-                <input type="date" id="startDate" value="2026-11-01">
+                <input type="date" id="startDate" value="{{ now()->startOfMonth()->toDateString() }}">
             </div>
 
             <div class="filter-field">
                 <label for="endDate">Sampai tanggal</label>
-                <input type="date" id="endDate" value="2026-11-13">
+                <input type="date" id="endDate" value="{{ now()->toDateString() }}">
             </div>
 
             <button type="button" class="filter-button" id="applyFilter">
@@ -53,7 +52,7 @@
     </section>
 
     <div class="report-period-label" id="periodLabel">
-        Periode 1 November 2026 – 13 November 2026
+        Memuat periode...
     </div>
 
     <!-- SUMMARY CARDS -->
@@ -193,14 +192,12 @@
             <span class="table-footer-note">Data berdasarkan transaksi completed</span>
         </div>
     </section>
-
-    <div class="report-disclaimer">
-        <span>ⓘ</span>
-        Data pada halaman ini masih menggunakan dummy data untuk kebutuhan pengembangan frontend.
-    </div>
 </div>
 @endsection
 
 @push('scripts')
+    <script>
+        window.salesReportUrl = "{{ route('owner.sales-report.data') }}";
+    </script>
     @vite('resources/js/owner-sales-report.js')
 @endpush
