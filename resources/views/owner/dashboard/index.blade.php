@@ -16,14 +16,48 @@
             <p>Ringkasan performa bisnis REBANT dalam satu tampilan.</p>
         </div>
 
-        <div class="owner-date-filter">
-            <svg width="15" height="15" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="1.8">
-                <rect x="3" y="5" width="18" height="16" rx="2" />
-                <path d="M16 3v4M8 3v4M3 10h18" />
-            </svg>
-            <span>18 Oktober 2026</span>
+        <div class="owner-date-filter" id="ownerDateFilterWrap">
+
+            <button type="button" id="ownerDateFilterBtn" class="odf-trigger">
+                <svg width="15" height="15" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="1.8">
+                    <rect x="3" y="5" width="18" height="16" rx="2" />
+                    <path d="M16 3v4M8 3v4M3 10h18" />
+                </svg>
+                <span>{{ \Carbon\Carbon::parse($filterStart)->translatedFormat('d M Y') }} – {{ \Carbon\Carbon::parse($filterEnd)->translatedFormat('d M Y') }}</span>
+            </button>
+
+            <div id="ownerDateFilterPopover" class="odf-popover" @if($dateError) data-open-on-load="1" @endif hidden>
+
+                <form method="GET" action="{{ route('owner.dashboard') }}">
+
+                    @if ($dateError)
+                    <div class="odf-error">{{ $dateError }}</div>
+                    @endif
+
+                    <label class="odf-field">
+                        Dari tanggal
+                        <input type="date" name="start" value="{{ $inputStart }}" class="odf-input">
+                    </label>
+
+                    <label class="odf-field">
+                        Sampai tanggal
+                        <input type="date" name="end" value="{{ $inputEnd }}" class="odf-input">
+                    </label>
+
+                    <button type="submit" class="odf-apply">Terapkan</button>
+
+                    <a href="{{ route('owner.dashboard') }}" class="odf-reset">Reset ke 30 hari terakhir</a>
+
+                </form>
+
+            </div>
+
         </div>
+
+        <style>
+
+        </style>
 
     </div>
 
@@ -133,22 +167,18 @@
             <div class="owner-card-header">
                 <div>
                     <h2>Tren Penjualan</h2>
-                    <p>Performa penjualan dalam 30 hari terakhir.</p>
+                    <p>Performa penjualan dari {{ \Carbon\Carbon::parse($filterStart)->translatedFormat('d M Y') }} sampai {{ \Carbon\Carbon::parse($filterEnd)->translatedFormat('d M Y') }}.</p>
                 </div>
             </div>
 
             <div class="owner-chart-content">
-                <div class="owner-chart-filter" id="ownerChartFilter">
-                    <button type="button" data-range="7D">7D</button>
-                    <button type="button" class="active" data-range="30D">30D</button>
-                    <button type="button" data-range="90D">90D</button>
-                </div>
-
                 <div class="owner-chart-legend" id="ownerChartLegend"></div>
             </div>
 
             <div class="owner-chart">
                 <svg id="ownerSalesChart" viewBox="0 0 650 245"
+                    role="img" aria-label="Grafik tren penjualan"
+                    data-start="{{ $filterStart }}" data-end="{{ $filterEnd }}">
                     role="img" aria-label="Grafik tren penjualan">
                     <defs id="ownerChartGradients"></defs>
                     <g id="ownerChartGrid"></g>
@@ -195,7 +225,7 @@
                     <div class="owner-product-sales">
                         <strong>{{ number_format($p['qty']) }} pcs</strong>
                         <div class="owner-product-progress">
-                            <span @style(['width: ' . min(100, $p['percentage'] ?? 0) . '%'])></span>
+                            <span @style(['width: ' . min(100, $p[' percentage'] ?? 0) . '%' ])></span>
                         </div>
                         <span>{{ $p['percentage'] }}%</span>
                     </div>
@@ -408,7 +438,6 @@
         const labelsG = document.getElementById('ownerChartLabels');
         const legendEl = document.getElementById('ownerChartLegend');
         const defsEl = document.getElementById('ownerChartGradients');
-        const filterEl = document.getElementById('ownerChartFilter');
         const container = svg.parentElement;
 
         const PAD_LEFT = 55,
@@ -663,9 +692,9 @@
         svg.addEventListener('pointerleave', hideHover);
 
         // ---------- LOAD DATA ----------
-        async function load(range) {
+        async function load(start, end) {
             try {
-                const res = await fetch('{{ route("owner.dashboard.data") }}?range=' + range);
+                const res = await fetch('{{ route("owner.dashboard.data") }}?start=' + start + '&end=' + end);
                 if (!res.ok) return;
                 const data = await res.json();
                 render(data);
@@ -674,20 +703,29 @@
             }
         }
 
-        filterEl.addEventListener('click', function(event) {
-            const btn = event.target.closest('button[data-range]');
-            if (!btn) return;
 
-            filterEl.querySelectorAll('button').forEach(function(b) {
-                b.classList.remove('active');
+        load(svg.dataset.start, svg.dataset.end);
+        // ---------- DATE FILTER POPOVER ----------
+        const dateBtn = document.getElementById('ownerDateFilterBtn');
+        const datePopover = document.getElementById('ownerDateFilterPopover');
+
+        if (dateBtn && datePopover) {
+
+            dateBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                datePopover.hidden = !datePopover.hidden;
             });
-            btn.classList.add('active');
 
-            load(btn.dataset.range);
-        });
+            document.addEventListener('click', function(e) {
+                if (!datePopover.hidden && !datePopover.contains(e.target) && e.target !== dateBtn) {
+                    datePopover.hidden = true;
+                }
+            });
 
-        load('30D');
-
+            datePopover.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
     })();
 </script>
 @endpush

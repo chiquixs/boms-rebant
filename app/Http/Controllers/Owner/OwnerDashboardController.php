@@ -13,14 +13,35 @@ use Illuminate\Http\Request;
 
 class OwnerDashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $days = 30;
-        $end = now()->toDateString();
-        $start = now()->subDays($days - 1)->toDateString();
+        $filterStart = $request->query('start');
+        $filterEnd   = $request->query('end');
+        $dateError   = null;
 
-        $prevEnd = now()->subDays($days)->toDateString();
-        $prevStart = now()->subDays(2 * $days - 1)->toDateString();
+        if ($filterStart && $filterEnd) {
+            if ($filterStart > $filterEnd) {
+                $dateError = 'Tanggal akhir harus setelah tanggal awal.';
+                $start = now()->subDays(29)->toDateString();
+                $end   = now()->toDateString();
+            } else {
+                $start = $filterStart;
+                $end   = $filterEnd;
+            }
+        } else {
+            $start = now()->subDays(29)->toDateString();
+            $end   = now()->toDateString();
+        }
+
+        // Nilai yang ditampilkan kembali di input, supaya user tidak perlu
+        // ngetik ulang walau inputnya invalid (start > end).
+        $inputStart = $filterStart ?: $start;
+        $inputEnd   = $filterEnd ?: $end;
+
+        $days = (int) (\Carbon\Carbon::parse($start)->diffInDays(\Carbon\Carbon::parse($end)) + 1);
+
+        $prevEnd   = \Carbon\Carbon::parse($start)->subDay()->toDateString();
+        $prevStart = \Carbon\Carbon::parse($prevEnd)->subDays($days - 1)->toDateString();
 
         $totalOrders = Order::whereBetween('order_date', [$start, $end])->count();
         $prevOrders  = Order::whereBetween('order_date', [$prevStart, $prevEnd])->count();
@@ -28,8 +49,8 @@ class OwnerDashboardController extends Controller
         $totalSales = (float) Order::whereBetween('order_date', [$start, $end])->sum('total_amount');
         $prevSales  = (float) Order::whereBetween('order_date', [$prevStart, $prevEnd])->sum('total_amount');
 
-        $totalQty = (int) OrderItem::whereHas('order', fn ($q) => $q->whereBetween('order_date', [$start, $end]))->sum('qty');
-        $prevQty  = (int) OrderItem::whereHas('order', fn ($q) => $q->whereBetween('order_date', [$prevStart, $prevEnd]))->sum('qty');
+        $totalQty = (int) OrderItem::whereHas('order', fn($q) => $q->whereBetween('order_date', [$start, $end]))->sum('qty');
+        $prevQty  = (int) OrderItem::whereHas('order', fn($q) => $q->whereBetween('order_date', [$prevStart, $prevEnd]))->sum('qty');
 
         $lowStockCount = Product::where('is_active', true)
             ->whereNotNull('min_stock')
@@ -49,7 +70,7 @@ class OwnerDashboardController extends Controller
             ->whereDate('completed_at', now()->toDateString())
             ->count();
 
-        $active         = ProductionRequest::whereIn('status', [ProductionRequest::STATUS_WAITING, ProductionRequest::STATUS_IN_PROCESS])->get();
+        $active          = ProductionRequest::whereIn('status', [ProductionRequest::STATUS_WAITING, ProductionRequest::STATUS_IN_PROCESS])->get();
         $activeRequested = $active->sum('qty_requested');
         $activeProduced  = $active->sum('qty_produced');
         $productionProgress = $activeRequested > 0 ? round($activeProduced / $activeRequested * 100) : 0;
@@ -61,7 +82,7 @@ class OwnerDashboardController extends Controller
         $topQtyTotal = $totalQty ?: 1;
 
         $topProducts = OrderItem::selectRaw('product_id, SUM(qty) as qty')
-            ->whereHas('order', fn ($q) => $q->whereBetween('order_date', [$start, $end]))
+            ->whereHas('order', fn($q) => $q->whereBetween('order_date', [$start, $end]))
             ->groupBy('product_id')
             ->orderByDesc('qty')
             ->limit(3)
@@ -77,6 +98,12 @@ class OwnerDashboardController extends Controller
             });
 
         return view('owner.dashboard.index', [
+            'filterStart' => $start,
+            'filterEnd'   => $end,
+            'inputStart'  => $inputStart,
+            'inputEnd'    => $inputEnd,
+            'dateError'   => $dateError,
+
             'totalOrders'   => $totalOrders,
             'orderGrowth'   => $this->growth($totalOrders, $prevOrders),
             'totalSales'    => $totalSales,
@@ -98,23 +125,19 @@ class OwnerDashboardController extends Controller
             'topProducts' => $topProducts,
         ]);
     }
-
     public function data(Request $request)
     {
-        $range = $request->query('range', '30D');
-        $days  = match ($range) {
-            '7D'  => 7,
-            '90D' => 90,
-            default => 30,
-        };
+        $start = $request->query('start') ?: now()->subDays(29)->toDateString();
+        $end   = $request->query('end') ?: now()->toDateString();
 
-        $end   = now()->endOfDay();
-        $start = now()->subDays($days - 1)->startOfDay();
+        if ($start > $end) {
+            [$start, $end] = [$end, $start];
+        }
 
         $platforms = Platform::orderBy('name')->get();
 
         $rows = Order::selectRaw('platform_id, order_date, SUM(total_amount) as total')
-            ->whereBetween('order_date', [$start->toDateString(), $end->toDateString()])
+            ->whereBetween('order_date', [$start, $end])
             ->groupBy('platform_id', 'order_date')
             ->get();
 
@@ -123,7 +146,7 @@ class OwnerDashboardController extends Controller
         foreach ($platforms as $platform) {
 
             $byDate = [];
-            for ($d = $start->copy(); $d->lte($end); $d->addDay()) {
+            for ($d = \Carbon\Carbon::parse($start); $d->lte(\Carbon\Carbon::parse($end)); $d->addDay()) {
                 $byDate[$d->toDateString()] = 0;
             }
 
