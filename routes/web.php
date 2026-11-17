@@ -19,6 +19,7 @@ use App\Http\Controllers\Produksi\ProductionDashboardController;
 use App\Http\Controllers\Produksi\ProductionHistoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Owner\OwnerDashboardController;
+use App\Http\Controllers\Owner\SalesReportController;
 
 
 /*
@@ -311,5 +312,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/master-data', function () {
                 return view('owner.master-data.index');
             })->name('master-data');
+
+            Route::get('/sales-report', [SalesReportController::class, 'page'])->name('sales-report');
+            Route::get('/sales-report/data', [SalesReportController::class, 'data'])->name('sales-report.data');
         });
 });
