@@ -18,7 +18,7 @@
         </div>
         <div class="page-date">
             <span>Last updated</span>
-            <strong>13 November 2026</strong>
+            <strong id="lastUpdatedDate">{{ $lastUpdated }}</strong>
         </div>
     </div>
 
@@ -218,6 +218,7 @@
 
         <form id="userForm" novalidate>
             <input type="hidden" id="editingUserId">
+            <small class="form-error" id="formGeneralError" hidden></small>
 
             <div class="form-group">
                 <label for="userNameInput">Nama Lengkap <span>*</span></label>
@@ -234,10 +235,10 @@
             </div>
 
             <div class="form-group" id="passwordGroup">
-                <label for="userPasswordInput">Password <span>*</span></label>
+                <label for="userPasswordInput" id="passwordLabel">Password <span>*</span></label>
                 <input type="password" id="userPasswordInput"
                     placeholder="Masukkan password" autocomplete="new-password">
-                <small class="form-hint">Minimal 8 karakter. Hanya untuk simulasi frontend.</small>
+                <small class="form-hint" id="passwordHint">Minimal 8 karakter.</small>
                 <small class="form-error" id="passwordError"></small>
             </div>
 
@@ -258,6 +259,7 @@
                     <option value="Aktif">Aktif</option>
                     <option value="Nonaktif">Nonaktif</option>
                 </select>
+                <small class="form-error" id="statusError"></small>
             </div>
 
             <div class="modal-form-actions">
@@ -291,5 +293,13 @@
 @endsection
 
 @push('scripts')
+    <script>
+        window.userManagementConfig = {
+            dataUrl: "{{ route('owner.user-management.data') }}",
+            storeUrl: "{{ route('owner.user-management.store') }}",
+            updateUrlTemplate: "{{ route('owner.user-management.update', ['user' => '__ID__']) }}",
+            deleteUrlTemplate: "{{ route('owner.user-management.destroy', ['user' => '__ID__']) }}"
+        };
+    </script>
     @vite('resources/js/owner-user-management.js')
 @endpush

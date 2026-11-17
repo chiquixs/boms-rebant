@@ -18,7 +18,7 @@ class ActivityLog extends Model
     protected function casts(): array
     {
         return [
-            'metadata'   => 'array',
+            'metadata' => 'array',
             'created_at' => 'datetime',
         ];
     }
@@ -37,36 +37,37 @@ class ActivityLog extends Model
         array $metadata = []
     ): self {
         return static::create([
-            'user_id'     => Auth::id(),
-            'action'      => $action,
+            'user_id' => Auth::id(),
+            'action' => $action,
             'entity_type' => $entityType,
-            'entity_id'   => $entityId,
+            'entity_id' => $entityId,
             'description' => $description,
-            'metadata'    => $metadata ?: null,
-            'created_at'  => now(),
+            'metadata' => $metadata ?: null,
+            'created_at' => now(),
         ]);
     }
 
     public const MODULES = [
-        'order'       => 'Order',
-        'product'     => 'Produk',
-        'category'    => 'Kategori',
-        'inventory'   => 'Inventory',
-        'material'    => 'Bahan Mentah',
+        'order' => 'Order',
+        'product' => 'Produk',
+        'category' => 'Kategori',
+        'inventory' => 'Inventory',
+        'material' => 'Bahan Mentah',
         'procurement' => 'Procurement',
-        'supplier'    => 'Supplier',
-        'production'  => 'Produksi',
+        'supplier' => 'Supplier',
+        'production' => 'Produksi',
+        'user' => 'Pengguna',
     ];
 
     public const ACTIONS = [
-        'create'   => 'Menambah',
-        'update'   => 'Mengubah',
-        'delete'   => 'Menghapus',
+        'create' => 'Menambah',
+        'update' => 'Mengubah',
+        'delete' => 'Menghapus',
         'complete' => 'Menyelesaikan',
-        'send'     => 'Mengirim',
-        'receive'  => 'Menerima',
-        'adjust'   => 'Menyesuaikan',
-        'process'  => 'Memproses',
+        'send' => 'Mengirim',
+        'receive' => 'Menerima',
+        'adjust' => 'Menyesuaikan',
+        'process' => 'Memproses',
     ];
 
     public function getModuleLabelAttribute(): string
@@ -82,13 +83,13 @@ class ActivityLog extends Model
 
         $verb = self::ACTIONS[$this->action] ?? ucfirst($this->action);
 
-        return $verb . ' ' . $this->module_label;
+        return $verb.' '.$this->module_label;
     }
 
     public function getDetailTitleAttribute(): string
     {
         return $this->metadata['title']
-            ?? strtoupper($this->entity_type) . ($this->entity_id ? ' #' . $this->entity_id : '');
+            ?? strtoupper($this->entity_type).($this->entity_id ? ' #'.$this->entity_id : '');
     }
 
     public function getDetailSubtitleAttribute(): string
