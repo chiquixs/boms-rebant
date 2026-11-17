@@ -1,25 +1,13 @@
-
 /* =========================================
-   USER MANAGEMENT - DUMMY DATA
+   USER MANAGEMENT - STATE & CONFIG
 ========================================= */
 
-let users = [
-    { id: 'USR-001', name: 'Alyfa Zahra', email: 'owner@rebant.com', role: 'Owner', joined: '2026-01-10', status: 'Aktif' },
-    { id: 'USR-002', name: 'Andi Pratama', email: 'andi@rebant.com', role: 'Admin', joined: '2026-01-12', status: 'Aktif' },
-    { id: 'USR-003', name: 'Nadia Putri', email: 'nadia@rebant.com', role: 'Production', joined: '2026-01-15', status: 'Aktif' },
-    { id: 'USR-004', name: 'Rizky Ramadhan', email: 'rizky@rebant.com', role: 'Production', joined: '2026-02-01', status: 'Aktif' },
-    { id: 'USR-005', name: 'Sinta Maharani', email: 'sinta@rebant.com', role: 'Admin', joined: '2026-02-08', status: 'Aktif' },
-    { id: 'USR-006', name: 'Dimas Saputra', email: 'dimas@rebant.com', role: 'Production', joined: '2026-03-11', status: 'Nonaktif' },
-    { id: 'USR-007', name: 'Putri Amelia', email: 'putri@rebant.com', role: 'Production', joined: '2026-03-15', status: 'Aktif' },
-    { id: 'USR-008', name: 'Fajar Nugraha', email: 'fajar@rebant.com', role: 'Admin', joined: '2026-04-02', status: 'Aktif' },
-    { id: 'USR-009', name: 'Rani Oktaviani', email: 'rani@rebant.com', role: 'Production', joined: '2026-04-12', status: 'Aktif' },
-    { id: 'USR-010', name: 'Bima Aditya', email: 'bima@rebant.com', role: 'Production', joined: '2026-05-03', status: 'Nonaktif' },
-    { id: 'USR-011', name: 'Dewi Lestari', email: 'dewi@rebant.com', role: 'Admin', joined: '2026-05-17', status: 'Aktif' },
-    { id: 'USR-012', name: 'Yoga Firmansyah', email: 'yoga@rebant.com', role: 'Production', joined: '2026-06-01', status: 'Aktif' },
-    { id: 'USR-013', name: 'Naufal Akbar', email: 'naufal@rebant.com', role: 'Production', joined: '2026-06-19', status: 'Aktif' },
-    { id: 'USR-014', name: 'Citra Wulandari', email: 'citra@rebant.com', role: 'Admin', joined: '2026-07-04', status: 'Aktif' },
-    { id: 'USR-015', name: 'Galih Prakoso', email: 'galih@rebant.com', role: 'Production', joined: '2026-07-20', status: 'Aktif' }
-];
+const config = window.userManagementConfig || {};
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+let users = [];
+let summary = { total: 0, owner: 0, admin: 0, production: 0 };
+let currentUserId = null;
 
 /* =========================================
    DOM ELEMENTS
@@ -31,29 +19,35 @@ const roleFilter = document.getElementById('roleFilter');
 const statusFilter = document.getElementById('statusFilter');
 const pagination = document.getElementById('userPagination');
 const userCount = document.getElementById('userCount');
+const lastUpdatedDate = document.getElementById('lastUpdatedDate');
 
 const formModal = document.getElementById('userFormModal');
 const detailModal = document.getElementById('userDetailModal');
 
 const userForm = document.getElementById('userForm');
 const editingUserId = document.getElementById('editingUserId');
+const saveUserButton = document.getElementById('saveUserButton');
 
 const nameInput = document.getElementById('userNameInput');
 const emailInput = document.getElementById('userEmailInput');
 const passwordInput = document.getElementById('userPasswordInput');
+const passwordLabel = document.getElementById('passwordLabel');
+const passwordHint = document.getElementById('passwordHint');
 const roleInput = document.getElementById('userRoleInput');
 const statusInput = document.getElementById('userStatusInput');
+const formGeneralError = document.getElementById('formGeneralError');
 
-let filteredUsers = [...users];
+let filteredUsers = [];
 let currentPage = 1;
 const rowsPerPage = 10;
+let isSubmitting = false;
 
 /* =========================================
    HELPER FUNCTIONS
 ========================================= */
 
 function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, char => ({
+    return String(value ?? '').replace(/[&<>"']/g, char => ({
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
@@ -63,7 +57,9 @@ function escapeHTML(value) {
 }
 
 function formatDate(date) {
-    return new Date(date + 'T00:00:00').toLocaleDateString('id-ID', {
+    if (!date) return '-';
+
+    return new Date(`${date}T00:00:00`).toLocaleDateString('id-ID', {
         day: '2-digit',
         month: 'long',
         year: 'numeric'
@@ -71,25 +67,27 @@ function formatDate(date) {
 }
 
 function getInitials(name) {
-    return name.split(' ')
+    return String(name ?? '')
+        .split(' ')
         .filter(Boolean)
         .map(part => part[0])
         .slice(0, 2)
         .join('')
-        .toUpperCase();
+        .toUpperCase() || '?';
 }
 
 function getRoleLabel(role) {
     return role === 'Owner' ? 'Business Owner' : role;
 }
 
-function generateUserId() {
-    const maxId = users.reduce((max, user) => {
-        const number = parseInt(user.id.replace('USR-', ''), 10);
-        return Math.max(max, number);
-    }, 0);
+function buildUrl(template, userId) {
+    return String(template || '').replace('__ID__', encodeURIComponent(userId));
+}
 
-    return `USR-${String(maxId + 1).padStart(3, '0')}`;
+function updateLastUpdated(label) {
+    if (lastUpdatedDate && label) {
+        lastUpdatedDate.textContent = label;
+    }
 }
 
 /* =========================================
@@ -97,21 +95,24 @@ function generateUserId() {
 ========================================= */
 
 function renderSummary() {
-    document.getElementById('totalUsers').textContent = users.length;
-
-    document.getElementById('ownerUsers').textContent =
-        users.filter(user => user.role === 'Owner').length;
-
-    document.getElementById('adminUsers').textContent =
-        users.filter(user => user.role === 'Admin').length;
-
-    document.getElementById('productionUsers').textContent =
-        users.filter(user => user.role === 'Production').length;
+    document.getElementById('totalUsers').textContent = summary.total ?? users.length;
+    document.getElementById('ownerUsers').textContent = summary.owner ?? 0;
+    document.getElementById('adminUsers').textContent = summary.admin ?? 0;
+    document.getElementById('productionUsers').textContent = summary.production ?? 0;
 }
 
 /* =========================================
    TABLE RENDER
 ========================================= */
+
+function renderTableMessage(message) {
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="5" class="empty-row">${escapeHTML(message)}</td>
+        </tr>
+    `;
+    pagination.innerHTML = '';
+}
 
 function renderTable() {
     const totalPages = Math.ceil(filteredUsers.length / rowsPerPage);
@@ -146,12 +147,12 @@ function renderTable() {
                 </td>
 
                 <td>
-                    <span class="role-badge role-${user.role.toLowerCase()}">
+                    <span class="role-badge role-${escapeHTML(user.role.toLowerCase())}">
                         ${escapeHTML(getRoleLabel(user.role))}
                     </span>
                 </td>
 
-                <td>${formatDate(user.joined)}</td>
+                <td>${escapeHTML(formatDate(user.joined))}</td>
 
                 <td>
                     <span class="status-badge ${user.status === 'Aktif' ? 'status-active' : 'status-inactive'}">
@@ -234,7 +235,7 @@ function renderPagination(totalPages) {
    SEARCH & FILTER
 ========================================= */
 
-function applyFilters() {
+function applyFilters(resetPage = true) {
     const keyword = searchInput.value.toLowerCase().trim();
     const selectedRole = roleFilter.value;
     const selectedStatus = statusFilter.value;
@@ -243,7 +244,8 @@ function applyFilters() {
         const matchesSearch =
             user.name.toLowerCase().includes(keyword) ||
             user.email.toLowerCase().includes(keyword) ||
-            user.id.toLowerCase().includes(keyword);
+            String(user.code || '').toLowerCase().includes(keyword) ||
+            String(user.id).toLowerCase().includes(keyword);
 
         const matchesRole =
             selectedRole === 'all' || user.role === selectedRole;
@@ -254,9 +256,48 @@ function applyFilters() {
         return matchesSearch && matchesRole && matchesStatus;
     });
 
-    currentPage = 1;
+    const totalPages = Math.max(1, Math.ceil(filteredUsers.length / rowsPerPage));
+    currentPage = resetPage ? 1 : Math.min(currentPage, totalPages);
+
     renderSummary();
     renderTable();
+}
+
+/* =========================================
+   FETCH DATA FROM BACKEND
+========================================= */
+
+async function loadUsers(resetPage = true) {
+    if (!config.dataUrl) {
+        renderTableMessage('Konfigurasi endpoint belum tersedia.');
+        return;
+    }
+
+    renderTableMessage('Memuat data pengguna...');
+
+    try {
+        const response = await fetch(config.dataUrl, {
+            headers: {
+                Accept: 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        users = Array.isArray(data.users) ? data.users : [];
+        summary = data.summary || { total: users.length, owner: 0, admin: 0, production: 0 };
+        currentUserId = data.current_user_id ?? null;
+
+        updateLastUpdated(data.last_updated);
+        applyFilters(resetPage);
+    } catch (error) {
+        renderTableMessage('Gagal memuat data pengguna. Silakan muat ulang halaman.');
+        userCount.textContent = 'Menampilkan 0 pengguna';
+    }
 }
 
 /* =========================================
@@ -268,14 +309,24 @@ function clearErrors() {
         error.textContent = '';
     });
 
+    if (formGeneralError) {
+        formGeneralError.hidden = true;
+    }
+
     document.querySelectorAll('#userForm .invalid').forEach(input => {
         input.classList.remove('invalid');
     });
 }
 
 function showError(input, errorId, message) {
-    input.classList.add('invalid');
-    document.getElementById(errorId).textContent = message;
+    if (input) {
+        input.classList.add('invalid');
+    }
+
+    const errorElement = document.getElementById(errorId);
+    if (errorElement) {
+        errorElement.textContent = message;
+    }
 }
 
 function validateForm() {
@@ -285,6 +336,7 @@ function validateForm() {
     const email = emailInput.value.trim().toLowerCase();
     const password = passwordInput.value;
     const role = roleInput.value;
+    const isEditing = Boolean(editingUserId.value);
 
     let valid = true;
 
@@ -305,7 +357,7 @@ function validateForm() {
     } else {
         const duplicateEmail = users.some(user =>
             user.email.toLowerCase() === email &&
-            user.id !== editingUserId.value
+            String(user.id) !== String(editingUserId.value)
         );
 
         if (duplicateEmail) {
@@ -314,12 +366,10 @@ function validateForm() {
         }
     }
 
-    const isEditing = Boolean(editingUserId.value);
-
     if (!isEditing && !password) {
         showError(passwordInput, 'passwordError', 'Password wajib diisi.');
         valid = false;
-    } else if (!isEditing && password.length < 8) {
+    } else if (password && password.length < 8) {
         showError(passwordInput, 'passwordError', 'Password minimal 8 karakter.');
         valid = false;
     }
@@ -332,6 +382,31 @@ function validateForm() {
     return valid;
 }
 
+function applyServerValidationErrors(data) {
+    const errors = data?.errors || {};
+    const fieldMap = {
+        name: [nameInput, 'nameError'],
+        email: [emailInput, 'emailError'],
+        password: [passwordInput, 'passwordError'],
+        role: [roleInput, 'roleError'],
+        status: [statusInput, 'statusError']
+    };
+
+    let hasMappedFieldError = false;
+
+    Object.entries(fieldMap).forEach(([field, [input, errorId]]) => {
+        if (Array.isArray(errors[field]) && errors[field].length > 0) {
+            showError(input, errorId, errors[field][0]);
+            hasMappedFieldError = true;
+        }
+    });
+
+    if (!hasMappedFieldError && data?.message && formGeneralError) {
+        formGeneralError.textContent = data.message;
+        formGeneralError.hidden = false;
+    }
+}
+
 /* =========================================
    OPEN & CLOSE FORM MODAL
 ========================================= */
@@ -339,7 +414,6 @@ function validateForm() {
 function openAddModal() {
     userForm.reset();
     editingUserId.value = '';
-
     clearErrors();
 
     document.getElementById('userFormTitle').textContent = 'Tambah Pengguna';
@@ -347,21 +421,23 @@ function openAddModal() {
         'Tambahkan akun pengguna baru ke sistem.';
 
     document.getElementById('passwordGroup').style.display = 'flex';
+    passwordLabel.innerHTML = 'Password <span>*</span>';
+    passwordInput.placeholder = 'Masukkan password';
+    passwordHint.textContent = 'Minimal 8 karakter.';
     passwordInput.required = true;
 
-    document.getElementById('saveUserButton').textContent = 'Simpan Pengguna';
-
+    saveUserButton.textContent = 'Simpan Pengguna';
     formModal.classList.add('show');
 }
 
 function openEditModal(userId) {
-    const user = users.find(item => item.id === userId);
+    const user = users.find(item => Number(item.id) === Number(userId));
     if (!user) return;
 
     userForm.reset();
     clearErrors();
 
-    editingUserId.value = user.id;
+    editingUserId.value = String(user.id);
 
     nameInput.value = user.name;
     emailInput.value = user.email;
@@ -371,14 +447,16 @@ function openEditModal(userId) {
     passwordInput.value = '';
     passwordInput.required = false;
 
-    document.getElementById('passwordGroup').style.display = 'none';
+    document.getElementById('passwordGroup').style.display = 'flex';
+    passwordLabel.textContent = 'Password Baru';
+    passwordInput.placeholder = 'Kosongkan jika tidak ingin mengubah password';
+    passwordHint.textContent = 'Opsional. Minimal 8 karakter jika diisi.';
 
     document.getElementById('userFormTitle').textContent = 'Edit Pengguna';
     document.getElementById('userFormDescription').textContent =
         'Perbarui informasi akun pengguna.';
 
-    document.getElementById('saveUserButton').textContent = 'Simpan Perubahan';
-
+    saveUserButton.textContent = 'Simpan Perubahan';
     formModal.classList.add('show');
 }
 
@@ -397,46 +475,85 @@ function closeDetailModal() {
    CREATE & UPDATE USER
 ========================================= */
 
-userForm.addEventListener('submit', event => {
+userForm.addEventListener('submit', async event => {
     event.preventDefault();
 
-    if (!validateForm()) return;
+    if (isSubmitting || !validateForm()) return;
 
-    const name = nameInput.value.trim();
-    const email = emailInput.value.trim().toLowerCase();
-    const role = roleInput.value;
-    const status = statusInput.value;
+    const isEditing = Boolean(editingUserId.value);
+    const targetUrl = isEditing
+        ? buildUrl(config.updateUrlTemplate, editingUserId.value)
+        : config.storeUrl;
 
-    if (editingUserId.value) {
-        // UPDATE USER
-        const user = users.find(item => item.id === editingUserId.value);
+    const payload = {
+        name: nameInput.value.trim(),
+        email: emailInput.value.trim().toLowerCase(),
+        role: roleInput.value,
+        status: statusInput.value
+    };
 
-        if (!user) return;
-
-        user.name = name;
-        user.email = email;
-        user.role = role;
-        user.status = status;
-
-        alert('Data pengguna berhasil diperbarui.');
-    } else {
-        // CREATE USER
-        const newUser = {
-            id: generateUserId(),
-            name,
-            email,
-            role,
-            status,
-            joined: new Date().toISOString().slice(0, 10)
-        };
-
-        users.unshift(newUser);
-
-        alert('Pengguna baru berhasil ditambahkan.');
+    if (!isEditing || passwordInput.value !== '') {
+        payload.password = passwordInput.value;
     }
 
-    closeFormModal();
-    applyFilters();
+    isSubmitting = true;
+    const defaultButtonLabel = saveUserButton.textContent;
+    saveUserButton.disabled = true;
+    saveUserButton.textContent = 'Menyimpan...';
+
+    try {
+        const response = await fetch(targetUrl, {
+            method: isEditing ? 'PUT' : 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (response.status === 419 || response.status === 401) {
+            alert('Sesi Anda telah berakhir. Silakan muat ulang halaman.');
+            return;
+        }
+
+        if (response.status === 422) {
+            applyServerValidationErrors(data);
+            return;
+        }
+
+        if (!response.ok) {
+            alert(data.message || 'Gagal menyimpan data pengguna.');
+            return;
+        }
+
+        if (data.user) {
+            if (isEditing) {
+                users = users.map(item =>
+                    Number(item.id) === Number(data.user.id) ? data.user : item
+                );
+            } else {
+                users.unshift(data.user);
+            }
+        }
+
+        if (data.summary) {
+            summary = data.summary;
+        }
+
+        updateLastUpdated(data.last_updated);
+        closeFormModal();
+        applyFilters(!isEditing);
+        alert(data.message || 'Data pengguna berhasil disimpan.');
+    } catch (error) {
+        alert('Terjadi kesalahan jaringan saat menyimpan data.');
+    } finally {
+        isSubmitting = false;
+        saveUserButton.disabled = false;
+        saveUserButton.textContent = defaultButtonLabel;
+    }
 });
 
 /* =========================================
@@ -444,7 +561,7 @@ userForm.addEventListener('submit', event => {
 ========================================= */
 
 function showUserDetail(userId) {
-    const user = users.find(item => item.id === userId);
+    const user = users.find(item => Number(item.id) === Number(userId));
     if (!user) return;
 
     const initials = getInitials(user.name);
@@ -460,7 +577,7 @@ function showUserDetail(userId) {
 
         <div class="modal-detail-row">
             <span>ID Pengguna</span>
-            <strong>${escapeHTML(user.id)}</strong>
+            <strong>${escapeHTML(user.code || user.id)}</strong>
         </div>
 
         <div class="modal-detail-row">
@@ -470,7 +587,7 @@ function showUserDetail(userId) {
 
         <div class="modal-detail-row">
             <span>Tanggal Bergabung</span>
-            <strong>${formatDate(user.joined)}</strong>
+            <strong>${escapeHTML(formatDate(user.joined))}</strong>
         </div>
 
         <div class="modal-detail-row">
@@ -490,11 +607,15 @@ function showUserDetail(userId) {
    DELETE USER
 ========================================= */
 
-function deleteUser(userId) {
-    const user = users.find(item => item.id === userId);
+async function deleteUser(userId) {
+    const user = users.find(item => Number(item.id) === Number(userId));
     if (!user) return;
 
-    // Mencegah penghapusan akun Owner terakhir.
+    if (currentUserId !== null && Number(user.id) === Number(currentUserId)) {
+        alert('Akun yang sedang Anda gunakan tidak dapat dihapus.');
+        return;
+    }
+
     const activeOwners = users.filter(item =>
         item.role === 'Owner' && item.status === 'Aktif'
     );
@@ -509,16 +630,44 @@ function deleteUser(userId) {
     }
 
     const confirmation = confirm(
-        `Apakah kamu yakin ingin menghapus akun ${user.name} (${user.id})?`
+        `Apakah kamu yakin ingin menghapus akun ${user.name} (${user.code || user.id})?`
     );
 
     if (!confirmation) return;
 
-    users = users.filter(item => item.id !== userId);
+    try {
+        const response = await fetch(buildUrl(config.deleteUrlTemplate, user.id), {
+            method: 'DELETE',
+            headers: {
+                Accept: 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            }
+        });
 
-    alert('Pengguna berhasil dihapus.');
+        const data = await response.json().catch(() => ({}));
 
-    applyFilters();
+        if (response.status === 419 || response.status === 401) {
+            alert('Sesi Anda telah berakhir. Silakan muat ulang halaman.');
+            return;
+        }
+
+        if (!response.ok) {
+            alert(data.message || 'Gagal menghapus pengguna.');
+            return;
+        }
+
+        users = users.filter(item => Number(item.id) !== Number(user.id));
+
+        if (data.summary) {
+            summary = data.summary;
+        }
+
+        updateLastUpdated(data.last_updated);
+        applyFilters(false);
+        alert(data.message || 'Pengguna berhasil dihapus.');
+    } catch (error) {
+        alert('Terjadi kesalahan jaringan saat menghapus pengguna.');
+    }
 }
 
 /* =========================================
@@ -541,7 +690,7 @@ function exportData(format) {
     ];
 
     const rows = filteredUsers.map(user => [
-        user.id,
+        user.code || user.id,
         user.name,
         user.email,
         getRoleLabel(user.role),
@@ -550,7 +699,7 @@ function exportData(format) {
     ]);
 
     const escapeCsv = value =>
-        `"${String(value).replace(/"/g, '""')}"`;
+        `"${String(value ?? '').replace(/"/g, '""')}"`;
 
     const content = [
         headers.map(escapeCsv).join(','),
@@ -579,35 +728,29 @@ function exportData(format) {
    EVENT LISTENERS
 ========================================= */
 
-// Add user
 document.getElementById('addUserButton')
     .addEventListener('click', openAddModal);
 
-// Close form modal
 document.querySelectorAll('[data-close-form]').forEach(button => {
     button.addEventListener('click', closeFormModal);
 });
 
-// Close detail modal
 document.querySelectorAll('[data-close-detail]').forEach(button => {
     button.addEventListener('click', closeDetailModal);
 });
 
-// Search and filters
-searchInput.addEventListener('input', applyFilters);
-roleFilter.addEventListener('change', applyFilters);
-statusFilter.addEventListener('change', applyFilters);
+searchInput.addEventListener('input', () => applyFilters(true));
+roleFilter.addEventListener('change', () => applyFilters(true));
+statusFilter.addEventListener('change', () => applyFilters(true));
 
-// Reset filters
 document.getElementById('resetUserFilter').addEventListener('click', () => {
     searchInput.value = '';
     roleFilter.value = 'all';
     statusFilter.value = 'all';
 
-    applyFilters();
+    applyFilters(true);
 });
 
-// Table actions
 tableBody.addEventListener('click', event => {
     const button = event.target.closest('[data-action]');
     if (!button) return;
@@ -628,7 +771,6 @@ tableBody.addEventListener('click', event => {
     }
 });
 
-// Pagination
 pagination.addEventListener('click', event => {
     const button = event.target.closest('[data-page]');
     if (!button || button.disabled) return;
@@ -637,14 +779,12 @@ pagination.addEventListener('click', event => {
     renderTable();
 });
 
-// Export
 document.getElementById('exportCsv')
     .addEventListener('click', () => exportData('csv'));
 
 document.getElementById('exportExcel')
     .addEventListener('click', () => exportData('xls'));
 
-// Escape key closes open modal
 document.addEventListener('keydown', event => {
     if (event.key === 'Escape') {
         closeFormModal();
@@ -653,8 +793,7 @@ document.addEventListener('keydown', event => {
 });
 
 /* =========================================
-   INITIAL RENDER
+   INITIAL LOAD
 ========================================= */
 
-renderSummary();
-applyFilters();
+loadUsers(true);

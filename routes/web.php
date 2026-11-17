@@ -1,26 +1,26 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Admin\OrderController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\BomController;
 use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\MaterialController;
-use App\Http\Controllers\Admin\InventoryController;
-use App\Http\Controllers\Admin\SupplierController;
-use App\Http\Controllers\Admin\ActivityLogController;
-use App\Http\Controllers\Admin\ProcurementController;
-use App\Http\Controllers\Admin\MaterialShortageController;
-use App\Http\Controllers\Produksi\ProductionQueueController;
-use App\Http\Controllers\Produksi\StockPlanningController;
-use App\Http\Controllers\Produksi\ProductionDashboardController;
-use App\Http\Controllers\Produksi\ProductionHistoryController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\MaterialController;
+use App\Http\Controllers\Admin\MaterialShortageController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\ProcurementController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SupplierController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Owner\OwnerDashboardController;
 use App\Http\Controllers\Owner\SalesReportController;
-
+use App\Http\Controllers\Owner\UserManagementController;
+use App\Http\Controllers\Produksi\ProductionDashboardController;
+use App\Http\Controllers\Produksi\ProductionHistoryController;
+use App\Http\Controllers\Produksi\ProductionQueueController;
+use App\Http\Controllers\Produksi\StockPlanningController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +32,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
 /*
 |--------------------------------------------------------------------------
 | Authentication
@@ -43,14 +42,12 @@ Route::get('/', function () {
 Route::get('/login', [LoginController::class, 'showLoginForm'])
     ->name('login');
 
-
 // Proses login hanya untuk guest
 Route::middleware('guest')->group(function () {
 
     Route::post('/login', [LoginController::class, 'login'])
         ->name('login.process');
 });
-
 
 /*
 |--------------------------------------------------------------------------
@@ -60,7 +57,6 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
 
-
     /*
     |--------------------------------------------------------------------------
     | Logout
@@ -69,7 +65,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/logout', [LoginController::class, 'logout'])
         ->name('logout');
-
 
     /*
     |--------------------------------------------------------------------------
@@ -81,20 +76,15 @@ Route::middleware('auth')->group(function () {
 
         return match ($request->user()->role->name) {
 
-            'admin' =>
-            redirect()->route('admin.orders.index'),
+            'admin' => redirect()->route('admin.orders.index'),
 
-            'produksi' =>
-            redirect()->route('produksi.queue.index'),
+            'produksi' => redirect()->route('produksi.queue.index'),
 
-            'bisnis owner' =>
-            redirect()->route('owner.dashboard'),
+            'bisnis owner' => redirect()->route('owner.dashboard'),
 
-            default =>
-            abort(403),
+            default => abort(403),
         };
     })->name('dashboard');
-
 
     /*
     |--------------------------------------------------------------------------
@@ -126,7 +116,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
             Route::post('/orders/{order}/complete', [OrderController::class, 'complete'])->name('orders.complete');
 
-
             /*
             |--------------------------------------------------------------------------
             | Master Produk & SKU
@@ -138,7 +127,6 @@ Route::middleware('auth')->group(function () {
             Route::put('/products/{group}', [ProductController::class, 'update'])->name('products.update');
             Route::delete('/products/{group}', [ProductController::class, 'destroy'])->name('products.destroy');
 
-
             /*
             |--------------------------------------------------------------------------
             | Bill of Materials
@@ -149,7 +137,6 @@ Route::middleware('auth')->group(function () {
             Route::post('/products/{sku}/bom', [BomController::class, 'store'])->name('products.bom.store');
             Route::put('/products/{sku}/bom/{material}', [BomController::class, 'update'])->name('products.bom.update');
             Route::delete('/products/{sku}/bom/{material}', [BomController::class, 'destroy'])->name('products.bom.destroy');
-
 
             /*
             |--------------------------------------------------------------------------
@@ -167,7 +154,6 @@ Route::middleware('auth')->group(function () {
             Route::put('/materials/{material}', [MaterialController::class, 'update'])->name('materials.update');
             Route::delete('/materials/{material}', [MaterialController::class, 'destroy'])->name('materials.destroy');
 
-
             Route::get('/inventory', [InventoryController::class, 'index'])
                 ->name('inventory.index');
 
@@ -177,7 +163,6 @@ Route::middleware('auth')->group(function () {
                 InventoryController::class,
                 'productHistory',
             ])->name('inventory.history');
-
 
             // Riwayat bahan baku: menggunakan InventoryController
             Route::get('/inventory/material/{material}/history', [
@@ -209,7 +194,6 @@ Route::middleware('auth')->group(function () {
             Route::get('/procurement', [ProcurementController::class, 'index'])->name('procurement.index');
             Route::post('/procurement', [ProcurementController::class, 'store'])->name('procurement.store');
 
-
             // Wildcard PALING BAWAH, karena /procurement/{apapun} nangkep semua
             Route::get('/procurement/{purchaseOrder:po_no}', [ProcurementController::class, 'show'])->name('procurement.show');
             Route::post('/procurement/{purchaseOrder:po_no}/receive', [ProcurementController::class, 'receive'])->name('procurement.receive');
@@ -222,7 +206,6 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
         });
-
 
     /*
     |--------------------------------------------------------------------------
@@ -282,7 +265,6 @@ Route::middleware('auth')->group(function () {
                 ->name('dashboard.data');
         });
 
-
     /*
     |--------------------------------------------------------------------------
     | BISNIS OWNER
@@ -305,9 +287,16 @@ Route::middleware('auth')->group(function () {
                 return view('owner.activity-log.index');
             })->name('activity-log');
 
-            Route::get('/user-management', function () {
-                return view('owner.user-management.index');
-            })->name('user-management');
+            Route::get('/user-management', [UserManagementController::class, 'index'])
+                ->name('user-management');
+            Route::get('/user-management/data', [UserManagementController::class, 'data'])
+                ->name('user-management.data');
+            Route::post('/user-management', [UserManagementController::class, 'store'])
+                ->name('user-management.store');
+            Route::put('/user-management/{user}', [UserManagementController::class, 'update'])
+                ->name('user-management.update');
+            Route::delete('/user-management/{user}', [UserManagementController::class, 'destroy'])
+                ->name('user-management.destroy');
 
             Route::get('/master-data', function () {
                 return view('owner.master-data.index');
