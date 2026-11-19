@@ -1031,3 +1031,32 @@
         align-items: flex-start;
     }
 }
+
+/* =========================
+   KOREKSI: TOMBOL VARIAN (Planning)
+   Pil hijau tanpa ikon panah.
+========================= */
+
+.sp-group-row .pv-btn {
+    padding: 6px 11px;
+
+    border: 1px solid #DCE7D7;
+    border-radius: 20px;
+
+    background: #F3F8F0;
+    color: var(--green-dark);
+
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.sp-group-row .pv-btn svg {
+    display: none;
+}
+
+.sp-group-row .pv-btn:hover,
+.sp-group-row .pv-btn.open {
+    border-color: var(--green);
+
+    background: var(--green-light);
+}
