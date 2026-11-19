@@ -192,6 +192,7 @@
             <span class="table-footer-note">Data berdasarkan transaksi completed</span>
         </div>
     </section>
+    <div class="print-report" id="printReport"></div>
 </div>
 @endsection
 
