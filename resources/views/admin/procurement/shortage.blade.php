@@ -22,16 +22,6 @@
         <h1>Material Shortage List</h1>
         <p>Pantau kekurangan bahan baku yang menghambat produksi</p>
     </div>
-
-    <button type="button" class="ms-primary" id="msCreatePo">
-        <svg width="18" height="18" viewBox="0 0 24 24"
-            fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 5v14" />
-            <path d="M5 12h14" />
-        </svg>
-        <span>Buat Purchase Order</span>
-    </button>
-
 </div>
 
 
@@ -579,7 +569,6 @@
             pagination: $('msPagination'),
 
             toast: $('msToast'),
-            createPo: $('msCreatePo')
         };
 
 
@@ -1352,10 +1341,6 @@
         P.save.addEventListener('click', savePo);
         P.cancel.addEventListener('click', poModal.close);
         P.close.addEventListener('click', poModal.close);
-
-        els.createPo.addEventListener('click', function() {
-            openPo([]);
-        });
 
 
         // ==========================================

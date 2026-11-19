@@ -388,37 +388,35 @@
 
 </nav>
 
+            <div class="sidebar-bottom">
 
-        {{-- Bottom sidebar --}}
-        <div class="sidebar-bottom">
+                <div class="sidebar-user">
 
-            <a href="#" class="nav-item">
+                    <div class="user-avatar">
+                        A
+                    </div>
 
-                <svg width="20" height="20" viewBox="0 0 24 24"
-                     fill="none" stroke="currentColor"
-                     stroke-width="1.8">
-                    <circle cx="12" cy="12" r="3"/>
-                    <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.12 2.12-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1 1.55V20h-3v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.88.34l-.06.06-2.12-2.12.06-.06A1.7 1.7 0 0 0 7 14.7a1.7 1.7 0 0 0-1.55-1H5v-3h.09a1.7 1.7 0 0 0 1.55-1"/>
-                </svg>
+                    <div class="user-info">
+                        <strong>Admin</strong>
+                        <span>Administrator</span>
+                    </div>
 
-                <span>Settings</span>
-            </a>
+                    {{-- Log out (route logout hanya menerima POST) --}}
+                    <form method="POST" action="{{ route('logout') }}" class="sidebar-logout-form">
+                        @csrf
+                        <button type="submit" class="sidebar-logout" aria-label="Logout" title="Logout">
+                            <svg width="18" height="18" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                <path d="m16 17 5-5-5-5"/>
+                                <path d="M21 12H9"/>
+                            </svg>
+                        </button>
+                    </form>
 
-
-            <div class="sidebar-user">
-
-                <div class="user-avatar">
-                    A
-                </div>
-
-                <div class="user-info">
-                    <strong>Admin</strong>
-                    <span>Administrator</span>
                 </div>
 
             </div>
-
-        </div>
 
     </aside>
 
