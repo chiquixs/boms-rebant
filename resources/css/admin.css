@@ -580,3 +580,80 @@ button {
     border-color: #C5DDBA;
 }
 .product-action.bom.bom-filled:hover { background: #D8EACF; }
+
+/* =========================
+   LOG OUT (SIDEBAR)
+========================= */
+
+.sidebar-logout {
+    margin: 0;
+}
+
+.nav-logout {
+    width: 100%;
+
+    border: none;
+
+    background: transparent;
+
+    font-family: inherit;
+    text-align: left;
+
+    cursor: pointer;
+}
+
+.nav-logout:hover {
+    color: #B5483E;
+
+    background: #FDF1EF;
+}
+
+.nav-logout:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+/* =========================
+   LOGOUT DI USER SIDEBAR
+========================= */
+
+.sidebar-user .user-info {
+    flex: 1;
+}
+
+.sidebar-logout-form {
+    margin-left: auto;
+}
+
+.sidebar-logout {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: var(--text-muted);
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.sidebar-logout:hover {
+    color: #B5483E;
+
+    background: #FDF1EF;
+}
+
+@media (max-width: 900px) {
+
+    .sidebar-logout-form {
+        display: none;
+    }
+}
