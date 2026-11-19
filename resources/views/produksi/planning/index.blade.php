@@ -1272,9 +1272,9 @@
                 '</div></td>' +
                 '<td>' + esc(g.category ? g.category.name : '-') + '</td>' +
                 '<td><button type="button" class="pv-btn' + (open ? ' open' : '') + '" data-toggle="' + g.id + '"' +
-                ' aria-expanded="' + (open ? 'true' : 'false') + '" aria-controls="spVariants' + g.id + '">' +
-                g.variants.length + ' Varian' + CHEVRON + '</button>' +
-                lowWarningHtml(g) + '</td>' +
+                    ' aria-expanded="' + (open ? 'true' : 'false') + '" aria-controls="spVariants' + g.id + '">' +
+                    g.variants.length + ' Varian</button>' +
+                    lowWarningHtml(g) + '</td>' +
                 '<td class="center">' + rec + '</td>' +
                 '<td class="center"><span class="pq-badge ' + meta.cls + '">' + meta.label + '</span></td>' +
                 '</tr>' +
