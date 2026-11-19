@@ -437,13 +437,102 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        buildPrintReport(filteredTransactions);
         window.print();
     }
+
 
     function getFileName(extension) {
         return 'laporan-penjualan-' +
             startDateInput.value + '-sampai-' +
             endDateInput.value + '.' + extension;
+    }
+
+    function buildPrintReport(data) {
+        const revenue = data.reduce((s, i) => s + i.total, 0);
+        const units = data.reduce((s, i) => s + i.quantity, 0);
+        const average = data.length ? revenue / data.length : 0;
+
+        const daily = {};
+        const platforms = {};
+        const products = {};
+
+        data.forEach(function (t) {
+            daily[t.date] = (daily[t.date] || 0) + t.total;
+            platforms[t.platform] = (platforms[t.platform] || 0) + t.total;
+
+            (t.items || []).forEach(function (it) {
+                products[it.name] = products[it.name] || { q: 0, r: 0 };
+                products[it.name].q += it.quantity;
+                products[it.name].r += it.total;
+            });
+        });
+
+        const maxDaily = Math.max(...Object.values(daily), 1);
+        const platformTotal = Math.max(Object.values(platforms).reduce((a, b) => a + b, 0), 1);
+
+        const dailyRows = Object.keys(daily).sort().map(function (d) {
+            return `<tr><td style="width:90px">${formatDate(d)}</td>
+                <td><div class="pr-bar"><i style="width:${Math.max(daily[d] / maxDaily * 100, 2)}%"></i></div></td>
+                <td class="r" style="width:100px">${rupiah(daily[d])}</td></tr>`;
+        }).join('');
+
+        const platformRows = Object.keys(platforms).map(function (p) {
+            const pct = platforms[p] / platformTotal * 100;
+            return `<tr><td style="width:90px">${escapeHTML(p)}</td>
+                <td><div class="pr-bar"><i class="${p === 'TikTok' ? 'tiktok' : ''}" style="width:${pct}%"></i></div></td>
+                <td class="r" style="width:100px">${rupiah(platforms[p])}</td>
+                <td class="r" style="width:45px">${pct.toFixed(1)}%</td></tr>`;
+        }).join('');
+
+        const productRows = Object.entries(products)
+            .sort((a, b) => b[1].q - a[1].q)
+            .map(function ([name, v], i) {
+                return `<tr><td style="width:35px">${i + 1}</td><td>${escapeHTML(name)}</td>
+                    <td class="r">${numberFormat(v.q)}</td><td class="r">${rupiah(v.r)}</td></tr>`;
+            }).join('');
+
+        const trxRows = data.map(function (t) {
+            return `<tr><td>${escapeHTML(t.id)}</td><td>${formatDate(t.date)}</td>
+                <td>${escapeHTML(t.product)}</td><td>${escapeHTML(t.platform)}</td>
+                <td class="r">${numberFormat(t.quantity)}</td><td class="r">${rupiah(t.total)}</td></tr>`;
+        }).join('');
+
+        const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+        document.getElementById('printReport').innerHTML = `
+            <div class="pr-head">
+                <div class="pr-brand">REBANT BOMS<small>Business Operation Management System</small></div>
+                <div class="pr-title">LAPORAN PENJUALAN
+                    <small>Periode ${formatDate(startDateInput.value)} – ${formatDate(endDateInput.value)}</small></div>
+            </div>
+
+            <h2>1. Ringkasan</h2>
+            <div class="pr-summary">
+                <div class="pr-card"><span>Total Omzet</span><strong>${rupiah(revenue)}</strong></div>
+                <div class="pr-card"><span>Produk Terjual</span><strong>${numberFormat(units)} unit</strong></div>
+                <div class="pr-card"><span>Total Transaksi</span><strong>${numberFormat(data.length)}</strong></div>
+                <div class="pr-card"><span>Rata-rata Transaksi</span><strong>${rupiah(average)}</strong></div>
+            </div>
+
+            <h2>2. Tren Penjualan Harian</h2>
+            <table class="pr-table"><thead><tr><th>Tanggal</th><th>Omzet</th><th class="r">Nilai</th></tr></thead>
+                <tbody>${dailyRows}</tbody></table>
+
+            <h2>3. Performa Platform</h2>
+            <table class="pr-table"><thead><tr><th>Platform</th><th>Kontribusi</th><th class="r">Omzet</th><th class="r">%</th></tr></thead>
+                <tbody>${platformRows}</tbody></table>
+
+            <h2>4. Performa Produk</h2>
+            <table class="pr-table"><thead><tr><th>No</th><th>Nama Produk</th><th class="r">Unit</th><th class="r">Omzet</th></tr></thead>
+                <tbody>${productRows}</tbody></table>
+
+            <h2>5. Riwayat Transaksi</h2>
+            <table class="pr-table"><thead><tr><th>ID</th><th>Tanggal</th><th>Produk</th><th>Platform</th><th class="r">Qty</th><th class="r">Total</th></tr></thead>
+                <tbody>${trxRows}</tbody></table>
+
+            <div class="pr-sign">Malang, ${today}<br>Dicetak oleh,<br><br><br><br><strong>Business Owner</strong></div>
+        `;
     }
 
     function downloadBlob(blob, fileName) {
