@@ -1,87 +1,45 @@
-
 document.addEventListener('DOMContentLoaded', function () {
+    const config = window.masterDataConfig || {};
+
     const datasets = {
         products: {
             title: 'Data Produk',
-            description: 'Informasi seluruh produk yang terdaftar dalam sistem.',
-            columns: ['SKU', 'Nama Produk', 'Kategori', 'Harga Jual', 'Stok', 'Status'],
-            data: [
-                { id: 'PRD-001', sku: 'REB-001', name: 'Wall Decor Minimalist', category: 'Wall Decor', price: 125000, stock: 35, status: 'Aktif' },
-                { id: 'PRD-002', sku: 'REB-002', name: 'Wooden Flower Frame', category: 'Wall Frame', price: 150000, stock: 18, status: 'Aktif' },
-                { id: 'PRD-003', sku: 'REB-003', name: 'Macrame Wall Hanging', category: 'Macrame', price: 95000, stock: 8, status: 'Aktif' },
-                { id: 'PRD-004', sku: 'REB-004', name: 'Boho Mirror Decor', category: 'Wall Decor', price: 175000, stock: 4, status: 'Aktif' },
-                { id: 'PRD-005', sku: 'REB-005', name: 'Rustic Photo Frame', category: 'Wall Frame', price: 85000, stock: 22, status: 'Aktif' },
-                { id: 'PRD-006', sku: 'REB-006', name: 'Minimalist Wooden Shelf', category: 'Wall Shelf', price: 210000, stock: 0, status: 'Tidak Aktif' },
-                { id: 'PRD-007', sku: 'REB-007', name: 'Round Rattan Decor', category: 'Wall Decor', price: 135000, stock: 16, status: 'Aktif' },
-                { id: 'PRD-008', sku: 'REB-008', name: 'Abstract Canvas Art', category: 'Canvas Art', price: 185000, stock: 12, status: 'Aktif' },
-                { id: 'PRD-009', sku: 'REB-009', name: 'Wooden Quote Board', category: 'Wall Decor', price: 110000, stock: 25, status: 'Aktif' },
-                { id: 'PRD-010', sku: 'REB-010', name: 'Natural Macrame Set', category: 'Macrame', price: 160000, stock: 9, status: 'Aktif' },
-                { id: 'PRD-011', sku: 'REB-011', name: 'Geometric Wall Art', category: 'Canvas Art', price: 145000, stock: 14, status: 'Aktif' },
-                { id: 'PRD-012', sku: 'REB-012', name: 'Wooden Hanging Planter', category: 'Wall Decor', price: 120000, stock: 6, status: 'Aktif' }
-            ]
+            description: 'Informasi seluruh produk induk beserta daftar varian SKU yang terdaftar.',
+            columns: ['SKU Produk', 'Nama Produk', 'Varian', 'Kategori', 'Harga Jual', 'Total Stok', 'Status'],
+            statusOptions: ['Aktif', 'Stok Rendah', 'Tidak Aktif'],
+            data: []
         },
 
         categories: {
             title: 'Data Kategori',
             description: 'Informasi kategori yang digunakan untuk mengelompokkan produk.',
-            columns: ['Kode', 'Nama Kategori', 'Deskripsi', 'Jumlah Produk', 'Status'],
-            data: [
-                { id: 'CAT-001', code: 'CAT-001', name: 'Wall Decor', description: 'Dekorasi dinding berbagai desain.', total: 4, status: 'Aktif' },
-                { id: 'CAT-002', code: 'CAT-002', name: 'Wall Frame', description: 'Produk dekorasi berbentuk bingkai.', total: 2, status: 'Aktif' },
-                { id: 'CAT-003', code: 'CAT-003', name: 'Macrame', description: 'Dekorasi berbahan tali dan simpul.', total: 2, status: 'Aktif' },
-                { id: 'CAT-004', code: 'CAT-004', name: 'Wall Shelf', description: 'Rak dekoratif untuk dinding.', total: 1, status: 'Aktif' },
-                { id: 'CAT-005', code: 'CAT-005', name: 'Canvas Art', description: 'Dekorasi dinding berbahan kanvas.', total: 2, status: 'Aktif' }
-            ]
+            columns: ['Kode', 'Nama Kategori', 'Jumlah Produk'],
+            statusOptions: [],
+            data: []
         },
 
         materials: {
             title: 'Data Bahan Baku',
             description: 'Informasi persediaan bahan baku yang digunakan dalam produksi.',
             columns: ['Kode', 'Nama Bahan', 'Satuan', 'Stok Tersedia', 'Stok Minimum', 'Status'],
-            data: [
-                { id: 'MAT-001', code: 'MAT-001', name: 'Kayu Pinus', unit: 'Pcs', stock: 45, minimum: 15, status: 'Tersedia' },
-                { id: 'MAT-002', code: 'MAT-002', name: 'Tali Katun', unit: 'Meter', stock: 8, minimum: 20, status: 'Stok Rendah' },
-                { id: 'MAT-003', code: 'MAT-003', name: 'Lem Kayu', unit: 'Botol', stock: 25, minimum: 10, status: 'Tersedia' },
-                { id: 'MAT-004', code: 'MAT-004', name: 'Cat Kayu', unit: 'Kaleng', stock: 12, minimum: 5, status: 'Tersedia' },
-                { id: 'MAT-005', code: 'MAT-005', name: 'Rotan Sintetis', unit: 'Meter', stock: 6, minimum: 15, status: 'Stok Rendah' },
-                { id: 'MAT-006', code: 'MAT-006', name: 'Kanvas', unit: 'Lembar', stock: 30, minimum: 10, status: 'Tersedia' },
-                { id: 'MAT-007', code: 'MAT-007', name: 'Paku Kecil', unit: 'Box', stock: 18, minimum: 5, status: 'Tersedia' },
-                { id: 'MAT-008', code: 'MAT-008', name: 'Kawat Gantungan', unit: 'Roll', stock: 3, minimum: 8, status: 'Stok Rendah' },
-                { id: 'MAT-009', code: 'MAT-009', name: 'Vernis Kayu', unit: 'Botol', stock: 14, minimum: 5, status: 'Tersedia' },
-                { id: 'MAT-010', code: 'MAT-010', name: 'Ring Besi', unit: 'Pcs', stock: 50, minimum: 15, status: 'Tersedia' }
-            ]
+            statusOptions: ['Tersedia', 'Stok Rendah', 'Tidak Aktif'],
+            data: []
         },
 
         bom: {
             title: 'Bill of Materials',
             description: 'Komposisi bahan baku dan kebutuhan material untuk setiap produk.',
             columns: ['Kode BOM', 'Nama Produk', 'Bahan Baku', 'Kebutuhan', 'Satuan'],
-            data: [
-                { id: 'BOM-001', code: 'BOM-001', product: 'Wall Decor Minimalist', material: 'Kayu Pinus', quantity: 2, unit: 'Pcs' },
-                { id: 'BOM-002', code: 'BOM-002', product: 'Wall Decor Minimalist', material: 'Lem Kayu', quantity: 0.1, unit: 'Botol' },
-                { id: 'BOM-003', code: 'BOM-003', product: 'Wooden Flower Frame', material: 'Kayu Pinus', quantity: 3, unit: 'Pcs' },
-                { id: 'BOM-004', code: 'BOM-004', product: 'Wooden Flower Frame', material: 'Cat Kayu', quantity: 0.2, unit: 'Kaleng' },
-                { id: 'BOM-005', code: 'BOM-005', product: 'Macrame Wall Hanging', material: 'Tali Katun', quantity: 5, unit: 'Meter' },
-                { id: 'BOM-006', code: 'BOM-006', product: 'Boho Mirror Decor', material: 'Rotan Sintetis', quantity: 2, unit: 'Meter' },
-                { id: 'BOM-007', code: 'BOM-007', product: 'Rustic Photo Frame', material: 'Kayu Pinus', quantity: 2, unit: 'Pcs' },
-                { id: 'BOM-008', code: 'BOM-008', product: 'Abstract Canvas Art', material: 'Kanvas', quantity: 1, unit: 'Lembar' },
-                { id: 'BOM-009', code: 'BOM-009', product: 'Wooden Quote Board', material: 'Vernis Kayu', quantity: 0.1, unit: 'Botol' },
-                { id: 'BOM-010', code: 'BOM-010', product: 'Natural Macrame Set', material: 'Tali Katun', quantity: 8, unit: 'Meter' }
-            ]
+            statusOptions: [],
+            data: []
         },
 
         suppliers: {
             title: 'Data Supplier',
             description: 'Informasi pemasok bahan baku dan kontak yang terdaftar.',
             columns: ['Kode', 'Nama Supplier', 'Kontak', 'Alamat', 'Jenis Bahan', 'Status'],
-            data: [
-                { id: 'SUP-001', code: 'SUP-001', name: 'CV Kayu Sejahtera', contact: '081234567801', address: 'Malang', material: 'Kayu Pinus', status: 'Aktif' },
-                { id: 'SUP-002', code: 'SUP-002', name: 'Katun Nusantara', contact: '081234567802', address: 'Surabaya', material: 'Tali Katun', status: 'Aktif' },
-                { id: 'SUP-003', code: 'SUP-003', name: 'Mitra Lemindo', contact: '081234567803', address: 'Malang', material: 'Lem Kayu', status: 'Aktif' },
-                { id: 'SUP-004', code: 'SUP-004', name: 'Rotan Jaya', contact: '081234567804', address: 'Pasuruan', material: 'Rotan Sintetis', status: 'Aktif' },
-                { id: 'SUP-005', code: 'SUP-005', name: 'Kanvas Kreatif', contact: '081234567805', address: 'Sidoarjo', material: 'Kanvas', status: 'Tidak Aktif' },
-                { id: 'SUP-006', code: 'SUP-006', name: 'Warna Abadi', contact: '081234567806', address: 'Malang', material: 'Cat dan Vernis', status: 'Aktif' }
-            ]
+            statusOptions: ['Aktif', 'Tidak Aktif'],
+            data: []
         }
     };
 
@@ -97,17 +55,28 @@ document.addEventListener('DOMContentLoaded', function () {
     const modal = document.getElementById('masterDetailModal');
     const detailTitle = document.getElementById('detailModalTitle');
     const detailContent = document.getElementById('detailModalContent');
+    const summaryProductsCaption = document.getElementById('summaryProductsCaption');
 
+    let summary = { products: 0, product_variants: 0, categories: 0, materials: 0, suppliers: 0 };
     let currentTab = 'products';
     let currentPage = 1;
     const perPage = 10;
+    const expandedGroups = new Set();
+    let isLoading = false;
+    let loadError = false;
 
     function formatRupiah(value) {
         return new Intl.NumberFormat('id-ID', {
             style: 'currency',
             currency: 'IDR',
             maximumFractionDigits: 0
-        }).format(value);
+        }).format(Number(value) || 0);
+    }
+
+    function formatNumber(value, maxDecimals = 3) {
+        return new Intl.NumberFormat('id-ID', {
+            maximumFractionDigits: maxDecimals
+        }).format(Number(value) || 0);
     }
 
     function escapeHTML(value) {
@@ -130,14 +99,51 @@ document.addEventListener('DOMContentLoaded', function () {
         return 'status-neutral';
     }
 
+    function updateStatusFilter() {
+        const options = datasets[currentTab].statusOptions || [];
+
+        if (options.length === 0) {
+            statusFilter.style.display = 'none';
+            statusFilter.innerHTML = '<option value="">Semua Status</option>';
+            statusFilter.value = '';
+            return;
+        }
+
+        statusFilter.style.display = '';
+        statusFilter.innerHTML = [
+            '<option value="">Semua Status</option>',
+            ...options.map(option => `<option value="${escapeHTML(option)}">${escapeHTML(option)}</option>`)
+        ].join('');
+    }
+
+    function variantMatchesKeyword(variant, keyword) {
+        if (!keyword) return false;
+
+        return `${variant.sku || ''} ${variant.variant_name || ''} ${variant.status || ''}`
+            .toLowerCase()
+            .includes(keyword);
+    }
+
     function getFilteredData() {
         const dataset = datasets[currentTab];
         const keyword = searchInput.value.toLowerCase().trim();
         const status = statusFilter.value;
 
         return dataset.data.filter(item => {
-            const searchable = Object.values(item).join(' ').toLowerCase();
-            const matchesSearch = searchable.includes(keyword);
+            const baseValues = Object.entries(item)
+                .filter(([key]) => key !== 'detail' && key !== 'variants' && key !== 'id')
+                .map(([, value]) => String(value ?? ''));
+
+            const detailValues = Array.isArray(item.detail)
+                ? item.detail.map(entry => String(entry?.value ?? ''))
+                : [];
+
+            const variantValues = Array.isArray(item.variants)
+                ? item.variants.map(variant => `${variant.sku || ''} ${variant.variant_name || ''} ${variant.status || ''}`)
+                : [];
+
+            const searchable = [...baseValues, ...detailValues, ...variantValues].join(' ').toLowerCase();
+            const matchesSearch = keyword === '' || searchable.includes(keyword);
 
             const itemStatus = item.status || '';
             const matchesStatus = !status || itemStatus === status;
@@ -146,9 +152,65 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function renderVariantSubRow(item, colspan, keyword) {
+        const variants = Array.isArray(item.variants) ? item.variants : [];
+        const isMto = item.production_method === 'MTO';
+
+        const variantRowsHtml = variants.length === 0
+            ? '<tr><td colspan="6" class="empty-row">Belum ada varian SKU terdaftar.</td></tr>'
+            : variants.map(variant => {
+                const isMatch = variantMatchesKeyword(variant, keyword);
+                const minStockText = !isMto && variant.min_stock !== null
+                    ? `${formatNumber(variant.min_stock, 0)} pcs`
+                    : '—';
+                const targetStockText = !isMto && variant.target_stock !== null
+                    ? `${formatNumber(variant.target_stock, 0)} pcs`
+                    : '—';
+
+                return `
+                    <tr class="${isMatch ? 'is-match' : ''}">
+                        <td><strong>${escapeHTML(variant.sku)}</strong></td>
+                        <td>${escapeHTML(variant.variant_name)}</td>
+                        <td>${escapeHTML(formatNumber(variant.stock, 0))} pcs</td>
+                        <td>${escapeHTML(minStockText)}</td>
+                        <td>${escapeHTML(targetStockText)}</td>
+                        <td>${renderStatus(variant.status)}</td>
+                    </tr>
+                `;
+            }).join('');
+
+        return `
+            <tr class="variant-sub-row">
+                <td colspan="${colspan}" class="variant-sub-cell">
+                    <div class="variant-sub-box">
+                        <div class="variant-sub-header">
+                            <strong>Daftar Varian — ${escapeHTML(item.name)}</strong>
+                            <span>${variants.length} varian (${escapeHTML(item.production_method || '—')})</span>
+                        </div>
+                        <table class="variant-sub-table">
+                            <thead>
+                                <tr>
+                                    <th>SKU Varian</th>
+                                    <th>Nama Varian</th>
+                                    <th>Stok Tersedia</th>
+                                    <th>Stok Minimum</th>
+                                    <th>Target Stok</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${variantRowsHtml}
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }
+
     function renderTable() {
         const dataset = datasets[currentTab];
-        const filtered = getFilteredData();
+        const totalColumns = dataset.columns.length + 1;
 
         tableTitle.textContent = dataset.title;
         tableDescription.textContent = dataset.description;
@@ -160,6 +222,34 @@ document.addEventListener('DOMContentLoaded', function () {
             </tr>
         `;
 
+        if (isLoading) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="${totalColumns}" class="empty-row">
+                        Memuat data dari database...
+                    </td>
+                </tr>
+            `;
+            info.textContent = 'Memuat data...';
+            pagination.innerHTML = '';
+            return;
+        }
+
+        if (loadError) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="${totalColumns}" class="empty-row">
+                        Gagal memuat data master. Silakan muat ulang halaman.
+                    </td>
+                </tr>
+            `;
+            info.textContent = 'Menampilkan 0 data';
+            pagination.innerHTML = '';
+            return;
+        }
+
+        const keyword = searchInput.value.toLowerCase().trim();
+        const filtered = getFilteredData();
         const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
 
         if (currentPage > totalPages) {
@@ -170,18 +260,30 @@ document.addEventListener('DOMContentLoaded', function () {
         const pageData = filtered.slice(startIndex, startIndex + perPage);
 
         if (pageData.length === 0) {
+            const emptyMessage = dataset.data.length === 0
+                ? 'Belum ada data terdaftar.'
+                : 'Tidak ada data yang sesuai dengan pencarian.';
+
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="${dataset.columns.length + 1}" class="empty-row">
-                        Tidak ada data yang sesuai dengan pencarian.
+                    <td colspan="${totalColumns}" class="empty-row">
+                        ${emptyMessage}
                     </td>
                 </tr>
             `;
         } else {
             tableBody.innerHTML = pageData.map(item => {
-                return `
+                const hasVariantMatch = currentTab === 'products'
+                    && keyword !== ''
+                    && Array.isArray(item.variants)
+                    && item.variants.some(variant => variantMatchesKeyword(variant, keyword));
+
+                const isExpanded = currentTab === 'products'
+                    && (expandedGroups.has(String(item.id)) || hasVariantMatch);
+
+                const mainRow = `
                     <tr>
-                        ${renderCells(item)}
+                        ${renderCells(item, isExpanded)}
                         <td>
                             <button
                                 class="detail-button"
@@ -193,6 +295,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         </td>
                     </tr>
                 `;
+
+                if (currentTab === 'products' && isExpanded) {
+                    return mainRow + renderVariantSubRow(item, totalColumns, keyword);
+                }
+
+                return mainRow;
             }).join('');
         }
 
@@ -204,25 +312,46 @@ document.addEventListener('DOMContentLoaded', function () {
         renderPagination(totalPages);
     }
 
-    function renderCells(item) {
+    function renderCells(item, isExpanded = false) {
         switch (currentTab) {
-            case 'products':
+            case 'products': {
+                const variantCount = Number(item.variant_count || 0);
+                const metaParts = [item.production_method, item.dimensions && item.dimensions !== '—' ? item.dimensions : null]
+                    .filter(Boolean)
+                    .join(' · ');
+                const lowNote = Number(item.low_stock_count || 0) > 0
+                    ? `<span class="table-low-note">${item.low_stock_count} varian stok rendah</span>`
+                    : '';
+
                 return `
-                    <td>${escapeHTML(item.sku)}</td>
-                    <td><span class="table-primary">${escapeHTML(item.name)}</span></td>
+                    <td>${escapeHTML(item.code)}</td>
+                    <td>
+                        <span class="table-primary">${escapeHTML(item.name)}</span>
+                        ${metaParts ? `<span class="table-secondary">${escapeHTML(metaParts)}</span>` : ''}
+                        ${lowNote}
+                    </td>
+                    <td>
+                        <button
+                            type="button"
+                            class="variant-toggle-button ${isExpanded ? 'is-open' : ''}"
+                            data-toggle-group="${escapeHTML(item.id)}"
+                            aria-expanded="${isExpanded ? 'true' : 'false'}"
+                        >
+                            ${variantCount} Varian ${isExpanded ? '▴' : '▾'}
+                        </button>
+                    </td>
                     <td>${escapeHTML(item.category)}</td>
-                    <td>${formatRupiah(item.price)}</td>
-                    <td>${item.stock} pcs</td>
+                    <td>${escapeHTML(formatRupiah(item.price))}</td>
+                    <td>${escapeHTML(formatNumber(item.stock, 0))} pcs</td>
                     <td>${renderStatus(item.status)}</td>
                 `;
+            }
 
             case 'categories':
                 return `
                     <td>${escapeHTML(item.code)}</td>
                     <td><span class="table-primary">${escapeHTML(item.name)}</span></td>
-                    <td>${escapeHTML(item.description)}</td>
-                    <td>${item.total} produk</td>
-                    <td>${renderStatus(item.status)}</td>
+                    <td>${escapeHTML(formatNumber(item.total, 0))} produk</td>
                 `;
 
             case 'materials':
@@ -230,8 +359,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>${escapeHTML(item.code)}</td>
                     <td><span class="table-primary">${escapeHTML(item.name)}</span></td>
                     <td>${escapeHTML(item.unit)}</td>
-                    <td>${item.stock}</td>
-                    <td>${item.minimum}</td>
+                    <td>${escapeHTML(formatNumber(item.stock, 3))}</td>
+                    <td>${escapeHTML(formatNumber(item.minimum, 3))}</td>
                     <td>${renderStatus(item.status)}</td>
                 `;
 
@@ -240,7 +369,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>${escapeHTML(item.code)}</td>
                     <td><span class="table-primary">${escapeHTML(item.product)}</span></td>
                     <td>${escapeHTML(item.material)}</td>
-                    <td>${item.quantity}</td>
+                    <td>${escapeHTML(formatNumber(item.quantity, 6))}</td>
                     <td>${escapeHTML(item.unit)}</td>
                 `;
 
@@ -293,47 +422,125 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function renderSummary() {
-        document.getElementById('summaryProducts').textContent = datasets.products.data.length;
-        document.getElementById('summaryCategories').textContent = datasets.categories.data.length;
-        document.getElementById('summaryMaterials').textContent = datasets.materials.data.length;
-        document.getElementById('summarySuppliers').textContent = datasets.suppliers.data.length;
+        document.getElementById('summaryProducts').textContent = summary.products ?? datasets.products.data.length;
+        document.getElementById('summaryCategories').textContent = summary.categories ?? datasets.categories.data.length;
+        document.getElementById('summaryMaterials').textContent = summary.materials ?? datasets.materials.data.length;
+        document.getElementById('summarySuppliers').textContent = summary.suppliers ?? datasets.suppliers.data.length;
+
+        if (summaryProductsCaption) {
+            const variantTotal = summary.product_variants ?? 0;
+            summaryProductsCaption.textContent = `${formatNumber(variantTotal, 0)} varian SKU terdaftar`;
+        }
     }
 
     function openDetail(id) {
-        const item = datasets[currentTab].data.find(row => row.id === id);
+        const item = datasets[currentTab].data.find(row => String(row.id) === String(id));
 
         if (!item) return;
 
         detailTitle.textContent = 'Detail ' + datasets[currentTab].title;
 
-        detailContent.innerHTML = Object.entries(item).map(([key, value]) => {
-            let label = key
-                .replace(/([A-Z])/g, ' $1')
-                .replace(/^./, char => char.toUpperCase());
+        const detailRows = Array.isArray(item.detail) ? item.detail : [];
 
-            if (key === 'price') {
-                value = formatRupiah(value);
-            }
+        let html = detailRows.map(entry => {
+            let renderedValue;
 
-            if (key === 'status') {
-                value = renderStatus(value);
+            if (entry.type === 'currency') {
+                renderedValue = escapeHTML(formatRupiah(entry.value));
+            } else if (entry.type === 'status') {
+                renderedValue = renderStatus(entry.value);
             } else {
-                value = escapeHTML(value);
+                renderedValue = escapeHTML(entry.value);
             }
 
             return `
                 <div class="detail-row">
-                    <span class="detail-label">${escapeHTML(label)}</span>
-                    <span class="detail-value">${value}</span>
+                    <span class="detail-label">${escapeHTML(entry.label)}</span>
+                    <span class="detail-value">${renderedValue}</span>
                 </div>
             `;
         }).join('');
 
+        if (currentTab === 'products' && Array.isArray(item.variants) && item.variants.length > 0) {
+            const isMto = item.production_method === 'MTO';
+            const variantItemsHtml = item.variants.map(variant => {
+                const stockInfo = isMto
+                    ? `Stok: ${formatNumber(variant.stock, 0)} pcs (MTO)`
+                    : `Stok: ${formatNumber(variant.stock, 0)} pcs · Min: ${variant.min_stock !== null ? formatNumber(variant.min_stock, 0) : '—'} · Target: ${variant.target_stock !== null ? formatNumber(variant.target_stock, 0) : '—'}`;
+
+                return `
+                    <div class="detail-variant-item">
+                        <div class="detail-variant-info">
+                            <strong>${escapeHTML(variant.sku)} — ${escapeHTML(variant.variant_name)}</strong>
+                            <span>${escapeHTML(stockInfo)}</span>
+                        </div>
+                        ${renderStatus(variant.status)}
+                    </div>
+                `;
+            }).join('');
+
+            html += `
+                <div class="detail-variants-section">
+                    <span class="detail-variants-title">Varian SKU (${item.variants.length})</span>
+                    <div class="detail-variant-list">
+                        ${variantItemsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        detailContent.innerHTML = html;
         modal.classList.add('show');
     }
 
     function closeModal() {
         modal.classList.remove('show');
+    }
+
+    async function loadMasterData() {
+        if (!config.dataUrl) {
+            loadError = true;
+            renderSummary();
+            renderTable();
+            return;
+        }
+
+        isLoading = true;
+        loadError = false;
+        renderTable();
+
+        try {
+            const response = await fetch(config.dataUrl, {
+                headers: {
+                    Accept: 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
+            }
+
+            const payload = await response.json();
+            const incomingDatasets = payload.datasets || {};
+
+            Object.keys(datasets).forEach(key => {
+                datasets[key].data = Array.isArray(incomingDatasets[key]) ? incomingDatasets[key] : [];
+            });
+
+            summary = payload.summary || {
+                products: datasets.products.data.length,
+                product_variants: 0,
+                categories: datasets.categories.data.length,
+                materials: datasets.materials.data.length,
+                suppliers: datasets.suppliers.data.length
+            };
+        } catch (error) {
+            loadError = true;
+        } finally {
+            isLoading = false;
+            renderSummary();
+            renderTable();
+        }
     }
 
     tabButtons.forEach(button => {
@@ -346,10 +553,7 @@ document.addEventListener('DOMContentLoaded', function () {
             searchInput.value = '';
             statusFilter.value = '';
 
-            statusFilter.style.display = ['products', 'categories', 'materials', 'suppliers'].includes(currentTab)
-                ? ''
-                : 'none';
-
+            updateStatusFilter();
             renderTable();
         });
     });
@@ -380,10 +584,24 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     tableBody.addEventListener('click', function (event) {
-        const button = event.target.closest('[data-detail-id]');
-        if (!button) return;
+        const toggleButton = event.target.closest('[data-toggle-group]');
+        if (toggleButton) {
+            const groupId = String(toggleButton.dataset.toggleGroup);
 
-        openDetail(button.dataset.detailId);
+            if (expandedGroups.has(groupId)) {
+                expandedGroups.delete(groupId);
+            } else {
+                expandedGroups.add(groupId);
+            }
+
+            renderTable();
+            return;
+        }
+
+        const detailButton = event.target.closest('[data-detail-id]');
+        if (!detailButton) return;
+
+        openDetail(detailButton.dataset.detailId);
     });
 
     modal.querySelectorAll('[data-close-modal]').forEach(button => {
@@ -394,6 +612,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (event.key === 'Escape') closeModal();
     });
 
+    updateStatusFilter();
     renderSummary();
-    renderTable();
+    loadMasterData();
 });

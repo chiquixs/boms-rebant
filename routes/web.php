@@ -12,6 +12,8 @@ use App\Http\Controllers\Admin\ProcurementController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SupplierController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Owner\ActivityLogController as OwnerActivityLogController;
+use App\Http\Controllers\Owner\MasterDataController;
 use App\Http\Controllers\Owner\OwnerDashboardController;
 use App\Http\Controllers\Owner\SalesReportController;
 use App\Http\Controllers\Owner\UserManagementController;
@@ -283,9 +285,10 @@ Route::middleware('auth')->group(function () {
                 return view('owner.sales-report.index');
             })->name('sales-report');
 
-            Route::get('/activity-log', function () {
-                return view('owner.activity-log.index');
-            })->name('activity-log');
+            Route::get('/activity-log', [OwnerActivityLogController::class, 'index'])
+                ->name('activity-log');
+            Route::get('/activity-log/data', [OwnerActivityLogController::class, 'data'])
+                ->name('activity-log.data');
 
             Route::get('/user-management', [UserManagementController::class, 'index'])
                 ->name('user-management');
@@ -298,9 +301,10 @@ Route::middleware('auth')->group(function () {
             Route::delete('/user-management/{user}', [UserManagementController::class, 'destroy'])
                 ->name('user-management.destroy');
 
-            Route::get('/master-data', function () {
-                return view('owner.master-data.index');
-            })->name('master-data');
+            Route::get('/master-data', [MasterDataController::class, 'index'])
+                ->name('master-data');
+            Route::get('/master-data/data', [MasterDataController::class, 'data'])
+                ->name('master-data.data');
 
             Route::get('/sales-report', [SalesReportController::class, 'page'])->name('sales-report');
             Route::get('/sales-report/data', [SalesReportController::class, 'data'])->name('sales-report.data');

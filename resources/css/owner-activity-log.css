@@ -311,6 +311,26 @@
     color: #718a9b;
 }
 
+.category-product {
+    background: #e8f0e3;
+    color: #526a48;
+}
+
+.category-procurement {
+    background: #f1eaf8;
+    color: #8563a3;
+}
+
+.category-user {
+    background: #f2f1ed;
+    color: #6b6e66;
+}
+
+.category-default {
+    background: #eef1f5;
+    color: #687382;
+}
+
 .activity-detail-button {
     padding: 6px 10px;
     border: 1px solid #e3e9df;
