@@ -29,7 +29,7 @@
             <div>
                 <p>Total Produk</p>
                 <h3 id="summaryProducts">0</h3>
-                <span>Data produk terdaftar</span>
+                <span id="summaryProductsCaption">Data produk terdaftar</span>
             </div>
         </div>
 
@@ -106,9 +106,8 @@
                 <select id="masterStatus" class="master-filter">
                     <option value="">Semua Status</option>
                     <option value="Aktif">Aktif</option>
-                    <option value="Tidak Aktif">Tidak Aktif</option>
-                    <option value="Tersedia">Tersedia</option>
                     <option value="Stok Rendah">Stok Rendah</option>
+                    <option value="Tidak Aktif">Tidak Aktif</option>
                 </select>
 
                 <button type="button" id="resetMasterFilter" class="reset-filter">
@@ -166,5 +165,10 @@
 @endsection
 
 @push('scripts')
+    <script>
+        window.masterDataConfig = {
+            dataUrl: "{{ route('owner.master-data.data') }}"
+        };
+    </script>
     @vite('resources/js/owner-master-data.js')
 @endpush

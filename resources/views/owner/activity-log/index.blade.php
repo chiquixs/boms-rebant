@@ -81,20 +81,20 @@
                 <label for="activityCategory">Kategori</label>
                 <select id="activityCategory">
                     <option value="all">Semua Kategori</option>
-                    <option value="Order">Order</option>
-                    <option value="Produksi">Produksi</option>
-                    <option value="Inventory">Inventory</option>
+                    @foreach ($modules as $value => $label)
+                        <option value="{{ $value }}">{{ $label }}</option>
+                    @endforeach
                 </select>
             </div>
 
             <div class="activity-filter-field">
                 <label for="activityStartDate">Dari tanggal</label>
-                <input type="date" id="activityStartDate" value="2026-11-01">
+                <input type="date" id="activityStartDate" value="">
             </div>
 
             <div class="activity-filter-field">
                 <label for="activityEndDate">Sampai tanggal</label>
-                <input type="date" id="activityEndDate" value="2026-11-13">
+                <input type="date" id="activityEndDate" value="">
             </div>
         </div>
     </section>
@@ -147,7 +147,7 @@
 
     <div class="activity-note">
         <span>ⓘ</span>
-        Data aktivitas pada halaman ini masih menggunakan dummy data untuk pengembangan frontend.
+        Catatan aktivitas di atas diambil langsung dari log operasional sistem di database (read-only).
     </div>
 </div>
 
@@ -172,5 +172,10 @@
 @endsection
 
 @push('scripts')
+    <script>
+        window.activityLogConfig = {
+            dataUrl: "{{ route('owner.activity-log.data') }}"
+        };
+    </script>
     @vite('resources/js/owner-activity-log.js')
 @endpush
