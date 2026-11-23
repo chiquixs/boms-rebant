@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>@yield('title', 'REBANT BOMS')</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/rebant-logo.png') }}">
+
 
     @vite([
         'resources/css/admin.css',

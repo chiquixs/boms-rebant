@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Login | REBANT BOMS</title>
+        <link rel="icon" type="image/png" href="{{ asset('images/rebant-logo.png') }}">
 
     {{-- CSS --}}
     @vite(['resources/css/login.css'])
