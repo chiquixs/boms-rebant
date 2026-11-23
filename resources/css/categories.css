@@ -596,3 +596,281 @@
     border: 1px solid #F3C4BE;
     color: #C0392B;
 }
+
+/* =========================
+   INTERAKTIF (HOVER / FOCUS / ANIMASI)
+   Hanya tampilan: tidak mengubah markup, route, atau JS.
+========================= */
+
+/* ----- Fokus keyboard yang jelas ----- */
+
+.add-category-button:focus-visible,
+.category-action:focus-visible,
+.category-modal-close:focus-visible,
+.category-modal-button:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* ----- Tombol "Tambah Kategori" ----- */
+
+.add-category-button span {
+    transition: transform 0.25s ease;
+}
+
+.add-category-button:hover span {
+    transform: rotate(90deg);
+}
+
+.add-category-button:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+
+/* ----- Kartu ----- */
+
+.category-card {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.category-card:hover {
+    border-color: #C8D7C0;
+
+    box-shadow:
+        0 12px 26px rgba(37, 40, 35, 0.07);
+}
+
+
+/* ----- Pencarian ----- */
+
+.category-search {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.category-search:hover {
+    border-color: #C8D7C0;
+}
+
+.category-search:focus-within {
+    box-shadow:
+        0 0 0 3px rgba(157, 186, 140, 0.15);
+}
+
+
+/* ----- Baris tabel ----- */
+
+.category-table tbody tr {
+    transition:
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.category-table tbody tr:hover {
+    background: #F6FAF3;
+
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+.category-name {
+    transition: color 0.15s ease;
+}
+
+.category-table tbody tr:hover .category-name {
+    color: #465C3E;
+}
+
+
+/* ----- Tombol aksi (edit / hapus) ----- */
+
+.category-action {
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.category-action:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 14px rgba(82, 106, 72, 0.14);
+}
+
+.category-action.delete:hover {
+    box-shadow:
+        0 6px 14px rgba(184, 92, 85, 0.14);
+}
+
+.category-action:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+
+/* ----- Modal: muncul halus ----- */
+
+@keyframes cm-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes cm-pop {
+    from {
+        opacity: 0;
+
+        transform: translateY(14px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateY(0) scale(1);
+    }
+}
+
+.category-modal-overlay.active {
+    animation: cm-fade 0.2s ease;
+}
+
+.category-modal-overlay.active .category-modal {
+    animation: cm-pop 0.25s ease;
+}
+
+.category-modal-close {
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.category-modal-close:hover {
+    transform: rotate(90deg);
+}
+
+.category-modal-button {
+    transition:
+        background 0.15s ease,
+        opacity 0.15s ease,
+        transform 0.15s ease;
+}
+
+.category-modal-button:hover {
+    transform: translateY(-1px);
+}
+
+.category-modal-button:active {
+    transform: translateY(0);
+}
+
+
+/* ----- Hormati pengaturan "kurangi animasi" ----- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .add-category-button span,
+    .category-card,
+    .category-action,
+    .category-modal-close,
+    .category-modal-button,
+    .category-modal-overlay.active,
+    .category-modal-overlay.active .category-modal {
+        animation: none;
+
+        transition: none;
+    }
+
+    .add-category-button:hover span,
+    .category-action:hover,
+    .category-modal-close:hover,
+    .category-modal-button:hover {
+        transform: none;
+    }
+}
+
+/* ----- Tombol x pada pencarian ----- */
+
+/* sembunyikan x bawaan browser agar tidak dobel */
+.category-search input::-webkit-search-cancel-button,
+.category-search input::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.category-search-clear {
+    width: 24px;
+    height: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: var(--background);
+    color: var(--text-muted);
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.category-search-clear[hidden] {
+    display: none;
+}
+
+.category-search-clear:hover {
+    background: var(--green-light);
+    color: var(--green-dark);
+
+    transform: scale(1.08);
+}
+
+.category-search-clear:active {
+    transform: scale(0.96);
+}
+
+.category-search-clear:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+/* layar sentuh: area tekan lebih besar */
+@media (pointer: coarse) {
+
+    .category-search-clear {
+        width: 32px;
+        height: 32px;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .category-search-clear {
+        transition: none;
+    }
+
+    .category-search-clear:hover,
+    .category-search-clear:active {
+        transform: none;
+    }
+
+}

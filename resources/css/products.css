@@ -1826,3 +1826,253 @@
 .product-action.bom.bom-warning {
     box-shadow: 0 0 0 2px #F0DFA8;
 }
+
+/* =========================
+   INTERAKTIF (HOVER / FOCUS / ANIMASI)
+   Hanya tampilan: tidak mengubah markup, route, atau JS.
+========================= */
+
+/* ----- Fokus keyboard yang jelas ----- */
+
+.add-product-button:focus-visible,
+.product-action:focus-visible,
+.variant-count-button:focus-visible,
+.add-variant-button:focus-visible,
+.product-modal-close:focus-visible,
+.product-cancel-button:focus-visible,
+.product-save-button:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* ----- Tombol "Tambah Produk Baru" ----- */
+
+.add-product-button span {
+    display: inline-block;
+
+    transition: transform 0.25s ease;
+}
+
+.add-product-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 18px rgba(82, 106, 72, 0.22);
+}
+
+.add-product-button:hover span {
+    transform: rotate(90deg);
+}
+
+.add-product-button:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+
+/* ----- Pencarian & filter ----- */
+
+.product-search,
+.product-filter-select {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.product-search:hover,
+.product-filter-select:hover {
+    border-color: #C8D7C0;
+}
+
+.product-search:focus-within,
+.product-filter-select:focus {
+    border-color: var(--green);
+
+    box-shadow:
+        0 0 0 3px rgba(157, 186, 140, 0.15);
+}
+
+.product-filter-select {
+    cursor: pointer;
+}
+
+
+/* ----- Baris tabel ----- */
+
+.product-table tbody tr {
+    transition:
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.product-table tbody tr:hover {
+    background: #F6FAF3;
+}
+
+.product-table tbody tr:hover td:first-child {
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+/* Baris yang melebar penuh (detail varian / "belum ada produk") tidak ikut menyala */
+.product-table tbody tr:has(td[colspan]):hover {
+    background: transparent;
+}
+
+.product-table tbody tr:has(td[colspan]):hover td:first-child {
+    box-shadow: none;
+}
+
+.product-info img {
+    transition: transform 0.2s ease;
+}
+
+.product-table tbody tr:hover .product-info img {
+    transform: scale(1.06);
+}
+
+.production-badge,
+.stock-status {
+    transition: transform 0.15s ease;
+}
+
+.product-table tbody tr:hover .production-badge,
+.product-table tbody tr:hover .stock-status {
+    transform: scale(1.05);
+}
+
+
+/* ----- Tombol aksi (varian / BOM / edit / hapus) ----- */
+
+.product-action:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 14px rgba(82, 106, 72, 0.14);
+}
+
+.product-action.delete:hover {
+    box-shadow:
+        0 6px 14px rgba(166, 92, 88, 0.16);
+}
+
+.product-action:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+.variant-count-button:hover {
+    transform: translateY(-1px);
+}
+
+.variant-count-button:active {
+    transform: translateY(0);
+}
+
+
+/* ----- Modal: muncul halus ----- */
+
+@keyframes pm-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes pm-pop {
+    from {
+        opacity: 0;
+
+        transform: translateY(14px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateY(0) scale(1);
+    }
+}
+
+.product-modal-overlay.active {
+    animation: pm-fade 0.2s ease;
+}
+
+.product-modal-overlay.active .product-modal {
+    animation: pm-pop 0.25s ease;
+}
+
+.product-modal-close:hover {
+    transform: rotate(90deg);
+}
+
+.product-cancel-button:active,
+.product-save-button:active {
+    transform: translateY(0);
+}
+
+.product-save-button:hover {
+    transform: translateY(-1px);
+}
+
+
+/* ----- Layar sentuh: tanpa efek hover yang menempel ----- */
+
+@media (hover: none) {
+
+    .add-product-button:hover,
+    .add-product-button:hover span,
+    .product-action:hover,
+    .variant-count-button:hover,
+    .product-save-button:hover,
+    .product-table tbody tr:hover .product-info img,
+    .product-table tbody tr:hover .production-badge,
+    .product-table tbody tr:hover .stock-status {
+        transform: none;
+    }
+}
+
+
+/* ----- Tablet: header dan tombol lebih nyaman ----- */
+
+@media (max-width: 900px) {
+
+    .products-page .page-header {
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+}
+
+
+/* ----- Hormati pengaturan "kurangi animasi" ----- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .add-product-button,
+    .add-product-button span,
+    .product-action,
+    .variant-count-button,
+    .product-info img,
+    .production-badge,
+    .stock-status,
+    .product-modal-close,
+    .product-save-button,
+    .product-modal-overlay.active,
+    .product-modal-overlay.active .product-modal {
+        animation: none;
+
+        transition: none;
+    }
+
+    .add-product-button:hover,
+    .add-product-button:hover span,
+    .product-action:hover,
+    .variant-count-button:hover,
+    .product-save-button:hover,
+    .product-modal-close:hover,
+    .product-table tbody tr:hover .product-info img,
+    .product-table tbody tr:hover .production-badge,
+    .product-table tbody tr:hover .stock-status {
+        transform: none;
+    }
+}

@@ -40,7 +40,16 @@
                 </svg>
 
                 <input type="text" id="categorySearch"
-                       placeholder="Cari kategori..." autocomplete="off">
+                    placeholder="Cari kategori..." autocomplete="off">
+
+                <button type="button" class="category-search-clear"
+                        id="categorySearchClear" aria-label="Hapus pencarian" hidden>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                        <path d="M18 6 6 18"/>
+                        <path d="m6 6 12 12"/>
+                    </svg>
+</button>
             </div>
         </div>
 
@@ -175,6 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tableBody           = document.getElementById('categoryTableBody');
     const searchInput         = document.getElementById('categorySearch');
     const emptyState          = document.getElementById('categoryEmptyState');
+    const searchClear         = document.getElementById('categorySearchClear');
 
     /* ---------- DATA DARI BLADE (lewat data attribute) ---------- */
 
@@ -256,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
         }
     });
-
+    
     /* ---------- SEARCH ---------- */
 
     function filterCategories() {
@@ -275,9 +285,28 @@ document.addEventListener('DOMContentLoaded', function () {
             : 'Kategori tidak ditemukan.';
 
         emptyState.style.display = visible === 0 ? 'block' : 'none';
+
+        // tombol x hanya muncul saat ada teks
+        searchClear.hidden = searchInput.value === '';
+    }
+
+    function clearSearch() {
+        searchInput.value = '';
+        filterCategories();
+        searchInput.focus();
     }
 
     searchInput.addEventListener('input', filterCategories);
+    searchClear.addEventListener('click', clearSearch);
+
+    // Esc pada kolom pencarian juga menghapus teks
+    searchInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && searchInput.value !== '') {
+            e.stopPropagation();
+            clearSearch();
+        }
+    });
+
     filterCategories();
 
     /* ---------- BUKA ULANG MODAL JIKA VALIDASI GAGAL ---------- */

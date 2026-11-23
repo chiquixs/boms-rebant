@@ -1182,3 +1182,278 @@
     letter-spacing: 0.02em;
     white-space: nowrap;
 }
+
+/* =========================
+   INTERAKTIF (HOVER / FOCUS / ANIMASI)
+   Hanya tampilan: tidak mengubah markup, route, atau JS.
+========================= */
+
+/* ----- Tombol "Kembali ke Master Produk" (hijau tua ciri khas sistem) ----- */
+
+.back-to-products,
+.back-to-products:visited {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 0;
+    padding: 10px 16px;
+
+    border-radius: 10px;
+
+    background: var(--green-dark);
+    color: var(--white);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.back-to-products:hover {
+    background: #465C3E;
+    color: var(--white);
+
+    transform: translateX(-3px);
+
+    box-shadow:
+        0 8px 18px rgba(82, 106, 72, 0.22);
+}
+
+.back-to-products:active {
+    transform: translateX(0);
+
+    box-shadow: none;
+}
+
+.back-to-products:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* ----- Fokus keyboard yang jelas ----- */
+
+.add-material-button:focus-visible,
+.bom-action:focus-visible,
+.material-modal-close:focus-visible,
+.material-cancel-button:focus-visible,
+.material-save-button:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+.material-method-option:focus-within .material-method-card {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* ----- Tombol "Tambah Bahan" ----- */
+
+.add-material-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 18px rgba(82, 106, 72, 0.2);
+}
+
+.add-material-button:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+
+/* ----- Kartu produk ----- */
+
+.bom-product-card {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.bom-product-card:hover {
+    border-color: #C8D7C0;
+
+    box-shadow:
+        0 12px 26px rgba(37, 40, 35, 0.06);
+}
+
+.bom-product-image {
+    transition: transform 0.25s ease;
+}
+
+.bom-product-card:hover .bom-product-image {
+    transform: scale(1.04);
+}
+
+
+/* ----- Baris tabel bahan ----- */
+
+.bom-table tbody tr {
+    transition:
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.bom-table tbody tr:hover {
+    background: #F6FAF3;
+}
+
+.bom-table tbody tr:hover td:first-child {
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+/* Baris "belum ada bahan" tidak ikut menyala */
+.bom-table tbody tr:has(td[colspan]):hover {
+    background: transparent;
+}
+
+.bom-table tbody tr:has(td[colspan]):hover td:first-child {
+    box-shadow: none;
+}
+
+.bom-method-badge {
+    transition: transform 0.15s ease;
+}
+
+.bom-table tbody tr:hover .bom-method-badge {
+    transform: scale(1.05);
+}
+
+
+/* ----- Tombol aksi (edit / hapus) ----- */
+
+.bom-action:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 14px rgba(82, 106, 72, 0.14);
+}
+
+.bom-action.delete:hover {
+    box-shadow:
+        0 6px 14px rgba(166, 92, 88, 0.16);
+}
+
+.bom-action:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+
+/* ----- Modal: muncul halus ----- */
+
+@keyframes bm-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes bm-pop {
+    from {
+        opacity: 0;
+
+        transform: translateY(14px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateY(0) scale(1);
+    }
+}
+
+.material-modal-overlay.active {
+    animation: bm-fade 0.2s ease;
+}
+
+.material-modal-overlay.active .material-modal {
+    animation: bm-pop 0.25s ease;
+}
+
+.material-modal-close:hover {
+    transform: rotate(90deg);
+}
+
+.material-cancel-button:active,
+.material-save-button:active {
+    transform: translateY(0);
+}
+
+.material-save-button:hover {
+    transform: translateY(-1px);
+}
+
+
+/* ----- Layar sentuh: tanpa efek hover yang menempel ----- */
+
+@media (hover: none) {
+
+    .back-to-products:hover,
+    .add-material-button:hover,
+    .bom-action:hover,
+    .material-save-button:hover,
+    .bom-product-card:hover .bom-product-image,
+    .bom-table tbody tr:hover .bom-method-badge {
+        transform: none;
+    }
+}
+
+
+/* ----- Mobile: tombol mudah dijangkau ----- */
+
+@media (max-width: 600px) {
+
+    .back-to-products {
+        width: 100%;
+
+        justify-content: center;
+    }
+
+    .add-material-button {
+        width: 100%;
+    }
+
+    .bom-actions {
+        flex-wrap: wrap;
+    }
+}
+
+
+/* ----- Hormati pengaturan "kurangi animasi" ----- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .back-to-products,
+    .add-material-button,
+    .bom-action,
+    .bom-product-card,
+    .bom-product-image,
+    .bom-method-badge,
+    .material-modal-close,
+    .material-save-button,
+    .material-modal-overlay.active,
+    .material-modal-overlay.active .material-modal {
+        animation: none;
+
+        transition: none;
+    }
+
+    .back-to-products:hover,
+    .add-material-button:hover,
+    .bom-action:hover,
+    .material-modal-close:hover,
+    .material-save-button:hover,
+    .bom-product-card:hover .bom-product-image,
+    .bom-table tbody tr:hover .bom-method-badge {
+        transform: none;
+    }
+}

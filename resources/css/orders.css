@@ -1315,3 +1315,395 @@
     }
 
 }
+
+
+
+/* =========================
+   INTERAKTIF (HOVER / FOCUS / ANIMASI)
+   Hanya tampilan: tidak mengubah markup, route, atau JS.
+========================= */
+
+/* ----- Fokus keyboard yang jelas ----- */
+
+.add-order-button:focus-visible,
+.action-button:focus-visible,
+.pagination button:focus-visible,
+.modal-close:focus-visible,
+.modal-cancel:focus-visible,
+.modal-save:focus-visible,
+.add-product-button:focus-visible,
+.remove-item-button:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* ----- Tombol "Tambah Order" ----- */
+
+.add-order-button svg {
+    transition: transform 0.25s ease;
+}
+
+.add-order-button:hover svg {
+    transform: rotate(90deg);
+}
+
+.add-order-button:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+
+/* ----- Kartu statistik ----- */
+
+.stat-card {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.stat-card:hover {
+    border-color: #C8D7C0;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 26px rgba(37, 40, 35, 0.07);
+}
+
+.stat-icon {
+    transition: transform 0.25s ease;
+}
+
+.stat-card:hover .stat-icon {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+
+/* ----- Pencarian & filter ----- */
+
+.search-box,
+.status-filter,
+.platform-filter {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.search-box:hover,
+.status-filter:hover,
+.platform-filter:hover {
+    border-color: #C8D7C0;
+}
+
+.status-filter,
+.platform-filter {
+    cursor: pointer;
+}
+
+
+/* ----- Baris tabel ----- */
+
+.orders-table tbody tr {
+    transition:
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.orders-table tbody tr:hover {
+    background: #F6FAF3;
+
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+/* Baris "Belum ada order" tidak ikut menyala */
+.orders-table tbody tr:has(td[colspan]):hover {
+    background: transparent;
+
+    box-shadow: none;
+}
+
+.order-id {
+    transition: color 0.15s ease;
+}
+
+.orders-table tbody tr:hover .order-id {
+    color: #465C3E;
+}
+
+.platform-badge,
+.order-status {
+    transition: transform 0.15s ease;
+}
+
+.orders-table tbody tr:hover .platform-badge,
+.orders-table tbody tr:hover .order-status {
+    transform: scale(1.05);
+}
+
+
+/* ----- Tombol aksi (detail / selesai) ----- */
+
+.action-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 14px rgba(82, 106, 72, 0.14);
+}
+
+.action-button:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+.action-button svg {
+    transition: transform 0.2s ease;
+}
+
+.action-button:hover svg {
+    transform: scale(1.12);
+}
+
+
+/* ----- Pagination ----- */
+
+.pagination button {
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.pagination button:hover:not(:disabled):not(.active) {
+    background: var(--green-light);
+
+    transform: translateY(-1px);
+}
+
+.pagination button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+
+/* ----- Modal: muncul halus ----- */
+
+@keyframes om-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes om-pop {
+    from {
+        opacity: 0;
+
+        transform: translateY(14px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-overlay.active {
+    animation: om-fade 0.2s ease;
+}
+
+.modal-overlay.active .order-modal {
+    animation: om-pop 0.25s ease;
+}
+
+.modal-close:hover {
+    transform: rotate(90deg);
+}
+
+.modal-cancel:active,
+.modal-save:active {
+    transform: translateY(0);
+}
+
+
+/* ----- Modal: item produk ----- */
+
+.order-item {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+
+    animation: om-pop 0.25s ease;
+}
+
+.order-item:hover,
+.order-item:focus-within {
+    border-color: #C8D7C0;
+
+    background: var(--white);
+
+    box-shadow:
+        0 6px 16px rgba(37, 40, 35, 0.05);
+}
+
+.add-product-button:active {
+    transform: translateY(0);
+}
+
+
+/* ----- Hormati pengaturan "kurangi animasi" ----- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .stat-card,
+    .stat-icon,
+    .action-button,
+    .action-button svg,
+    .add-order-button svg,
+    .pagination button,
+    .platform-badge,
+    .order-status,
+    .modal-close,
+    .order-item,
+    .modal-overlay.active,
+    .modal-overlay.active .order-modal {
+        animation: none;
+
+        transition: none;
+    }
+
+    .stat-card:hover,
+    .stat-card:hover .stat-icon,
+    .action-button:hover,
+    .action-button:hover svg,
+    .add-order-button:hover svg,
+    .modal-close:hover,
+    .orders-table tbody tr:hover .platform-badge,
+    .orders-table tbody tr:hover .order-status,
+    .pagination button:hover:not(:disabled):not(.active) {
+        transform: none;
+    }
+}
+
+/* =========================
+   SEARCH CLEAR (X) & RESET FILTER
+========================= */
+
+.order-tools {
+    flex-wrap: wrap;
+}
+
+.search-clear {
+    width: 20px;
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #EEEFEC;
+
+    color: #8B8E87;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.search-clear[hidden] {
+    display: none;
+}
+
+.search-clear:hover {
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    transform: scale(1.1);
+}
+
+.search-clear:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+.order-reset {
+    height: 40px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 0 14px;
+
+    border: 1px solid #DCE7D7;
+    border-radius: 10px;
+
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+
+    transition: 0.2s ease;
+}
+
+.order-reset svg {
+    flex-shrink: 0;
+
+    transition: transform 0.2s ease;
+}
+
+.order-reset:hover {
+    border-color: var(--green);
+
+    background: #E3EFE0;
+
+    transform: translateY(-1px);
+}
+
+.order-reset:hover svg {
+    transform: rotate(90deg);
+}
+
+.order-reset:active {
+    transform: translateY(0);
+}
+
+.order-reset:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .search-clear,
+    .order-reset,
+    .order-reset svg {
+        transition: none;
+    }
+
+    .search-clear:hover,
+    .order-reset:hover,
+    .order-reset:hover svg {
+        transform: none;
+    }
+}

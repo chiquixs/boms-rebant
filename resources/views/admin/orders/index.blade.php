@@ -183,13 +183,28 @@
                         <path d="m20 20-3.5-3.5" />
                     </svg>
 
-                    <input
-                        type="text"
-                        name="search"
-                        value="{{ request('search') }}"
-                        placeholder="Cari order ID...">
+                     <input
+                         type="text"
+                         name="search"
+                         value="{{ request('search') }}"
+                         placeholder="Cari order ID...">
 
-                </div>
+                    {{-- Hapus teks pencarian --}}
+                    <button type="button"
+                        class="search-clear"
+                        id="orderSearchClear"
+                        aria-label="Hapus pencarian"
+                        title="Hapus pencarian"
+                        @if (!request()->filled('search')) hidden @endif>
+                        <svg width="12" height="12" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor"
+                            stroke-width="2.4" stroke-linecap="round">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
+
+                 </div>
 
                 {{-- PLATFORM FILTER --}}
                 <select name="platform" class="platform-filter" onchange="this.form.submit()">
@@ -209,6 +224,19 @@
                     <option value="READY_TO_PACK" @selected(request('status')==='READY_TO_PACK' )>Ready to Pack</option>
                     <option value="COMPLETED" @selected(request('status')==='COMPLETED' )>Completed</option>
                 </select>
+
+                {{-- RESET FILTER (hanya muncul saat ada filter aktif) --}}
+               @if (request()->filled('search') || request()->filled('platform') || request()->filled('status'))
+                <a href="{{ route('admin.orders.index') }}" class="order-reset">
+                    <svg width="14" height="14" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                    Reset Filter
+                </a>
+                @endif
 
             </form>
 
@@ -619,6 +647,39 @@
 
 
 @push('scripts')
+
+<script>
+    (function () {
+
+        var input = document.querySelector('.search-box input[name="search"]');
+        var clear = document.getElementById('orderSearchClear');
+
+        if (!input || !clear) return;
+
+        function sync() {
+            clear.hidden = input.value.trim() === '';
+        }
+
+        input.addEventListener('input', sync);
+
+        clear.addEventListener('click', function () {
+
+            // Kalau pencarian sudah diterapkan ke daftar, muat ulang tanpa kata kunci
+            var hadApplied = input.defaultValue.trim() !== '';
+
+            input.value = '';
+            sync();
+
+            if (hadApplied) {
+                input.form.submit();
+                return;
+            }
+
+            input.focus();
+        });
+
+    })();
+</script>
 
 <script>
     // ==========================
