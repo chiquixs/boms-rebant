@@ -18,6 +18,8 @@ use Illuminate\Validation\ValidationException;
 
 class ProductionQueueController extends Controller
 {
+    private const CONTINUOUS_UNITS = ['ml', 'lt', 'kg', 'gr', 'mm', 'cm', 'm'];
+
     public function __construct(
         private readonly OrderStockService $orderStockService
     ) {}
@@ -74,17 +76,20 @@ class ProductionQueueController extends Controller
         ];
     }
 
+    private function isDiscreteMaterial(?RawMaterial $material): bool
+    {
+        $normalizedUnit = strtolower(trim($material?->unit ?? '-'));
+
+        return ! in_array($normalizedUnit, self::CONTINUOUS_UNITS, true);
+    }
+
     public function materials(ProductionRequest $productionRequest)
     {
         $product = $productionRequest->product()->with('group.materials.rawMaterial')->firstOrFail();
-        $remaining = max(0, $productionRequest->qty_requested - $productionRequest->total_produced);
 
-        $continuousUnits = ['ml', 'lt', 'kg', 'gr', 'mm', 'cm', 'm'];
-
-        $boms = $product->group->materials->map(function ($pm) use ($continuousUnits) {
+        $boms = $product->group->materials->map(function ($pm) {
             $rm = $pm->rawMaterial;
             $unit = $rm->unit ?? '-';
-            $normalizedUnit = strtolower(trim($unit));
 
             return [
                 'raw_material_id' => $pm->raw_material_id,
@@ -92,7 +97,7 @@ class ProductionQueueController extends Controller
                 'unit' => $unit,
                 'qty_per_unit' => (float) $pm->qty_per_unit,
                 'current_stock' => (float) ($rm->current_stock ?? 0),
-                'is_discrete' => ! in_array($normalizedUnit, $continuousUnits, true),
+                'is_discrete' => $this->isDiscreteMaterial($rm),
 
                 'usage_method' => $pm->usage_method,
                 'piece_length_cm' => $pm->piece_length_cm ? (float) $pm->piece_length_cm : null,
@@ -113,7 +118,7 @@ class ProductionQueueController extends Controller
             'qty_produced_this_session' => ['required', 'integer', 'min:0'],
             'finish' => ['required', 'boolean'],
             'notes' => ['nullable', 'string'],
-            'usages' => ['required', 'array'],
+            'usages' => ['present', 'array'],
             'usages.*.raw_material_id' => ['required', 'distinct', 'exists:raw_materials,id'],
             'usages.*.qty_used' => ['required', 'numeric', 'min:0'],
         ]);
@@ -156,14 +161,60 @@ class ProductionQueueController extends Controller
                 ]);
             }
 
-            $hasPositiveUsage = collect($data['usages'])->contains(
-                fn (array $usage): bool => (float) $usage['qty_used'] > 0
+            $usages = collect($data['usages'])
+                ->sortBy(fn (array $usage): int => (int) $usage['raw_material_id'])
+                ->values();
+
+            foreach ($usages as $usage) {
+                $rawQty = (float) $usage['qty_used'];
+                $roundedQty = round($rawQty, 3);
+
+                if ($rawQty > 0 && $roundedQty <= 0) {
+                    throw ValidationException::withMessages([
+                        'usages' => 'Jumlah pemakaian bahan baku minimal 0.001.',
+                    ]);
+                }
+            }
+
+            $hasPositiveUsage = $usages->contains(
+                fn (array $usage): bool => round((float) $usage['qty_used'], 3) > 0
             );
 
             if ($qtyThisSession === 0 && $hasPositiveUsage) {
                 throw ValidationException::withMessages([
                     'qty_produced_this_session' => 'Pemakaian bahan baku harus disertai minimal 1 pcs hasil produksi pada sesi ini.',
                 ]);
+            }
+
+            $bomMaterialIds = $pr->product()
+                ->with('group.materials')
+                ->firstOrFail()
+                ->group
+                ?->materials
+                ?->pluck('raw_material_id')
+                ?->map(fn ($id): int => (int) $id)
+                ?? collect();
+
+            if ($bomMaterialIds->isNotEmpty()) {
+                $hasInvalidMaterial = $usages->contains(
+                    fn (array $usage): bool => ! $bomMaterialIds->contains((int) $usage['raw_material_id'])
+                );
+
+                if ($hasInvalidMaterial) {
+                    throw ValidationException::withMessages([
+                        'usages' => 'Ada bahan baku yang tidak terdaftar pada BOM produk ini. Muat ulang halaman lalu coba lagi.',
+                    ]);
+                }
+
+                if ($qtyThisSession > 0 && ! $hasPositiveUsage) {
+                    $hasPriorUsage = ProductionLogMaterial::where('production_request_id', $pr->id)->exists();
+
+                    if (! $hasPriorUsage) {
+                        throw ValidationException::withMessages([
+                            'usages' => 'Minimal satu bahan baku harus memiliki jumlah pemakaian lebih dari 0.',
+                        ]);
+                    }
+                }
             }
 
             $log = null;
@@ -178,10 +229,10 @@ class ProductionQueueController extends Controller
                     'notes' => $data['notes'] ?? null,
                 ]);
 
-                // 2. Catat pemakaian bahan baku + kurangi stok
-                foreach ($data['usages'] as $usage) {
-
-                    $qtyUsed = (float) $usage['qty_used'];
+                // 2. Catat pemakaian bahan baku + kurangi stok (terurut per raw_material_id untuk mencegah deadlock)
+                foreach ($usages as $usage) {
+                    $rawQty = (float) $usage['qty_used'];
+                    $qtyUsed = round($rawQty, 3);
 
                     if ($qtyUsed <= 0) {
                         continue;
@@ -189,9 +240,17 @@ class ProductionQueueController extends Controller
 
                     $material = RawMaterial::where('id', $usage['raw_material_id'])->lockForUpdate()->firstOrFail();
 
-                    if ($qtyUsed > (float) $material->current_stock) {
+                    if ($this->isDiscreteMaterial($material) && abs($rawQty - round($rawQty)) > 0.000001) {
                         throw ValidationException::withMessages([
-                            'usages' => 'Pemakaian '.$material->name.' melebihi stok tersedia ('.(float) $material->current_stock.' '.$material->unit.').',
+                            'usages' => 'Pemakaian '.$material->name.' ('.$material->unit.') harus berupa bilangan bulat.',
+                        ]);
+                    }
+
+                    $qtyBefore = round((float) $material->current_stock, 3);
+
+                    if ($qtyUsed > $qtyBefore) {
+                        throw ValidationException::withMessages([
+                            'usages' => 'Pemakaian '.$material->name.' melebihi stok tersedia ('.$qtyBefore.' '.$material->unit.').',
                         ]);
                     }
 
@@ -203,8 +262,7 @@ class ProductionQueueController extends Controller
                         'qty_used' => $qtyUsed,
                     ]);
 
-                    $qtyBefore = $material->current_stock;
-                    $qtyAfter = $qtyBefore - $qtyUsed;
+                    $qtyAfter = max(0.0, round($qtyBefore - $qtyUsed, 3));
 
                     $material->update(['current_stock' => $qtyAfter]);
 

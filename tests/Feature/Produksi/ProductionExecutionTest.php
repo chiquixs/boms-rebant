@@ -8,6 +8,7 @@ use App\Models\ProductGroup;
 use App\Models\ProductionLog;
 use App\Models\ProductionLogMaterial;
 use App\Models\ProductionRequest;
+use App\Models\ProductMaterial;
 use App\Models\ProductStockMovement;
 use App\Models\RawMaterial;
 use App\Models\RawMaterialMovement;
@@ -102,6 +103,19 @@ class ProductionExecutionTest extends TestCase
             $table->decimal('avg_daily_usage', 12, 3)->default(0);
             $table->decimal('reorder_point', 12, 3)->default(0);
             $table->boolean('is_active')->default(true);
+            $table->timestamps();
+        });
+
+        Schema::create('product_materials', function (Blueprint $table): void {
+            $table->id();
+            $table->foreignId('group_id')->constrained('product_groups')->cascadeOnDelete();
+            $table->foreignId('raw_material_id')->constrained('raw_materials')->restrictOnDelete();
+            $table->string('usage_method', 10)->default('AREA');
+            $table->decimal('piece_length_cm', 8, 2)->nullable();
+            $table->decimal('piece_width_cm', 8, 2)->nullable();
+            $table->unsignedSmallInteger('piece_count')->default(1);
+            $table->decimal('waste_percent', 5, 2)->default(0);
+            $table->decimal('qty_per_unit', 12, 6);
             $table->timestamps();
         });
 
@@ -260,6 +274,26 @@ class ProductionExecutionTest extends TestCase
             'safety_stock' => 100,
             'target_stock' => 500,
             'is_active' => true,
+        ]);
+
+        ProductMaterial::create([
+            'group_id' => $group->id,
+            'raw_material_id' => $this->mdf->id,
+            'usage_method' => 'AREA',
+            'piece_length_cm' => 20,
+            'piece_width_cm' => 30,
+            'piece_count' => 1,
+            'waste_percent' => 10,
+            'qty_per_unit' => 0.1,
+        ]);
+
+        ProductMaterial::create([
+            'group_id' => $group->id,
+            'raw_material_id' => $this->paint->id,
+            'usage_method' => 'FIXED',
+            'piece_count' => 1,
+            'waste_percent' => 0,
+            'qty_per_unit' => 20,
         ]);
     }
 
@@ -430,6 +464,193 @@ class ProductionExecutionTest extends TestCase
             ->get(route('produksi.queue.index'))
             ->assertOk()
             ->assertSee('kurang dari jumlah yang diminta')
+            ->assertSee('Laporan shortage telah tercatat dan dikirim ke Admin Procurement.')
+            ->assertSee('return row.short;', false)
+            ->assertDontSee('Simulasi: laporan shortage belum tersimpan ke database.')
             ->assertDontSee('Tetap selesaikan produksi?');
+    }
+
+    public function test_product_without_bom_can_execute_with_empty_usages(): void
+    {
+        $groupNoBom = ProductGroup::create([
+            'code' => 'NO-BOM',
+            'name' => 'Produk Tanpa BOM',
+            'category_id' => $this->product->group->category_id,
+            'production_method' => 'MTS',
+            'price' => 15000,
+            'is_active' => true,
+        ]);
+
+        $productNoBom = Product::create([
+            'group_id' => $groupNoBom->id,
+            'sku' => 'NOBOM-1',
+            'variant_name' => 'Default',
+            'current_stock' => 0,
+            'is_active' => true,
+        ]);
+
+        $pr = ProductionRequest::create([
+            'product_id' => $productNoBom->id,
+            'requested_by' => $this->productionUser->id,
+            'request_no' => 'PR-00004',
+            'source' => ProductionRequest::SOURCE_RESTOCK,
+            'qty_requested' => 3,
+            'qty_produced' => 0,
+            'status' => ProductionRequest::STATUS_WAITING,
+        ]);
+
+        $this->actingAs($this->productionUser)
+            ->postJson(route('produksi.queue.execute', $pr->request_no), [
+                'qty_produced_this_session' => 3,
+                'finish' => true,
+                'usages' => [],
+            ])
+            ->assertOk()
+            ->assertJson(['success' => true]);
+
+        $pr->refresh();
+        $this->assertSame(ProductionRequest::STATUS_COMPLETED, $pr->status);
+        $this->assertSame(3, $productNoBom->fresh()->current_stock);
+    }
+
+    public function test_tiny_sub_milligram_usage_is_rejected_and_three_decimal_precision_is_saved(): void
+    {
+        $pr = ProductionRequest::create([
+            'product_id' => $this->product->id,
+            'requested_by' => $this->productionUser->id,
+            'request_no' => 'PR-00005',
+            'source' => ProductionRequest::SOURCE_RESTOCK,
+            'qty_requested' => 2,
+            'qty_produced' => 0,
+            'status' => ProductionRequest::STATUS_WAITING,
+        ]);
+
+        $this->actingAs($this->productionUser)
+            ->postJson(route('produksi.queue.execute', $pr->request_no), [
+                'qty_produced_this_session' => 1,
+                'finish' => false,
+                'usages' => [
+                    ['raw_material_id' => $this->mdf->id, 'qty_used' => 0],
+                    ['raw_material_id' => $this->paint->id, 'qty_used' => 0.0004],
+                ],
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['usages']);
+
+        $this->actingAs($this->productionUser)
+            ->postJson(route('produksi.queue.execute', $pr->request_no), [
+                'qty_produced_this_session' => 1,
+                'finish' => false,
+                'usages' => [
+                    ['raw_material_id' => $this->paint->id, 'qty_used' => 12.3456],
+                    ['raw_material_id' => $this->mdf->id, 'qty_used' => 1],
+                ],
+            ])
+            ->assertOk();
+
+        $paintLog = ProductionLogMaterial::where('production_request_id', $pr->id)
+            ->where('raw_material_id', $this->paint->id)
+            ->firstOrFail();
+
+        $this->assertEqualsWithDelta(12.346, (float) $paintLog->qty_used, 0.0001);
+        $this->assertEqualsWithDelta(487.654, (float) $this->paint->fresh()->current_stock, 0.0001);
+        $this->assertEqualsWithDelta(9.0, (float) $this->mdf->fresh()->current_stock, 0.0001);
+    }
+
+    public function test_discrete_fractional_usage_and_non_bom_material_are_rejected(): void
+    {
+        $unrelated = RawMaterial::create([
+            'code' => 'GLUE-01',
+            'name' => 'Lem Kayu',
+            'unit' => 'pcs',
+            'material_type' => 'NON_SHEET',
+            'current_stock' => 20,
+            'is_active' => true,
+        ]);
+
+        $pr = ProductionRequest::create([
+            'product_id' => $this->product->id,
+            'requested_by' => $this->productionUser->id,
+            'request_no' => 'PR-00006',
+            'source' => ProductionRequest::SOURCE_RESTOCK,
+            'qty_requested' => 2,
+            'qty_produced' => 0,
+            'status' => ProductionRequest::STATUS_WAITING,
+        ]);
+
+        $this->actingAs($this->productionUser)
+            ->postJson(route('produksi.queue.execute', $pr->request_no), [
+                'qty_produced_this_session' => 1,
+                'finish' => false,
+                'usages' => [
+                    ['raw_material_id' => $this->mdf->id, 'qty_used' => 1.5],
+                ],
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['usages']);
+
+        $this->actingAs($this->productionUser)
+            ->postJson(route('produksi.queue.execute', $pr->request_no), [
+                'qty_produced_this_session' => 1,
+                'finish' => false,
+                'usages' => [
+                    ['raw_material_id' => $unrelated->id, 'qty_used' => 1],
+                ],
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['usages']);
+    }
+
+    public function test_all_zero_usages_rejected_on_initial_production_but_allowed_when_finishing_from_leftover_session(): void
+    {
+        $pr = ProductionRequest::create([
+            'product_id' => $this->product->id,
+            'requested_by' => $this->productionUser->id,
+            'request_no' => 'PR-00007',
+            'source' => ProductionRequest::SOURCE_RESTOCK,
+            'qty_requested' => 2,
+            'qty_produced' => 0,
+            'status' => ProductionRequest::STATUS_WAITING,
+        ]);
+
+        // Sesi awal dengan semua bahan 0 untuk produk yang punya BOM harus ditolak
+        $this->actingAs($this->productionUser)
+            ->postJson(route('produksi.queue.execute', $pr->request_no), [
+                'qty_produced_this_session' => 1,
+                'finish' => false,
+                'usages' => [
+                    ['raw_material_id' => $this->mdf->id, 'qty_used' => 0],
+                    ['raw_material_id' => $this->paint->id, 'qty_used' => 0],
+                ],
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors(['usages']);
+
+        // Sesi 1 memotong 1 lembar utuh
+        $this->actingAs($this->productionUser)
+            ->postJson(route('produksi.queue.execute', $pr->request_no), [
+                'qty_produced_this_session' => 1,
+                'finish' => false,
+                'usages' => [
+                    ['raw_material_id' => $this->mdf->id, 'qty_used' => 1],
+                    ['raw_material_id' => $this->paint->id, 'qty_used' => 0],
+                ],
+            ])
+            ->assertOk();
+
+        // Sesi 2 menyelesaikan sisa 1 pcs memakai sisa potongan dari Sesi 1 (0 pengurangan stok baru)
+        $this->actingAs($this->productionUser)
+            ->postJson(route('produksi.queue.execute', $pr->request_no), [
+                'qty_produced_this_session' => 1,
+                'finish' => true,
+                'usages' => [
+                    ['raw_material_id' => $this->mdf->id, 'qty_used' => 0],
+                    ['raw_material_id' => $this->paint->id, 'qty_used' => 0],
+                ],
+            ])
+            ->assertOk();
+
+        $this->assertSame(ProductionRequest::STATUS_COMPLETED, $pr->fresh()->status);
+        $this->assertEqualsWithDelta(9.0, (float) $this->mdf->fresh()->current_stock, 0.0001);
     }
 }
