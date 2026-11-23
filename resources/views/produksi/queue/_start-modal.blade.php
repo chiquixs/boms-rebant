@@ -210,7 +210,7 @@
 
         function fmt(n) {
             return Number(n).toLocaleString('id-ID', {
-                maximumFractionDigits: 2
+                maximumFractionDigits: 3
             });
         }
 
@@ -258,17 +258,28 @@
                 return;
             }
 
-            const anyShort = materials.some(function(m) {
-                return m.qty_per_unit * state.item.qty_requested > m.current_stock;
+            const rows = materials.map(function(m) {
+                const rawNeed = m.qty_per_unit * state.item.qty_requested;
+                const need = m.is_discrete ?
+                    Math.ceil(rawNeed) :
+                    Math.round(rawNeed * 1000) / 1000;
+
+                return {
+                    material: m,
+                    need: need,
+                    short: need > m.current_stock
+                };
             });
 
-            els.materialBody.innerHTML = materials.map(function(m, i) {
+            const anyShort = rows.some(function(row) {
+                return row.short;
+            });
 
-                const need = m.is_discrete ?
-                    Math.ceil(m.qty_per_unit * state.item.qty_requested) :
-                    Math.round(m.qty_per_unit * state.item.qty_requested * 100) / 100;
+            els.materialBody.innerHTML = rows.map(function(row, i) {
 
-                const short = need > m.current_stock;
+                const m = row.material;
+                const need = row.need;
+                const short = row.short;
 
                 return '<tr>' +
                     '<td class="pe-col-no">' + (i + 1) + '</td>' +

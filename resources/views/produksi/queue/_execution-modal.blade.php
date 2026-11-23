@@ -200,7 +200,7 @@
                     </div>
 
                     <p class="pe-note" id="peShortageNote" hidden>
-                        Simulasi: laporan shortage belum tersimpan ke database.
+                        Laporan shortage telah tercatat dan dikirim ke Admin Procurement.
                     </p>
 
                 </section>
@@ -539,13 +539,13 @@
             });
         }
 
-        function round2(n) {
-            return Math.round(n * 100) / 100;
+        function round3(n) {
+            return Math.round(n * 1000) / 1000;
         }
 
         function fmt(n) {
             return Number(n).toLocaleString('id-ID', {
-                maximumFractionDigits: 2
+                maximumFractionDigits: 3
             });
         }
 
@@ -565,11 +565,25 @@
         // Estimasi kebutuhan = qty_per_unit x sisa target produksi
         function needOf(material) {
             const raw = material.qty_per_unit * state.planQty;
-            return material.is_discrete ? Math.ceil(raw) : round2(raw);
+            return material.is_discrete ? Math.ceil(raw) : round3(raw);
         }
 
         function isShort(material) {
             return needOf(material) > material.current_stock;
+        }
+
+        function formatUsageHint(m) {
+            if (isSheetMaterial(m)) {
+                return 'Estimasi konsumsi ' + fmt(theoreticalNeedOf(m)) + ' ' + m.unit +
+                    ' (' + fmt(piecesNeeded(m)) + ' potongan) \u00B7 rekomendasi ambil ' + fmt(needOf(m)) + ' ' + m.unit + ' utuh';
+            }
+
+            if (m.is_discrete) {
+                return 'Kebutuhan teoritis ' + fmt(theoreticalNeedOf(m)) + ' ' + m.unit +
+                    ' \u00B7 disarankan ambil ' + fmt(needOf(m)) + ' ' + m.unit + ' utuh';
+            }
+
+            return 'Estimasi: ' + fmt(needOf(m)) + ' ' + m.unit;
         }
 
 
@@ -748,7 +762,7 @@
             els.shortage.hidden = shortList.length === 0;
 
             els.shortageText.textContent = 'Kekurangan ' + shortList.map(function(m) {
-                return m.name + ' sebanyak ' + fmt(round2(needOf(m) - m.current_stock)) + ' ' + m.unit;
+                return m.name + ' sebanyak ' + fmt(round3(needOf(m) - m.current_stock)) + ' ' + m.unit;
             }).join(', ') + '.';
         }
 
@@ -757,19 +771,13 @@
             // 2. Cek material
             renderCheckTable();
 
-            // 3. Pemakaian aktual (prefill: kebutuhan, maksimal sebesar stok)
+            // 3. Pemakaian aktual (prefill mengikuti kebutuhan rencana produksi)
             els.usageList.innerHTML = rows.map(function(m) {
 
-                const prefill = Math.min(needOf(m), m.is_discrete ? Math.floor(m.current_stock) : m.current_stock);
+                const prefill = needOf(m);
                 const step = m.is_discrete ? '1' : 'any';
                 const inputMode = m.is_discrete ? 'numeric' : 'decimal';
-
-                const hintText = isSheetMaterial(m) ?
-                    'Estimasi konsumsi ' + fmt(theoreticalNeedOf(m)) + ' ' + esc(m.unit) +
-                    ' (' + fmt(piecesNeeded(m)) + ' potongan) &middot; rekomendasi ambil ' + fmt(needOf(m)) + ' ' + esc(m.unit) + ' utuh' :
-                    (m.is_discrete ?
-                        'Estimasi: ' + fmt(needOf(m)) + ' ' + esc(m.unit) :
-                        'Estimasi: ' + fmt(needOf(m)) + ' ' + esc(m.unit));
+                const hintText = formatUsageHint(m);
 
                 return '<div class="pe-usage-row">' +
                     '<label for="peUsage' + m.raw_material_id + '">' + esc(m.name) + '</label>' +
@@ -783,7 +791,7 @@
                     ' value="' + prefill + '">' +
                     '<span>' + esc(m.unit) + '</span>' +
                     '</div>' +
-                    '<small class="pe-hint">' + hintText + '</small>' +
+                    '<small class="pe-hint">' + esc(hintText) + '</small>' +
                     '<small class="pe-field-error" data-error-for="' + m.raw_material_id + '" hidden></small>' +
                     '</div>' +
                     '</div>';
@@ -839,14 +847,10 @@
 
                 const hintEl = input.closest('.pe-usage-row').querySelector('.pe-hint');
 
-                hintEl.textContent = material.is_discrete ?
-                    'Kebutuhan teoritis ' + fmt(theoreticalNeedOf(material)) + ' ' + esc(material.unit) +
-                    ' \u00B7 disarankan ambil ' + fmt(needOf(material)) + ' ' + esc(material.unit) + ' utuh' :
-                    'Estimasi: ' + fmt(needOf(material)) + ' ' + esc(material.unit);
+                hintEl.textContent = formatUsageHint(material);
 
                 if (input.dataset.touched !== '1') {
-                    const prefill = Math.min(needOf(material), material.is_discrete ? Math.floor(material.current_stock) : material.current_stock);
-                    input.value = prefill;
+                    input.value = needOf(material);
                 }
             });
         }
@@ -915,9 +919,9 @@
             renderMaterials();
             showContent();
 
-            const first = els.usageList.querySelector('input');
-
-            if (first) first.focus();
+            if (els.qty) {
+                els.qty.focus();
+            }
         }
 
         function open(item) {
@@ -1015,6 +1019,8 @@
                     message = 'Wajib diisi.';
                 } else if (!isFinite(value) || value < 0) {
                     message = 'Isi angka 0 atau lebih.';
+                } else if (value > 0 && round3(value) <= 0) {
+                    message = 'Jumlah pemakaian minimal 0,001 ' + material.unit + '.';
                 } else if (material.is_discrete && !Number.isInteger(value)) {
                     message = 'Satuan ' + material.unit + ' harus bilangan bulat (tidak bisa pecahan).';
                 } else if (value > material.current_stock) {
@@ -1184,8 +1190,7 @@
                             qty_planned: u.qty_planned,
                             qty_used: u.qty_used
                         };
-                    }),
-                    simulated: true
+                    })
                 }
             }));
 
@@ -1241,8 +1246,7 @@
                         return Object.assign({
                             name: m.name
                         }, it);
-                    }),
-                    simulated: true
+                    })
                 }
             }));
         }
