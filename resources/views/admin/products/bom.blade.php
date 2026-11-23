@@ -293,7 +293,10 @@
                             <option
                                 value="{{ $raw->id }}"
                                 data-unit="{{ $raw->unit }}"
+                                data-type="{{ $raw->material_type }}"
+                                data-method="{{ $raw->isSheet() ? 'area' : 'fix' }}"
                                 data-sheet="{{ $raw->has_sheet_size ? '1' : '0' }}"
+                                data-sheet-size="{{ $raw->has_sheet_size ? ((float) $raw->sheet_length_cm) . ' × ' . ((float) $raw->sheet_width_cm) . ' cm' : '' }}"
                             >
                                 {{ $raw->name }} ({{ $raw->code }})
                             </option>
@@ -331,7 +334,7 @@
 
 
                 {{-- =========================
-                    METHOD
+                    METHOD (AUTO FROM RAW MATERIAL)
                 ========================= --}}
                 <div class="material-form-group">
 
@@ -339,46 +342,13 @@
                         Metode Kebutuhan
                     </label>
 
-                    <div class="material-method-options">
-
-                        <label class="material-method-option">
-
-                            <input type="radio" name="usage_method" value="fix" checked>
-
-                            <span class="material-method-card">
-
-                                <strong>
-                                    Fix
-                                </strong>
-
-                                <small>
-                                    Jumlah bahan tetap
-                                </small>
-
-                            </span>
-
-                        </label>
-
-
-                        <label class="material-method-option">
-
-                            <input type="radio" name="usage_method" value="area">
-
-                            <span class="material-method-card">
-
-                                <strong>
-                                    Area
-                                </strong>
-
-                                <small>
-                                    Berdasarkan ukuran potongan
-                                </small>
-
-                            </span>
-
-                        </label>
-
+                    <div class="material-unit-preview" id="materialMethodPreview">
+                        Pilih bahan terlebih dahulu
                     </div>
+
+                    <span class="material-field-helper">
+                        Metode ditentukan otomatis dari tipe bahan di Master Bahan Mentah (Non-Sheet = Fix, Sheet = Area).
+                    </span>
 
                 </div>
 
@@ -544,13 +514,24 @@ document.addEventListener('DOMContentLoaded', function () {
     const tableBody = document.getElementById('bomMaterialTableBody');
     const deleteForm = document.getElementById('deleteMaterialForm');
 
+    const materialMethodPreview = document.getElementById('materialMethodPreview');
+
+    function getSelectedOption() {
+        return materialName.options[materialName.selectedIndex] || null;
+    }
+
     function getSelectedMethod() {
-        const selected = document.querySelector('input[name="usage_method"]:checked');
-        return selected ? selected.value : 'fix';
+        const option = getSelectedOption();
+
+        if (!materialName.value || !option) {
+            return '';
+        }
+
+        return option.dataset.method || '';
     }
 
     function updateMaterialUnit() {
-        const option = materialName.options[materialName.selectedIndex];
+        const option = getSelectedOption();
 
         if (materialName.value && option) {
             materialUnitPreview.textContent = option.dataset.unit;
@@ -561,29 +542,58 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Input yang disabled tidak ikut terkirim ke server
-    function updateMaterialMethodFields() {
-        const isFix = getSelectedMethod() === 'fix';
+    function updateMaterialMethodPreview() {
+        const option = getSelectedOption();
 
-        fixFields.classList.toggle('hidden', !isFix);
-        areaFields.classList.toggle('hidden', isFix);
-
-        materialQuantity.disabled = !isFix;
-        pieceLength.disabled = isFix;
-        pieceWidth.disabled = isFix;
-        pieceCount.disabled = isFix;
-        wastePercent.disabled = isFix;
-    }
-
-    function setMaterialMethod(method) {
-        const radio = document.querySelector(
-            `input[name="usage_method"][value="${method}"]`
-        );
-
-        if (radio) {
-            radio.checked = true;
+        if (!materialName.value || !option) {
+            materialMethodPreview.textContent = 'Pilih bahan terlebih dahulu';
+            materialMethodPreview.classList.remove('selected');
+            return;
         }
 
+        materialMethodPreview.innerHTML = '';
+
+        const isArea = option.dataset.method === 'area';
+        const badge = document.createElement('span');
+        badge.className = isArea ? 'bom-method-badge area' : 'bom-method-badge fix';
+        badge.textContent = isArea ? 'Area' : 'Fix';
+
+        const desc = document.createElement('span');
+        desc.style.marginLeft = '8px';
+
+        if (isArea) {
+            const sheetInfo = option.dataset.sheet === '1' && option.dataset.sheetSize
+                ? ` — Ukuran lembar ${option.dataset.sheetSize}`
+                : ' — Ukuran lembar belum lengkap di Master Bahan Mentah';
+            desc.textContent = `Otomatis (Sheet)${sheetInfo}`;
+        } else {
+            desc.textContent = 'Otomatis (Non-Sheet) — Jumlah bahan tetap per unit';
+        }
+
+        materialMethodPreview.appendChild(badge);
+        materialMethodPreview.appendChild(desc);
+        materialMethodPreview.classList.add('selected');
+    }
+
+    // Input yang disabled tidak ikut terkirim ke server
+    function updateMaterialMethodFields() {
+        const method = getSelectedMethod();
+        const isFix = method === 'fix';
+        const isArea = method === 'area';
+
+        fixFields.classList.toggle('hidden', !isFix);
+        areaFields.classList.toggle('hidden', !isArea);
+
+        materialQuantity.disabled = !isFix;
+        pieceLength.disabled = !isArea;
+        pieceWidth.disabled = !isArea;
+        pieceCount.disabled = !isArea;
+        wastePercent.disabled = !isArea;
+    }
+
+    function syncMaterialSelection() {
+        updateMaterialUnit();
+        updateMaterialMethodPreview();
         updateMaterialMethodFields();
     }
 
@@ -603,8 +613,7 @@ document.addEventListener('DOMContentLoaded', function () {
         materialForm.action = materialForm.dataset.storeUrl;
         methodOverride.disabled = true;
 
-        setMaterialMethod('fix');
-        updateMaterialUnit();
+        syncMaterialSelection();
 
         materialModalTitle.textContent = 'Tambah Bahan Baku';
         materialSaveButton.textContent = 'Simpan Bahan';
@@ -619,17 +628,24 @@ document.addEventListener('DOMContentLoaded', function () {
         methodOverride.disabled = false;
 
         materialName.value = row.dataset.materialId;
-        updateMaterialUnit();
+        syncMaterialSelection();
 
-        setMaterialMethod(row.dataset.method);
+        const method = getSelectedMethod();
 
-        if (row.dataset.method === 'fix') {
-            materialQuantity.value = row.dataset.quantity;
-        } else {
-            pieceLength.value = row.dataset.pieceLength;
-            pieceWidth.value = row.dataset.pieceWidth;
-            pieceCount.value = row.dataset.pieceCount;
-            wastePercent.value = row.dataset.wastePercent;
+        if (method === 'fix') {
+            materialQuantity.value = row.dataset.method === 'fix' ? (row.dataset.quantity || '') : '';
+        } else if (method === 'area') {
+            if (row.dataset.method === 'area') {
+                pieceLength.value = row.dataset.pieceLength || '';
+                pieceWidth.value = row.dataset.pieceWidth || '';
+                pieceCount.value = row.dataset.pieceCount || '1';
+                wastePercent.value = row.dataset.wastePercent || '0';
+            } else {
+                pieceLength.value = '';
+                pieceWidth.value = '';
+                pieceCount.value = '1';
+                wastePercent.value = '0';
+            }
         }
 
         materialModalTitle.textContent = 'Edit Bahan Baku';
@@ -654,11 +670,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    materialName.addEventListener('change', updateMaterialUnit);
-
-    document.querySelectorAll('input[name="usage_method"]').forEach(function (radio) {
-        radio.addEventListener('change', updateMaterialMethodFields);
-    });
+    materialName.addEventListener('change', syncMaterialSelection);
 
     // EDIT & HAPUS
     tableBody.addEventListener('click', function (event) {
@@ -691,16 +703,15 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const option = materialName.options[materialName.selectedIndex];
+        const option = getSelectedOption();
 
-        if (getSelectedMethod() === 'area' && option.dataset.sheet !== '1') {
+        if (getSelectedMethod() === 'area' && (!option || option.dataset.sheet !== '1')) {
             event.preventDefault();
-            alert('Metode Area hanya untuk bahan yang punya ukuran lembar. Lengkapi ukuran lembar di Master Bahan Mentah.');
+            alert('Bahan tipe lembar (Area) belum memiliki ukuran lembar. Lengkapi ukuran lembar di Master Bahan Mentah.');
         }
     });
 
-    updateMaterialUnit();
-    updateMaterialMethodFields();
+    syncMaterialSelection();
 
 });
 </script>

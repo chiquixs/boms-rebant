@@ -1103,9 +1103,16 @@
                     return;
                 }
 
-                if (totalProduced < state.item.qty_requested &&
-                    !window.confirm('Total hasil ' + totalProduced + ' pcs masih di bawah target ' +
-                        state.item.qty_requested + ' pcs. Tetap selesaikan produksi?')) {
+                if (totalProduced < state.item.qty_requested) {
+
+                    els.qtyGroup.classList.add('invalid');
+                    els.qtyError.textContent =
+                        'Total hasil produksi (' + totalProduced + ' pcs) kurang dari jumlah yang diminta (' +
+                        state.item.qty_requested + ' pcs). Lengkapi hingga ' + state.item.qty_requested +
+                        ' pcs atau gunakan Simpan Progres.';
+                    els.qtyError.hidden = false;
+                    els.qty.focus();
+
                     return;
                 }
 
@@ -1275,6 +1282,8 @@
         });
 
         els.qty.addEventListener('input', function() {
+            els.qtyGroup.classList.remove('invalid');
+            els.qtyError.hidden = true;
             updateQtyHint();
             updateEstimatesFromQty();
         });

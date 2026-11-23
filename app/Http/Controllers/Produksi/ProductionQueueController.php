@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Produksi;
 
 use App\Http\Controllers\Controller;
-use App\Models\ProductionRequest;
 use App\Models\MaterialShortage;
+use App\Models\Product;
 use App\Models\ProductionLog;
 use App\Models\ProductionLogMaterial;
+use App\Models\ProductionRequest;
 use App\Models\ProductStockMovement;
 use App\Models\RawMaterial;
 use App\Models\RawMaterialMovement;
 use App\Services\OrderStockService;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use App\Models\Product;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class ProductionQueueController extends Controller
 {
@@ -25,11 +26,11 @@ class ProductionQueueController extends Controller
     {
         $requests = ProductionRequest::with(['product.group.category', 'orderItem'])
             ->get()
-            ->map(fn($r) => $this->format($r))
+            ->map(fn ($r) => $this->format($r))
             ->sortBy([
-                fn($a, $b) => $this->priorityOf($a) <=> $this->priorityOf($b),
-                fn($a, $b) => $a['created_at'] <=> $b['created_at'],
-                fn($a, $b) => $a['id'] <=> $b['id'],
+                fn ($a, $b) => $this->priorityOf($a) <=> $this->priorityOf($b),
+                fn ($a, $b) => $a['created_at'] <=> $b['created_at'],
+                fn ($a, $b) => $a['id'] <=> $b['id'],
             ])
             ->values();
 
@@ -47,28 +48,28 @@ class ProductionQueueController extends Controller
         $group = $product?->group;
 
         return [
-            'id'            => $r->id,
-            'request_no'    => $r->request_no,
-            'source'        => $r->source,
-            'product_name'  => $group->name ?? '-',
-            'variant_name'  => $product->variant_name ?? null,
-            'sku'           => $product->sku ?? '-',
-            'image_url'     => $product->image_url ?? $group->image_url ?? null,
+            'id' => $r->id,
+            'request_no' => $r->request_no,
+            'source' => $r->source,
+            'product_name' => $group->name ?? '-',
+            'variant_name' => $product->variant_name ?? null,
+            'sku' => $product->sku ?? '-',
+            'image_url' => $product->image_url ?? $group->image_url ?? null,
             'qty_requested' => $r->qty_requested,
-            'qty_produced'  => $r->total_produced,
-            'status'        => $r->status,
-            'created_at'    => $r->created_at->toIso8601String(),
+            'qty_produced' => $r->total_produced,
+            'status' => $r->status,
+            'created_at' => $r->created_at->toIso8601String(),
 
             'product_group' => $group ? [
-                'name'               => $group->name,
-                'code'               => $group->code,
-                'description'        => $group->description,
-                'production_method'  => $group->production_method,
-                'category_name'      => $group->category->name ?? null,
-                'length_cm'          => $group->length_cm,
-                'width_cm'           => $group->width_cm,
-                'price'              => $group->price,
-                'image_url'          => $group->image_url,
+                'name' => $group->name,
+                'code' => $group->code,
+                'description' => $group->description,
+                'production_method' => $group->production_method,
+                'category_name' => $group->category->name ?? null,
+                'length_cm' => $group->length_cm,
+                'width_cm' => $group->width_cm,
+                'price' => $group->price,
+                'image_url' => $group->image_url,
             ] : null,
         ];
     }
@@ -87,19 +88,19 @@ class ProductionQueueController extends Controller
 
             return [
                 'raw_material_id' => $pm->raw_material_id,
-                'name'            => $rm->name ?? '-',
-                'unit'            => $unit,
-                'qty_per_unit'    => (float) $pm->qty_per_unit,
-                'current_stock'   => (float) ($rm->current_stock ?? 0),
-                'is_discrete'     => ! in_array($normalizedUnit, $continuousUnits, true),
+                'name' => $rm->name ?? '-',
+                'unit' => $unit,
+                'qty_per_unit' => (float) $pm->qty_per_unit,
+                'current_stock' => (float) ($rm->current_stock ?? 0),
+                'is_discrete' => ! in_array($normalizedUnit, $continuousUnits, true),
 
-                'usage_method'    => $pm->usage_method,
+                'usage_method' => $pm->usage_method,
                 'piece_length_cm' => $pm->piece_length_cm ? (float) $pm->piece_length_cm : null,
-                'piece_width_cm'  => $pm->piece_width_cm ? (float) $pm->piece_width_cm : null,
-                'piece_count'     => $pm->piece_count,
-                'waste_percent'   => (float) $pm->waste_percent,
+                'piece_width_cm' => $pm->piece_width_cm ? (float) $pm->piece_width_cm : null,
+                'piece_count' => $pm->piece_count,
+                'waste_percent' => (float) $pm->waste_percent,
                 'sheet_length_cm' => $rm->sheet_length_cm ? (float) $rm->sheet_length_cm : null,
-                'sheet_width_cm'  => $rm->sheet_width_cm ? (float) $rm->sheet_width_cm : null,
+                'sheet_width_cm' => $rm->sheet_width_cm ? (float) $rm->sheet_width_cm : null,
             ];
         });
 
@@ -110,66 +111,112 @@ class ProductionQueueController extends Controller
     {
         $data = $request->validate([
             'qty_produced_this_session' => ['required', 'integer', 'min:0'],
-            'finish'                    => ['required', 'boolean'],
-            'notes'                     => ['nullable', 'string'],
-            'usages'                    => ['required', 'array'],
-            'usages.*.raw_material_id'  => ['required', 'exists:raw_materials,id'],
-            'usages.*.qty_used'         => ['required', 'numeric', 'min:0'],
+            'finish' => ['required', 'boolean'],
+            'notes' => ['nullable', 'string'],
+            'usages' => ['required', 'array'],
+            'usages.*.raw_material_id' => ['required', 'distinct', 'exists:raw_materials,id'],
+            'usages.*.qty_used' => ['required', 'numeric', 'min:0'],
         ]);
 
         if ($productionRequest->status === ProductionRequest::STATUS_COMPLETED) {
             return response()->json(['message' => 'Permintaan produksi ini sudah selesai.'], 422);
         }
 
-        DB::transaction(function () use ($data, $request, $productionRequest) {
+        DB::transaction(function () use ($data, $request, $productionRequest): void {
 
             $pr = ProductionRequest::where('id', $productionRequest->id)->lockForUpdate()->firstOrFail();
 
-            $remaining = max(0, $pr->qty_requested - $pr->total_produced);
-
-            if ($data['qty_produced_this_session'] > $remaining) {
-                abort(422, 'Jumlah melebihi sisa target produksi (' . $remaining . ' pcs).');
+            if ($pr->status === ProductionRequest::STATUS_COMPLETED) {
+                throw ValidationException::withMessages([
+                    'request_no' => 'Permintaan produksi ini sudah selesai.',
+                ]);
             }
 
-            // 1. Catat sesi produksi
-            $log = ProductionLog::create([
-                'production_request_id' => $pr->id,
-                'recorded_by'           => $request->user()->id,
-                'production_date'       => now()->toDateString(),
-                'qty_produced'          => $data['qty_produced_this_session'],
-                'notes'                 => $data['notes'] ?? null,
-            ]);
+            $alreadyProduced = $pr->total_produced;
+            $qtyThisSession = (int) $data['qty_produced_this_session'];
+            $remaining = max(0, $pr->qty_requested - $alreadyProduced);
 
-            // 2. Catat pemakaian bahan baku + kurangi stok
-            foreach ($data['usages'] as $usage) {
+            if ($qtyThisSession > $remaining) {
+                throw ValidationException::withMessages([
+                    'qty_produced_this_session' => 'Jumlah melebihi sisa target produksi ('.$remaining.' pcs).',
+                ]);
+            }
 
-                $material = RawMaterial::where('id', $usage['raw_material_id'])->lockForUpdate()->firstOrFail();
-                $qtyUsed  = (float) $usage['qty_used'];
+            if (! $data['finish'] && $qtyThisSession <= 0) {
+                throw ValidationException::withMessages([
+                    'qty_produced_this_session' => 'Isi hasil produksi minimal 1 pcs untuk menyimpan progres.',
+                ]);
+            }
 
+            $newTotalProduced = $alreadyProduced + $qtyThisSession;
 
-                $logMaterial = ProductionLogMaterial::create([
-                    'production_log_id'     => $log->id,
+            if ($data['finish'] && $newTotalProduced < $pr->qty_requested) {
+                throw ValidationException::withMessages([
+                    'qty_produced_this_session' => 'Total hasil produksi ('.$newTotalProduced.' pcs) kurang dari jumlah yang diminta ('.$pr->qty_requested.' pcs). Gunakan Simpan Progres atau lengkapi sisa target ('.$remaining.' pcs).',
+                ]);
+            }
+
+            $hasPositiveUsage = collect($data['usages'])->contains(
+                fn (array $usage): bool => (float) $usage['qty_used'] > 0
+            );
+
+            if ($qtyThisSession === 0 && $hasPositiveUsage) {
+                throw ValidationException::withMessages([
+                    'qty_produced_this_session' => 'Pemakaian bahan baku harus disertai minimal 1 pcs hasil produksi pada sesi ini.',
+                ]);
+            }
+
+            $log = null;
+
+            // 1. Catat sesi produksi + pemakaian bahan baku hanya jika sesi ini menghasilkan >= 1 pcs
+            if ($qtyThisSession > 0) {
+                $log = ProductionLog::create([
                     'production_request_id' => $pr->id,
-                    'raw_material_id'       => $material->id,
-                    'usage_date'            => now()->toDateString(),
-                    'qty_used'              => $qtyUsed,
+                    'recorded_by' => $request->user()->id,
+                    'production_date' => now()->toDateString(),
+                    'qty_produced' => $qtyThisSession,
+                    'notes' => $data['notes'] ?? null,
                 ]);
 
-                if ($qtyUsed > 0) {
+                // 2. Catat pemakaian bahan baku + kurangi stok
+                foreach ($data['usages'] as $usage) {
+
+                    $qtyUsed = (float) $usage['qty_used'];
+
+                    if ($qtyUsed <= 0) {
+                        continue;
+                    }
+
+                    $material = RawMaterial::where('id', $usage['raw_material_id'])->lockForUpdate()->firstOrFail();
+
+                    if ($qtyUsed > (float) $material->current_stock) {
+                        throw ValidationException::withMessages([
+                            'usages' => 'Pemakaian '.$material->name.' melebihi stok tersedia ('.(float) $material->current_stock.' '.$material->unit.').',
+                        ]);
+                    }
+
+                    $logMaterial = ProductionLogMaterial::create([
+                        'production_log_id' => $log->id,
+                        'production_request_id' => $pr->id,
+                        'raw_material_id' => $material->id,
+                        'usage_date' => now()->toDateString(),
+                        'qty_used' => $qtyUsed,
+                    ]);
+
                     $qtyBefore = $material->current_stock;
-                    $qtyAfter  = $qtyBefore - $qtyUsed;
+                    $qtyAfter = $qtyBefore - $qtyUsed;
 
                     $material->update(['current_stock' => $qtyAfter]);
 
                     RawMaterialMovement::create([
-                        'raw_material_id'             => $material->id,
-                        'created_by'                  => $request->user()->id,
-                        'movement_type'                => 'OUT',
-                        'qty'                          => $qtyUsed,
-                        'qty_before'                   => $qtyBefore,
-                        'qty_after'                    => $qtyAfter,
-                        'note'                         => 'Pemakaian produksi ' . $pr->request_no,
-                        'production_log_material_id'  => $logMaterial->id,
+                        'raw_material_id' => $material->id,
+                        'created_by' => $request->user()->id,
+                        'movement_type' => 'OUT',
+                        'qty' => $qtyUsed,
+                        'qty_before' => $qtyBefore,
+                        'qty_after' => $qtyAfter,
+                        'note' => 'Pemakaian produksi '.$pr->request_no,
+                        'production_log_material_id' => $logMaterial->id,
                     ]);
                 }
             }
@@ -193,24 +240,24 @@ class ProductionQueueController extends Controller
                 && $pr->orderItem
                 && $pr->orderItem->production_method === 'MTO';
 
-            if (! $isMto && $data['qty_produced_this_session'] > 0) {
+            if (! $isMto && $log && $qtyThisSession > 0) {
 
                 $product = Product::where('id', $pr->product_id)->lockForUpdate()->firstOrFail();
 
                 $qtyBefore = $product->current_stock;
-                $qtyAfter  = $qtyBefore + $data['qty_produced_this_session'];
+                $qtyAfter = $qtyBefore + $qtyThisSession;
 
                 $product->update(['current_stock' => $qtyAfter]);
 
                 ProductStockMovement::create([
-                    'product_id'         => $product->id,
-                    'created_by'         => $request->user()->id,
-                    'movement_type'      => 'IN',
-                    'qty'                => $data['qty_produced_this_session'],
-                    'qty_before'         => $qtyBefore,
-                    'qty_after'          => $qtyAfter,
-                    'note'               => 'Hasil produksi ' . $pr->request_no,
-                    'production_log_id'  => $log->id,
+                    'product_id' => $product->id,
+                    'created_by' => $request->user()->id,
+                    'movement_type' => 'IN',
+                    'qty' => $qtyThisSession,
+                    'qty_before' => $qtyBefore,
+                    'qty_after' => $qtyAfter,
+                    'note' => 'Hasil produksi '.$pr->request_no,
+                    'production_log_id' => $log->id,
                 ]);
             }
 
@@ -235,10 +282,10 @@ class ProductionQueueController extends Controller
     public function shortage(Request $request, ProductionRequest $productionRequest)
     {
         $data = $request->validate([
-            'items'                      => ['required', 'array', 'min:1'],
-            'items.*.raw_material_id'    => ['required', 'exists:raw_materials,id'],
-            'items.*.qty_needed'         => ['required', 'numeric', 'min:0'],
-            'items.*.qty_available'      => ['required', 'numeric', 'min:0'],
+            'items' => ['required', 'array', 'min:1'],
+            'items.*.raw_material_id' => ['required', 'exists:raw_materials,id'],
+            'items.*.qty_needed' => ['required', 'numeric', 'min:0'],
+            'items.*.qty_available' => ['required', 'numeric', 'min:0'],
         ]);
 
         foreach ($data['items'] as $item) {
@@ -256,11 +303,11 @@ class ProductionQueueController extends Controller
 
             MaterialShortage::create([
                 'production_request_id' => $productionRequest->id,
-                'raw_material_id'       => $item['raw_material_id'],
-                'qty_needed'            => $item['qty_needed'],
-                'qty_available'         => $item['qty_available'],
-                'status'                => MaterialShortage::STATUS_OPEN,
-                'reported_at'           => now(),
+                'raw_material_id' => $item['raw_material_id'],
+                'qty_needed' => $item['qty_needed'],
+                'qty_available' => $item['qty_available'],
+                'status' => MaterialShortage::STATUS_OPEN,
+                'reported_at' => now(),
             ]);
         }
 
@@ -274,7 +321,7 @@ class ProductionQueueController extends Controller
         }
 
         $productionRequest->update([
-            'status'     => ProductionRequest::STATUS_IN_PROCESS,
+            'status' => ProductionRequest::STATUS_IN_PROCESS,
             'started_at' => now(),
         ]);
 

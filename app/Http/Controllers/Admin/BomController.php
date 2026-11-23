@@ -22,8 +22,8 @@ class BomController extends Controller
     {
         ActivityLog::record($action, 'product', $group->id, $description, [
             'activity' => $activity,
-            'title'    => $group->code,
-            'subtitle' => $material ? $group->name . ' · ' . $material : $group->name,
+            'title' => $group->code,
+            'subtitle' => $material ? $group->name.' · '.$material : $group->name,
         ]);
     }
 
@@ -45,7 +45,7 @@ class BomController extends Controller
 
     public function store(Request $request, string $sku)
     {
-        $group    = $this->group($sku);
+        $group = $this->group($sku);
         $material = $group->materials()->create($this->payload($request, $group));
         $material->load('rawMaterial');
 
@@ -86,7 +86,7 @@ class BomController extends Controller
 
     private function payload(Request $request, ProductGroup $group, ?ProductMaterial $current = null): array
     {
-        $data = $request->validate([
+        $base = $request->validate([
             'raw_material_id' => [
                 'required',
                 'exists:raw_materials,id',
@@ -94,48 +94,68 @@ class BomController extends Controller
                     ->where('group_id', $group->id)
                     ->ignore($current?->id),
             ],
-            'usage_method'    => ['required', 'in:fix,area'],
-            'quantity'        => ['required_if:usage_method,fix', 'nullable', 'numeric', 'gt:0'],
-            'piece_length_cm' => ['required_if:usage_method,area', 'nullable', 'numeric', 'gt:0'],
-            'piece_width_cm'  => ['required_if:usage_method,area', 'nullable', 'numeric', 'gt:0'],
-            'piece_count'     => ['required_if:usage_method,area', 'nullable', 'integer', 'min:1', 'max:32767'],
-            'waste_percent'   => ['required_if:usage_method,area', 'nullable', 'numeric', 'between:0,100'],
         ], [
+            'raw_material_id.required' => 'Silakan pilih bahan mentah.',
+            'raw_material_id.exists' => 'Bahan mentah yang dipilih tidak valid.',
             'raw_material_id.unique' => 'Bahan ini sudah ada di BOM produk tersebut.',
         ]);
 
-        if ($data['usage_method'] === 'fix') {
+        $material = RawMaterial::findOrFail($base['raw_material_id']);
+
+        if (! $material->isSheet()) {
+            $data = $request->validate([
+                'quantity' => ['required', 'numeric', 'gt:0'],
+            ], [
+                'quantity.required' => 'Jumlah kebutuhan bahan wajib diisi.',
+                'quantity.numeric' => 'Jumlah kebutuhan bahan harus berupa angka.',
+                'quantity.gt' => 'Jumlah kebutuhan bahan harus lebih besar dari 0.',
+            ]);
+
             return [
-                'raw_material_id' => $data['raw_material_id'],
-                'usage_method'    => 'FIXED',
-                'qty_per_unit'    => $data['quantity'],
-                'waste_percent'   => 0,
+                'raw_material_id' => $material->id,
+                'usage_method' => 'FIXED',
+                'qty_per_unit' => $data['quantity'],
+                'waste_percent' => 0,
                 'piece_length_cm' => null,
-                'piece_width_cm'  => null,
-                'piece_count'     => 1,
+                'piece_width_cm' => null,
+                'piece_count' => 1,
             ];
         }
 
-        $material = RawMaterial::findOrFail($data['raw_material_id']);
-
         if (! $material->has_sheet_size) {
             throw ValidationException::withMessages([
-                'raw_material_id' => 'Metode Area hanya untuk bahan yang punya ukuran lembar. Lengkapi ukuran lembar di Master Bahan Mentah.',
+                'raw_material_id' => 'Bahan tipe lembar (Area) belum memiliki ukuran lembar. Lengkapi ukuran lembar di Master Bahan Mentah.',
             ]);
         }
 
-        $area  = $data['piece_length_cm'] * $data['piece_width_cm'] * $data['piece_count']
-               * (1 + $data['waste_percent'] / 100);
+        $data = $request->validate([
+            'piece_length_cm' => ['required', 'numeric', 'gt:0'],
+            'piece_width_cm' => ['required', 'numeric', 'gt:0'],
+            'piece_count' => ['required', 'integer', 'min:1', 'max:32767'],
+            'waste_percent' => ['required', 'numeric', 'between:0,100'],
+        ], [
+            'piece_length_cm.required' => 'Panjang potongan wajib diisi.',
+            'piece_length_cm.gt' => 'Panjang potongan harus lebih besar dari 0.',
+            'piece_width_cm.required' => 'Lebar potongan wajib diisi.',
+            'piece_width_cm.gt' => 'Lebar potongan harus lebih besar dari 0.',
+            'piece_count.required' => 'Jumlah potongan wajib diisi.',
+            'piece_count.min' => 'Jumlah potongan minimal 1.',
+            'waste_percent.required' => 'Waste / toleransi wajib diisi.',
+            'waste_percent.between' => 'Waste / toleransi harus antara 0 sampai 100%.',
+        ]);
+
+        $area = $data['piece_length_cm'] * $data['piece_width_cm'] * $data['piece_count']
+            * (1 + $data['waste_percent'] / 100);
         $sheet = $material->sheet_length_cm * $material->sheet_width_cm;
 
         return [
-            'raw_material_id' => $data['raw_material_id'],
-            'usage_method'    => 'AREA',
-            'qty_per_unit'    => round($area / $sheet, 6),
-            'waste_percent'   => $data['waste_percent'],
+            'raw_material_id' => $material->id,
+            'usage_method' => 'AREA',
+            'qty_per_unit' => round($area / $sheet, 6),
+            'waste_percent' => $data['waste_percent'],
             'piece_length_cm' => $data['piece_length_cm'],
-            'piece_width_cm'  => $data['piece_width_cm'],
-            'piece_count'     => $data['piece_count'],
+            'piece_width_cm' => $data['piece_width_cm'],
+            'piece_count' => $data['piece_count'],
         ];
     }
 }
