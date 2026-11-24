@@ -588,3 +588,334 @@
 }
 
 }
+
+/* ========================================
+   RESPONSIVE LANJUTAN
+   Menimpa aturan 700px di atas.
+======================================== */
+
+/* Ringkasan: tetap 2 kolom sampai layar sangat kecil */
+@media (max-width: 700px) {
+
+    .inventory-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* Tab tetap berdampingan, tidak menumpuk */
+    .inventory-tabs {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+
+        padding: 10px;
+    }
+
+    .inventory-tab {
+        padding: 0 4px;
+
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 380px) {
+
+    .inventory-summary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* Tabel menjadi kartu per baris (tablet & HP) */
+@media (max-width: 800px) {
+
+    .inventory-table-wrapper {
+        overflow-x: visible;
+
+        padding: 0 14px 14px;
+    }
+
+    .inventory-table,
+    .finished-goods-table,
+    .history-table {
+        min-width: 0;
+
+        display: block;
+    }
+
+    .inventory-table thead {
+        display: none;
+    }
+
+    .inventory-table tbody {
+        display: flex;
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+    .inventory-table tbody tr {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 12px 14px;
+
+        padding: 14px;
+
+        border: 1px solid var(--border);
+        border-radius: 12px;
+
+        background: #FBFCFA;
+    }
+
+    .inventory-table tbody tr:hover {
+        background: #FBFCFA;
+    }
+
+    .inventory-table td {
+        min-width: 0;
+
+        padding: 0;
+
+        border: none;
+    }
+
+    .inventory-table .inventory-stock-number {
+        text-align: left !important;
+    }
+
+    /* Sel pertama (nama produk / bahan / tanggal) selebar kartu */
+    .inventory-table td:first-child {
+        grid-column: 1 / -1;
+
+        padding-bottom: 12px;
+
+        border-bottom: 1px solid #F0F1EE;
+    }
+
+    /* Garis pemisah tetap muncul di kartu terakhir */
+    .inventory-table tbody tr:last-child td:first-child {
+        border-bottom: 1px solid #F0F1EE;
+    }
+
+    .inventory-product-info {
+        min-width: 0;
+    }
+
+    .inventory-product-info strong {
+        white-space: normal;
+    }
+
+    /* Tombol Riwayat selebar kartu */
+    .finished-goods-table td:last-child,
+    .raw-material-table td:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .finished-goods-table td:last-child .history-button,
+    .raw-material-table td:last-child .history-button {
+        width: 100%;
+        height: 34px;
+    }
+
+    /* Label kolom (dari CSS, tanpa mengubah Blade) */
+    .finished-goods-table td:nth-child(2)::before { content: "Varian"; }
+    .finished-goods-table td:nth-child(3)::before { content: "SKU Variant"; }
+    .finished-goods-table td:nth-child(4)::before { content: "Stok Saat Ini"; }
+    .finished-goods-table td:nth-child(5)::before { content: "Safety Stock"; }
+    .finished-goods-table td:nth-child(6)::before { content: "Target Stock"; }
+    .finished-goods-table td:nth-child(7)::before { content: "Status"; }
+
+    .raw-material-table td:nth-child(2)::before { content: "Tipe"; }
+    .raw-material-table td:nth-child(3)::before { content: "Satuan"; }
+    .raw-material-table td:nth-child(4)::before { content: "Stok Saat Ini"; }
+    .raw-material-table td:nth-child(5)::before { content: "Safety Stock"; }
+    .raw-material-table td:nth-child(6)::before { content: "Target Stock"; }
+    .raw-material-table td:nth-child(7)::before { content: "Status"; }
+
+    .history-table td:nth-child(2)::before { content: "Item"; }
+    .history-table td:nth-child(3)::before { content: "Aktivitas"; }
+    .history-table td:nth-child(4)::before { content: "Perubahan"; }
+    .history-table td:nth-child(5)::before { content: "Sumber"; }
+
+    .inventory-table td:not(:first-child):not(:last-child)::before,
+    .history-table td:last-child::before {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: #9A9D96;
+
+        font-size: 8px;
+        font-weight: 600;
+
+        letter-spacing: 0.4px;
+
+        text-transform: uppercase;
+    }
+
+    /* Item riwayat global memenuhi lebar kartu */
+    .history-table td:nth-child(2) {
+        grid-column: 1 / -1;
+    }
+
+    .history-table td:last-child {
+        grid-column: 1 / -1;
+    }
+}
+
+/* ========================================
+   INTERAKTIF (HOVER / FOCUS / ANIMASI)
+   Hanya tampilan: tidak mengubah markup, route, atau JS.
+======================================== */
+
+/* ----- Fokus keyboard yang jelas ----- */
+
+.inventory-tab:focus-visible,
+.history-button:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* ----- Ikon header ----- */
+
+.inventory-header-icon {
+    transition: transform 0.25s ease;
+}
+
+.inventory-header-icon:hover {
+    transform: rotate(-6deg) scale(1.06);
+}
+
+
+/* ----- Kartu ringkasan ----- */
+
+.inventory-summary-card {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.inventory-summary-card:hover {
+    border-color: #C8D7C0;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 26px rgba(37, 40, 35, 0.07);
+}
+
+
+/* ----- Tab ----- */
+
+.inventory-tab:hover:not(.active) {
+    transform: translateY(-1px);
+}
+
+.inventory-tab:active {
+    transform: translateY(0);
+}
+
+/* Isi tab muncul halus saat berpindah */
+@keyframes inv-fade {
+    from {
+        opacity: 0;
+
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateY(0);
+    }
+}
+
+.inventory-tab-content.active {
+    animation: inv-fade 0.25s ease;
+}
+
+
+/* ----- Baris tabel ----- */
+
+.inventory-table tbody tr {
+    transition:
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.inventory-table tbody tr:hover {
+    background: #F6FAF3;
+
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+/* Baris "Belum ada ..." tidak ikut menyala */
+.inventory-table tbody tr:has(td[colspan]):hover {
+    background: transparent;
+
+    box-shadow: none;
+}
+
+.inventory-sku,
+.stock-status,
+.inventory-material-type,
+.stock-change {
+    transition: transform 0.15s ease;
+}
+
+.inventory-table tbody tr:hover .stock-status,
+.inventory-table tbody tr:hover .inventory-material-type {
+    transform: scale(1.05);
+}
+
+
+/* ----- Tombol Riwayat ----- */
+
+.history-button {
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.history-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 14px rgba(82, 106, 72, 0.14);
+}
+
+.history-button:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+
+/* ----- Hormati pengaturan "kurangi animasi" ----- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .inventory-header-icon,
+    .inventory-summary-card,
+    .inventory-tab,
+    .inventory-tab-content.active,
+    .history-button,
+    .stock-status,
+    .inventory-material-type {
+        animation: none;
+
+        transition: none;
+    }
+
+    .inventory-header-icon:hover,
+    .inventory-summary-card:hover,
+    .inventory-tab:hover:not(.active),
+    .history-button:hover,
+    .inventory-table tbody tr:hover .stock-status,
+    .inventory-table tbody tr:hover .inventory-material-type {
+        transform: none;
+    }
+}

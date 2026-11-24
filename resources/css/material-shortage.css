@@ -419,3 +419,403 @@
     color: #3B6B4A;
     white-space: nowrap;
 }
+
+
+
+/* =========================
+   SEARCH CLEAR (X) & RESET FILTER
+========================= */
+
+.pq-search .pq-search-clear:hover {
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    transform: scale(1.1);
+}
+
+#msReset {
+    height: 44px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 0 16px;
+
+    border: 1px solid #DCE7D7;
+    border-radius: 11px;
+
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    font-size: 12px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+#msReset[hidden] {
+    display: none;
+}
+
+#msReset svg {
+    flex-shrink: 0;
+
+    transition: transform 0.2s ease;
+}
+
+#msReset:hover {
+    border-color: var(--green);
+
+    background: #E3EFE0;
+
+    transform: translateY(-1px);
+}
+
+#msReset:hover svg {
+    transform: rotate(90deg);
+}
+
+#msReset:active {
+    transform: translateY(0);
+}
+
+#msReset:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* =========================
+   INTERAKTIF (HOVER / FOCUS / ANIMASI)
+========================= */
+
+.pq-stats:has(#msStatTotal) .pq-stat {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.pq-stats:has(#msStatTotal) .pq-stat:hover {
+    transform: translateY(-3px);
+
+    border-color: var(--green);
+
+    box-shadow: 0 10px 22px rgba(85, 107, 74, 0.10);
+}
+
+.pq-stats:has(#msStatTotal) .pq-stat-icon {
+    transition: transform 0.2s ease;
+}
+
+.pq-stats:has(#msStatTotal) .pq-stat:hover .pq-stat-icon {
+    transform: scale(1.08);
+}
+
+.pq-toolbar:has(#msSearch) .pq-search {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.pq-toolbar:has(#msSearch) .pq-search:hover,
+#msFilterStatus:hover,
+#msFilterMaterial:hover {
+    border-color: var(--green);
+}
+
+#msFilterStatus:focus-visible,
+#msFilterMaterial:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+#msTableBody tr {
+    transition:
+        background 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+#msTableBody tr:has(.ms-actions):hover {
+    background: #F6FAF3;
+
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+#msTableBody .pq-badge {
+    transition: transform 0.2s ease;
+}
+
+#msTableBody tr:hover .pq-badge {
+    transform: scale(1.05);
+}
+
+#msTableBody .pq-request-no {
+    transition: color 0.2s ease;
+}
+
+#msTableBody tr:hover .pq-request-no {
+    color: #465C3E;
+}
+
+#msTableBody .ms-action {
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#msTableBody .ms-action:hover {
+    transform: translateY(-2px);
+
+    box-shadow: 0 5px 12px rgba(39, 46, 35, 0.12);
+}
+
+#msTableBody .ms-action:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+#msPagination button:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+#msEmpty button,
+#msError button {
+    transition: 0.2s ease;
+}
+
+#msEmpty button:hover,
+#msError button:hover {
+    transform: translateY(-1px);
+}
+
+#msdOverlay:not([hidden]),
+#mspOverlay:not([hidden]) {
+    animation: ms-fade 0.2s ease;
+}
+
+#msdOverlay:not([hidden]) .pe-modal,
+#mspOverlay:not([hidden]) .pe-modal {
+    animation: ms-pop 0.25s ease;
+}
+
+#msdOverlay .pe-close,
+#mspOverlay .pe-close {
+    transition: 0.2s ease;
+}
+
+#msdOverlay .pe-close:hover,
+#mspOverlay .pe-close:hover {
+    transform: rotate(90deg);
+}
+
+@keyframes ms-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes ms-pop {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+
+/* =========================
+   RESPONSIVE LANJUTAN
+========================= */
+
+@media (max-width: 800px) {
+
+    #msTableWrapper {
+        overflow-x: visible;
+    }
+
+    #msTableWrapper .pq-table {
+        display: block;
+    }
+
+    #msTableWrapper .pq-table thead {
+        display: none;
+    }
+
+    #msTableWrapper .pq-table tbody {
+        display: block;
+    }
+
+    #msTableBody tr {
+        display: block;
+
+        border-top: 1px solid #F0F1EE;
+    }
+
+    #msTableBody td {
+        display: block;
+
+        border-top: none;
+    }
+
+    #msTableBody tr:has(.ms-actions) {
+        display: grid;
+
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-areas:
+            "req    req    status"
+            "mat    mat    mat"
+            "needed avail  short"
+            "action action action";
+
+        gap: 10px 12px;
+
+        padding: 14px 16px;
+    }
+
+    #msTableBody tr:has(.ms-actions) td {
+        min-width: 0;
+
+        padding: 0;
+
+        white-space: normal;
+
+        text-align: left;
+    }
+
+    #msTableBody tr:has(.ms-actions) td:nth-child(1) { grid-area: req; }
+    #msTableBody tr:has(.ms-actions) td:nth-child(2) { grid-area: mat; }
+    #msTableBody tr:has(.ms-actions) td:nth-child(3) { grid-area: needed; }
+    #msTableBody tr:has(.ms-actions) td:nth-child(4) { grid-area: avail; }
+    #msTableBody tr:has(.ms-actions) td:nth-child(5) { grid-area: short; }
+
+    #msTableBody tr:has(.ms-actions) td:nth-child(6) {
+        grid-area: status;
+
+        justify-self: end;
+        align-self: start;
+
+        text-align: right;
+    }
+
+    #msTableBody tr:has(.ms-actions) td:nth-child(7) {
+        grid-area: action;
+
+        padding-top: 10px;
+
+        border-top: 1px dashed var(--border);
+    }
+
+    #msTableBody tr:has(.ms-actions) td:nth-child(3)::before,
+    #msTableBody tr:has(.ms-actions) td:nth-child(4)::before,
+    #msTableBody tr:has(.ms-actions) td:nth-child(5)::before {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: #9A9D96;
+
+        font-size: 9px;
+        font-weight: 600;
+
+        letter-spacing: 0.4px;
+
+        text-transform: uppercase;
+    }
+
+    #msTableBody tr:has(.ms-actions) td:nth-child(3)::before { content: "Qty Needed"; }
+    #msTableBody tr:has(.ms-actions) td:nth-child(4)::before { content: "Qty Available"; }
+    #msTableBody tr:has(.ms-actions) td:nth-child(5)::before { content: "Shortage"; }
+
+    #msTableBody tr:has(.ms-actions) .ms-actions {
+        justify-content: flex-start;
+    }
+
+    #msTableBody tr:has(.ms-actions) .ms-po-info {
+        align-items: flex-end;
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .pq-toolbar:has(#msSearch) .pq-search {
+        flex: 1 1 100%;
+    }
+
+    #msReset {
+        flex: 1 1 100%;
+    }
+
+    .pq-card-header:has(#msCount) {
+        flex-wrap: wrap;
+    }
+
+    .pq-footer:has(#msInfo) .pq-pagination {
+        flex-wrap: wrap;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    #msTableBody tr:has(.ms-actions) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-areas:
+            "req    status"
+            "mat    mat"
+            "needed avail"
+            "short  short"
+            "action action";
+    }
+
+    #msTableBody .ms-action {
+        flex: 1 1 auto;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .pq-stats:has(#msStatTotal) .pq-stat,
+    .pq-stats:has(#msStatTotal) .pq-stat-icon,
+    #msTableBody tr,
+    #msTableBody .pq-badge,
+    #msTableBody .ms-action,
+    #msReset,
+    #msReset svg,
+    #msdOverlay .pe-close,
+    #mspOverlay .pe-close {
+        transition: none;
+    }
+
+    #msdOverlay:not([hidden]),
+    #mspOverlay:not([hidden]),
+    #msdOverlay:not([hidden]) .pe-modal,
+    #mspOverlay:not([hidden]) .pe-modal {
+        animation: none;
+    }
+
+    .pq-stats:has(#msStatTotal) .pq-stat:hover,
+    .pq-stats:has(#msStatTotal) .pq-stat:hover .pq-stat-icon,
+    #msTableBody tr:hover .pq-badge,
+    #msTableBody .ms-action:hover,
+    #msReset:hover,
+    #msReset:hover svg,
+    #msdOverlay .pe-close:hover,
+    #mspOverlay .pe-close:hover {
+        transform: none;
+    }
+}
+

@@ -618,3 +618,339 @@
     }
 
 }
+
+/* ========================================
+   BACK BUTTON (hijau tua)
+======================================== */
+
+.stock-history-back {
+    min-height: 36px;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 0 16px 0 11px;
+
+    border: 1px solid var(--green-dark);
+    border-radius: 9px;
+
+    background: var(--green-dark);
+
+    color: var(--white);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+.stock-history-back svg {
+    flex-shrink: 0;
+
+    transition: transform 0.2s ease;
+}
+
+.stock-history-back:hover {
+    border-color: #455C3D;
+
+    background: #455C3D;
+
+    color: var(--white);
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 8px 20px rgba(82, 106, 72, 0.16);
+}
+
+.stock-history-back:hover svg {
+    transform: translateX(-3px);
+}
+
+.stock-history-back:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+.stock-history-back:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .stock-history-back,
+    .stock-history-back svg {
+        transition: none;
+    }
+
+    .stock-history-back:hover,
+    .stock-history-back:hover svg {
+        transform: none;
+    }
+}
+
+
+/* ========================================
+   RESPONSIVE LANJUTAN
+   Menimpa aturan 800px / 700px di atas.
+======================================== */
+
+.stock-history-header h1,
+.stock-history-variant span {
+    min-width: 0;
+
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 800px) {
+
+    /* Ringkasan: stok saat ini penuh, masuk & keluar berdampingan */
+    .stock-history-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stock-history-summary-card.primary {
+        grid-column: 1 / -1;
+    }
+
+    /* Tabel menjadi kartu per transaksi */
+    .stock-history-table-wrapper {
+        overflow-x: visible;
+
+        padding: 0 14px 14px;
+    }
+
+    .stock-history-table,
+    .material-history-table {
+        min-width: 0;
+
+        display: block;
+    }
+
+    .stock-history-table thead {
+        display: none;
+    }
+
+    .stock-history-table tbody {
+        display: flex;
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+    .stock-history-table tbody tr {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 12px 14px;
+
+        padding: 14px;
+
+        border: 1px solid var(--border);
+        border-radius: 12px;
+
+        background: #FBFCFA;
+    }
+
+    .stock-history-table tbody tr:hover {
+        background: #FBFCFA;
+    }
+
+    .stock-history-table td {
+        min-width: 0;
+
+        padding: 0;
+
+        border: none;
+    }
+
+    .history-date,
+    .history-activity,
+    .material-history-party {
+        min-width: 0;
+    }
+
+    /* Tanggal dan aktivitas selebar kartu */
+    .stock-history-table td:nth-child(1),
+    .stock-history-table td:nth-child(2) {
+        grid-column: 1 / -1;
+    }
+
+    .stock-history-table td:nth-child(1),
+    .stock-history-table tbody tr:last-child td:nth-child(1) {
+        padding-bottom: 12px;
+
+        border-bottom: 1px solid #F0F1EE;
+    }
+
+    /* Label kolom: transaksi produk jadi */
+    .stock-history-table:not(.material-history-table) td:nth-child(3)::before { content: "Sumber"; }
+    .stock-history-table:not(.material-history-table) td:nth-child(4)::before { content: "Perubahan"; }
+    .stock-history-table:not(.material-history-table) td:nth-child(5)::before { content: "Saldo"; }
+
+    /* Label kolom: transaksi bahan baku */
+    .material-history-table td:nth-child(3)::before { content: "Dicatat Oleh"; }
+    .material-history-table td:nth-child(4)::before { content: "Catatan"; }
+    .material-history-table td:nth-child(5)::before { content: "Perubahan"; }
+    .material-history-table td:nth-child(6)::before { content: "Saldo"; }
+
+    .stock-history-table td:nth-child(n+3)::before {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: #9A9D96;
+
+        font-size: 8px;
+        font-weight: 600;
+
+        letter-spacing: 0.4px;
+
+        text-transform: uppercase;
+    }
+
+    /* Produk jadi: saldo di baris sendiri (5 kolom) */
+    .stock-history-table:not(.material-history-table) td:nth-child(5) {
+        grid-column: 1 / -1;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .stock-history-table:not(.material-history-table) td:nth-child(5)::before {
+        margin-bottom: 0;
+    }
+
+    .stock-history-table td:nth-child(4) {
+        overflow-wrap: anywhere;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .stock-history-type {
+        align-self: flex-start;
+    }
+
+    .stock-history-filter-section {
+        padding: 15px 14px 16px;
+    }
+
+    .stock-history-table-section
+    .stock-history-section-heading {
+        padding: 0 14px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .stock-history-back {
+        width: 100%;
+    }
+}
+
+@media (max-width: 380px) {
+
+    .stock-history-summary {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ========================================
+   INTERAKTIF (HOVER / FOCUS / ANIMASI)
+   Hanya tampilan: tidak mengubah markup, route, atau JS.
+======================================== */
+
+/* ----- Kartu ringkasan ----- */
+
+.stock-history-summary-card {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.stock-history-summary-card:hover {
+    border-color: #C8D7C0;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 26px rgba(37, 40, 35, 0.07);
+}
+
+
+/* ----- Filter ----- */
+
+.stock-history-filter-group select {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.stock-history-filter-group select:hover {
+    border-color: #C8D7C0;
+}
+
+
+/* ----- Baris tabel ----- */
+
+.stock-history-table tbody tr {
+    transition:
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.stock-history-table tbody tr:hover {
+    background: #F6FAF3;
+
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+.history-source,
+.history-change,
+.material-reference {
+    transition: transform 0.15s ease;
+}
+
+.stock-history-table tbody tr:hover .history-source,
+.stock-history-table tbody tr:hover .material-reference {
+    transform: scale(1.05);
+}
+
+
+/* ----- Label jenis di header ----- */
+
+.stock-history-type {
+    transition: transform 0.2s ease;
+}
+
+.stock-history-type:hover {
+    transform: scale(1.05);
+}
+
+
+/* ----- Hormati pengaturan "kurangi animasi" ----- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .stock-history-summary-card,
+    .stock-history-filter-group select,
+    .history-source,
+    .material-reference,
+    .stock-history-type {
+        transition: none;
+    }
+
+    .stock-history-summary-card:hover,
+    .stock-history-type:hover,
+    .stock-history-table tbody tr:hover .history-source,
+    .stock-history-table tbody tr:hover .material-reference {
+        transform: none;
+    }
+}
