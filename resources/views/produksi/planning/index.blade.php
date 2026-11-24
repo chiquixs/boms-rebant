@@ -49,11 +49,11 @@
                     <path d="M12 13v8" />
                 </svg>
             </div>
-            <span class="pq-stat-label">Total Produk</span>
+            <span class="pq-stat-label">Total Varian MTS</span>
         </div>
         <strong class="pq-stat-value" id="spStatTotal">-</strong>
-        {{-- KOREKSI: stok dikelola per varian --}}
-        <span class="sp-stat-note">Produk aktif, stok dikelola per varian</span>
+        {{-- KOREKSI: dihitung per varian, konteks grup di sub-teks --}}
+        <span class="sp-stat-note" id="spStatTotalNote">Varian aktif dari produk MTS</span>
     </div>
 
     <div class="pq-stat low">
@@ -86,7 +86,7 @@
         </div>
         <strong class="pq-stat-value" id="spStatNeed">-</strong>
         {{-- KOREKSI: dihitung per varian --}}
-        <span class="sp-stat-note">Varian dengan rekomendasi &gt; 0</span>
+        <span class="sp-stat-note" id="spStatNeedNote">Varian dengan rekomendasi &gt; 0</span>
     </div>
 
     <div class="pq-stat progress">
@@ -101,7 +101,7 @@
             <span class="pq-stat-label">Permintaan Produksi Aktif</span>
         </div>
         <strong class="pq-stat-value" id="spStatActive">-</strong>
-        <span class="sp-stat-note">Status WAITING atau IN_PROCESS</span>
+        <span class="sp-stat-note">Request RESTOCK (WAITING / IN_PROCESS)</span>
     </div>
 
 </div>
@@ -118,7 +118,7 @@
     <button type="button" class="sp-tab" data-tab="NEED" role="tab">Perlu Diproduksi <span id="spTabNeed">0</span></button>
 </div>
 
-<p class="sp-tab-hint">
+<p class="sp-tab-hint" id="spTabHint">
     Tab Perlu Diproduksi menampilkan semua produk dengan rekomendasi lebih dari 0,
     termasuk yang berstatus Stok Rendah.
 </p>
@@ -797,8 +797,10 @@
             demo: $('spDemo'),
 
             statTotal: $('spStatTotal'),
+            statTotalNote: $('spStatTotalNote'),
             statLow: $('spStatLow'),
             statNeed: $('spStatNeed'),
+            statNeedNote: $('spStatNeedNote'),
             statActive: $('spStatActive'),
 
             tabs: $('spTabs'),
@@ -806,6 +808,7 @@
             tabSafe: $('spTabSafe'),
             tabLow: $('spTabLow'),
             tabNeed: $('spTabNeed'),
+            tabHint: $('spTabHint'),
 
             search: $('spSearch'),
             searchClear: $('spSearchClear'),
@@ -912,7 +915,9 @@
 
         function activeRequestsOf(productId) {
             return state.requests.filter(function(r) {
-                return r.product_id === productId && ACTIVE_STATUSES.indexOf(r.status) !== -1;
+                return r.product_id === productId &&
+                    ACTIVE_STATUSES.indexOf(r.status) !== -1 &&
+                    r.source === SP_CONFIG.mtsSource;
             });
         }
 
@@ -923,8 +928,9 @@
             return Math.max(0, Number(request.qty_requested) - Number(request.qty_produced || 0));
         }
 
-        // kebutuhan_dasar = max(0, target_stock - current_stock)
-        // rekomendasi_mts = max(0, kebutuhan_dasar - sisa request aktif)
+        // stok_bebas     = max(0, current_stock - reserved_stock)
+        // kebutuhan_dasar = max(0, target_stock - stok_bebas)
+        // rekomendasi_mts = max(0, kebutuhan_dasar - sisa request RESTOCK aktif)
         function compute() {
 
             state.view = state.products
@@ -933,14 +939,20 @@
                 })
                 .map(function(p) {
 
+                    const reserved = Math.max(0, Number(p.reserved_stock || 0));
+                    const available = p.available_stock != null ?
+                        Math.max(0, Number(p.available_stock)) :
+                        Math.max(0, Number(p.current_stock || 0) - reserved);
                     const actives = activeRequestsOf(p.id);
                     const planned = actives.reduce(function(sum, r) {
                         return sum + remainingOf(r);
                     }, 0);
-                    const base = Math.max(0, p.target_stock - p.current_stock);
+                    const base = Math.max(0, Number(p.target_stock || 0) - available);
                     const rec = Math.max(0, base - planned);
 
                     return Object.assign({}, p, {
+                        reserved_stock: reserved,
+                        available_stock: available,
                         actives: actives,
                         planned: planned,
                         base: base,
@@ -1037,18 +1049,27 @@
             }).length;
 
             const activeRequests = state.requests.filter(function(r) {
-                return ACTIVE_STATUSES.indexOf(r.status) !== -1;
+                return ACTIVE_STATUSES.indexOf(r.status) !== -1 && r.source === SP_CONFIG.mtsSource;
             }).length;
 
-            els.statTotal.textContent = dash ? '-' : g.length;
+            els.statTotal.textContent = dash ? '-' : v.length;
+            els.statTotalNote.textContent = dash ?
+                'Varian aktif dari produk MTS' :
+                'Varian aktif dari ' + g.length + ' produk MTS';
             els.statLow.textContent = dash ? '-' : low;
             els.statNeed.textContent = dash ? '-' : needRec;
+            els.statNeedNote.textContent = dash ?
+                'Varian dengan rekomendasi > 0' :
+                'Varian rekomendasi > 0 (' + gNeed + ' produk)';
             els.statActive.textContent = dash ? '-' : activeRequests;
 
             els.tabAll.textContent = g.length;
             els.tabSafe.textContent = gSafe;
             els.tabLow.textContent = gLow;
             els.tabNeed.textContent = gNeed;
+            els.tabHint.textContent = dash || state.loading ?
+                'Tab Perlu Diproduksi menampilkan semua produk dengan rekomendasi lebih dari 0, termasuk yang berstatus Stok Rendah.' :
+                'Tab Perlu Diproduksi menampilkan ' + gNeed + ' produk (' + needRec + ' varian) dengan rekomendasi lebih dari 0, termasuk yang berstatus Stok Rendah.';
 
             // Insight
             els.insight.hidden = dash || state.loading || !v.length;
@@ -1222,9 +1243,13 @@
                 '<span class="sp-rec">+' + fmt(v.rec) + '</span>' :
                 '<span class="sp-rec-none">&mdash;</span>';
 
-            const note = v.planned > 0 ?
-                '<span class="sp-rec-note">Sudah direncanakan: ' + fmt(v.planned) + '</span>' :
+            const reservedNote = v.reserved_stock > 0 ?
+                '<span class="sp-rec-note">Dipesan order: ' + fmt(v.reserved_stock) + ' &middot; Bebas: ' + fmt(v.available_stock) + '</span>' :
                 '';
+
+            const note = (v.planned > 0 ?
+                '<span class="sp-rec-note">Sudah direncanakan: ' + fmt(v.planned) + '</span>' :
+                '') + reservedNote;
 
             return '<div class="sp-vitem' + (v.status === 'LOW' ? ' low' : '') + '">' +
                 '<span class="pv-sku">' + esc(v.sku) + '</span>' +
@@ -1466,7 +1491,9 @@
                 ' \u00b7 Kategori: ' + (p.group.category ? p.group.category.name : '-');
             D.status.className = 'pq-badge ' + meta.cls;
             D.status.textContent = meta.label;
-            D.current.textContent = fmt(p.current_stock);
+            D.current.textContent = p.reserved_stock > 0 ?
+                fmt(p.current_stock) + ' (bebas ' + fmt(p.available_stock) + ', dipesan ' + fmt(p.reserved_stock) + ')' :
+                fmt(p.current_stock);
             D.min.textContent = fmt(p.min_stock);
             D.target.textContent = fmt(p.target_stock);
             D.rec.textContent = p.rec > 0 ? '+' + fmt(p.rec) : 'Tidak perlu';
@@ -1578,7 +1605,9 @@
             M.status.className = 'pq-badge ' + meta.cls;
             M.status.textContent = meta.label;
 
-            M.current.textContent = fmt(p.current_stock);
+            M.current.textContent = p.reserved_stock > 0 ?
+                fmt(p.current_stock) + ' (bebas ' + fmt(p.available_stock) + ', dipesan ' + fmt(p.reserved_stock) + ')' :
+                fmt(p.current_stock);
             M.target.textContent = fmt(p.target_stock);
             M.planned.textContent = fmt(p.planned);
             M.rec.textContent = p.rec > 0 ? '+' + fmt(p.rec) : 'Tidak perlu';
