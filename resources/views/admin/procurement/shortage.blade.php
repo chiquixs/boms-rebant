@@ -116,6 +116,16 @@
             placeholder="Cari production request no atau bahan baku..."
             autocomplete="off"
             aria-label="Cari production request no, nama bahan baku, atau kode bahan baku">
+
+        <button type="button" class="pq-search-clear" id="msSearchClear"
+            aria-label="Hapus pencarian" title="Hapus pencarian" hidden>
+            <svg width="12" height="12" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor"
+                stroke-width="2.4" stroke-linecap="round">
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+            </svg>
+        </button>
     </label>
 
     <select class="pq-select" id="msFilterStatus" aria-label="Filter status">
@@ -129,6 +139,12 @@
     </select>
 
     <button type="button" class="pq-reset" id="msReset" hidden>
+        <svg width="14" height="14" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+        </svg>
         Reset Filters
     </button>
 
@@ -554,6 +570,7 @@
             status: $('msFilterStatus'),
             material: $('msFilterMaterial'),
             reset: $('msReset'),
+            clear: $('msSearchClear'),
 
             count: $('msCount'),
             wrapper: $('msTableWrapper'),
@@ -863,6 +880,7 @@
             els.footer.hidden = true;
             els.wrapper.hidden = false;
             els.reset.hidden = !hasFilter();
+            els.clear.hidden = els.search.value === '';
 
             if (state.loading) {
                 els.body.innerHTML = skeletonRows();
@@ -1350,6 +1368,7 @@
         let searchTimer = null;
 
         els.search.addEventListener('input', function() {
+            els.clear.hidden = els.search.value === '';
             clearTimeout(searchTimer);
             searchTimer = setTimeout(function() {
                 state.search = els.search.value;
@@ -1380,6 +1399,17 @@
             els.material.value = '';
             render();
         }
+
+            els.clear.addEventListener('click', function() {
+            clearTimeout(searchTimer);
+            els.search.value = '';
+            state.search = '';
+            state.page = 1;
+            render();
+            els.search.focus();
+        });
+
+        els.reset.addEventListener('click', resetFilters);
 
         els.reset.addEventListener('click', resetFilters);
         els.emptyRst.addEventListener('click', resetFilters);

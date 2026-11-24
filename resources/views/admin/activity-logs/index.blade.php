@@ -211,6 +211,21 @@
 
                 <input type="text" id="activitySearch" name="search"
                     value="{{ request('search') }}" placeholder="Cari aktivitas...">
+
+                {{-- Hapus teks pencarian --}}
+                <button type="button"
+                    class="activity-search-clear"
+                    id="activitySearchClear"
+                    aria-label="Hapus pencarian"
+                    title="Hapus pencarian"
+                    @if (!request()->filled('search')) hidden @endif>
+                    <svg width="12" height="12" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor"
+                        stroke-width="2.4" stroke-linecap="round">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </button>
             </div>
 
             <div class="activity-logs-filters">
@@ -234,6 +249,26 @@
                     <option value="7days" @selected(request('period') === '7days')>7 Hari Terakhir</option>
                     <option value="30days" @selected(request('period') === '30days')>30 Hari Terakhir</option>
                 </select>
+
+                {{-- RESET FILTER (hanya muncul saat ada filter aktif) --}}
+                @php
+                    $hasActiveFilter = request()->filled('search')
+                        || (request()->filled('module') && request('module') !== 'all')
+                        || (request()->filled('user')   && request('user')   !== 'all')
+                        || (request()->filled('period') && request('period') !== 'all');
+                @endphp
+
+                @if ($hasActiveFilter)
+                    <a href="{{ route('admin.activity-logs.index') }}" class="activity-reset">
+                        <svg width="13" height="13" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                        Reset Filter
+                    </a>
+                @endif
 
             </div>
 
@@ -375,3 +410,38 @@
 
 @endsection
 
+
+@push('scripts')
+<script>
+    (function () {
+
+        var input = document.getElementById('activitySearch');
+        var clear = document.getElementById('activitySearchClear');
+
+        if (!input || !clear) return;
+
+        function sync() {
+            clear.hidden = input.value.trim() === '';
+        }
+
+        input.addEventListener('input', sync);
+
+        clear.addEventListener('click', function () {
+
+            // Kalau pencarian sudah diterapkan ke daftar, muat ulang tanpa kata kunci
+            var hadApplied = input.defaultValue.trim() !== '';
+
+            input.value = '';
+            sync();
+
+            if (hadApplied) {
+                input.form.submit();
+                return;
+            }
+
+            input.focus();
+        });
+
+    })();
+</script>
+@endpush

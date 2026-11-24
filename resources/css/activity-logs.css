@@ -725,3 +725,429 @@
 
 .activity-pagination a:hover { border-color: #9DBA8C; }
 .activity-pagination .disabled { color: #B3B5B0; }
+
+/* =========================
+   INTERAKTIF (HOVER / FOCUS / ANIMASI)
+   Hanya tampilan: tidak mengubah markup, route, atau JS.
+========================= */
+
+/* ----- Fokus keyboard yang jelas ----- */
+
+.activity-logs-filter:focus-visible,
+.activity-pagination a:focus-visible,
+.activity-search-clear:focus-visible,
+.activity-reset:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* ----- Kartu ringkasan ----- */
+
+.activity-summary-card {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.activity-summary-card:hover {
+    border-color: #C8D7C0;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 26px rgba(37, 40, 35, 0.07);
+}
+
+.activity-summary-icon {
+    transition: transform 0.25s ease;
+}
+
+.activity-summary-card:hover .activity-summary-icon {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+
+/* ----- Pencarian & filter ----- */
+
+.activity-logs-search,
+.activity-logs-filter {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.activity-logs-search:hover,
+.activity-logs-filter:hover {
+    border-color: #C8D7C0;
+}
+
+
+/* ----- Tombol x pada pencarian ----- */
+
+.activity-search-clear {
+    width: 20px;
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #EEEFEC;
+
+    color: #8B8E87;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.activity-search-clear[hidden] {
+    display: none;
+}
+
+.activity-search-clear:hover {
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    transform: scale(1.1);
+}
+
+
+/* ----- Tombol Reset Filter ----- */
+
+.activity-reset {
+    height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 0 12px;
+
+    border: 1px solid #DCE7D7;
+    border-radius: 7px;
+
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    font-size: 10px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+
+    transition: 0.2s ease;
+}
+
+.activity-reset svg {
+    flex-shrink: 0;
+
+    transition: transform 0.2s ease;
+}
+
+.activity-reset:hover {
+    border-color: var(--green);
+
+    background: #E3EFE0;
+
+    transform: translateY(-1px);
+}
+
+.activity-reset:hover svg {
+    transform: rotate(90deg);
+}
+
+.activity-reset:active {
+    transform: translateY(0);
+}
+
+
+/* ----- Baris tabel ----- */
+
+.activity-logs-table tbody tr {
+    transition:
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.activity-logs-table tbody tr:hover {
+    background: #F6FAF3;
+
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+.activity-user-avatar,
+.activity-module {
+    transition: transform 0.15s ease;
+}
+
+.activity-logs-table tbody tr:hover .activity-user-avatar,
+.activity-logs-table tbody tr:hover .activity-module {
+    transform: scale(1.05);
+}
+
+
+/* ----- Pagination ----- */
+
+.activity-pagination a {
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.activity-pagination a:hover {
+    background: var(--green-light);
+
+    transform: translateY(-1px);
+}
+
+.activity-pagination a:active {
+    transform: translateY(0);
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+/* Tablet & HP besar */
+@media (max-width: 700px) {
+
+    .activity-logs-search {
+        height: 42px;
+    }
+
+    .activity-logs-filter,
+    .activity-reset {
+        height: 42px;
+    }
+
+    /* 16px mencegah iOS auto-zoom saat input difokuskan */
+    .activity-logs-search input,
+    .activity-logs-filter {
+        font-size: 16px;
+    }
+
+    .activity-reset {
+        grid-column: 1 / -1;
+
+        font-size: 12px;
+    }
+
+    .activity-search-clear {
+        width: 28px;
+        height: 28px;
+    }
+
+}
+
+
+/* HP: tabel berubah menjadi daftar kartu (tanpa scroll samping) */
+@media (max-width: 600px) {
+
+    .activity-logs-table,
+    .activity-logs-table tbody,
+    .activity-logs-table tr,
+    .activity-logs-table td {
+        display: block;
+    }
+
+    .activity-logs-table {
+        min-width: 0;
+    }
+
+    /* header kolom disembunyikan secara visual, tetap terbaca screen reader */
+    .activity-logs-table thead {
+        position: absolute;
+
+        width: 1px;
+        height: 1px;
+
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    .activity-logs-table tbody tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "time   module"
+            "user   user"
+            "desc   desc"
+            "detail detail";
+        gap: 10px 12px;
+        align-items: center;
+
+        padding: 14px 12px;
+
+        border-bottom: 1px solid #EFF0ED;
+    }
+
+    .activity-logs-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    /* reset lebar kolom desktop */
+    .activity-logs-table td:nth-child(1),
+    .activity-logs-table td:nth-child(2),
+    .activity-logs-table td:nth-child(3),
+    .activity-logs-table td:nth-child(4),
+    .activity-logs-table td:nth-child(5) {
+        width: auto;
+        min-width: 0;
+
+        padding: 0;
+
+        border: none;
+    }
+
+    .activity-logs-table td:nth-child(1) { grid-area: time; }
+    .activity-logs-table td:nth-child(2) { grid-area: user; }
+    .activity-logs-table td:nth-child(3) { grid-area: desc; }
+    .activity-logs-table td:nth-child(4) { grid-area: module; }
+
+    .activity-logs-table td:nth-child(5) {
+        grid-area: detail;
+
+        padding: 8px 10px;
+
+        border: 1px solid var(--border);
+        border-radius: 8px;
+
+        background: #FAFBF9;
+    }
+
+    .activity-logs-table td:nth-child(5)::before {
+        content: "Detail";
+
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: var(--text-muted);
+
+        font-size: 10px;
+        font-weight: 700;
+
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+    }
+
+    /* teks 7-9px tidak terbaca di HP: dinaikkan */
+    .activity-time strong,
+    .activity-user strong,
+    .activity-description strong,
+    .activity-detail strong {
+        font-size: 13px;
+    }
+
+    .activity-time span,
+    .activity-user span,
+    .activity-description span,
+    .activity-detail span {
+        font-size: 11px;
+    }
+
+    .activity-description span {
+        max-width: none;
+    }
+
+    .activity-detail span {
+        max-width: none;
+
+        white-space: normal;
+    }
+
+    .activity-user {
+        min-width: 0;
+    }
+
+    .activity-user-avatar {
+        width: 34px;
+        height: 34px;
+
+        font-size: 12px;
+    }
+
+    .activity-module {
+        padding: 5px 9px;
+
+        font-size: 10px;
+    }
+
+    .activity-logs-card-header h2 {
+        font-size: 15px;
+    }
+
+    .activity-logs-card-header p {
+        font-size: 12px;
+    }
+
+    /* Pagination menumpuk */
+    .activity-pagination {
+        flex-direction: column;
+        align-items: stretch;
+
+        padding: 14px 12px;
+
+        text-align: center;
+    }
+
+    .activity-pagination > div {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .activity-pagination a,
+    .activity-pagination .disabled {
+        padding: 10px 12px;
+
+        text-align: center;
+    }
+
+}
+
+
+/* ----- Hormati pengaturan "kurangi animasi" ----- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .activity-summary-card,
+    .activity-summary-icon,
+    .activity-search-clear,
+    .activity-reset,
+    .activity-reset svg,
+    .activity-user-avatar,
+    .activity-module,
+    .activity-pagination a {
+        transition: none;
+    }
+
+    .activity-summary-card:hover,
+    .activity-summary-card:hover .activity-summary-icon,
+    .activity-search-clear:hover,
+    .activity-reset:hover,
+    .activity-reset:hover svg,
+    .activity-logs-table tbody tr:hover .activity-user-avatar,
+    .activity-logs-table tbody tr:hover .activity-module,
+    .activity-pagination a:hover {
+        transform: none;
+    }
+}

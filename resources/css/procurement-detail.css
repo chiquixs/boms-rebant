@@ -1155,3 +1155,302 @@ body.modal-open {
     }
 
 }
+
+/* =========================
+   INTERAKTIF (HOVER / FOCUS / ANIMASI)
+   Hanya tampilan: tidak mengubah markup, route, atau JS.
+========================= */
+
+/* ----- Fokus keyboard yang jelas ----- */
+
+.procurement-detail-back:focus-visible,
+.procurement-receive-button:focus-visible,
+.procurement-detail-button:focus-visible,
+.procurement-receive-modal-close:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* ----- Link kembali ----- */
+
+.procurement-detail-back {
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.procurement-detail-back:hover {
+    transform: translateX(-3px);
+}
+
+
+/* ----- Tombol "Terima Barang" ----- */
+
+.procurement-receive-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 18px rgba(82, 106, 72, 0.22);
+}
+
+.procurement-receive-button:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+
+/* ----- Kartu detail ----- */
+
+.procurement-detail-card {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.procurement-detail-card:hover {
+    border-color: #C8D7C0;
+
+    box-shadow:
+        0 12px 26px rgba(37, 40, 35, 0.06);
+}
+
+
+/* ----- Baris tabel item ----- */
+
+.procurement-detail-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.procurement-detail-table tbody tr:hover {
+    background: #F6FAF3;
+}
+
+.procurement-detail-table tbody tr:hover td:first-child {
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+/* Baris yang melebar penuh tidak ikut menyala */
+.procurement-detail-table tbody tr:has(td[colspan]):hover {
+    background: transparent;
+}
+
+.procurement-detail-table tbody tr:has(td[colspan]):hover td:first-child {
+    box-shadow: none;
+}
+
+.procurement-detail-material-type {
+    transition: transform 0.15s ease;
+}
+
+.procurement-detail-table tbody tr:hover .procurement-detail-material-type {
+    transform: scale(1.05);
+}
+
+
+/* ----- Profil supplier & progress ----- */
+
+.procurement-supplier-avatar {
+    transition: transform 0.2s ease;
+}
+
+.procurement-supplier-profile:hover .procurement-supplier-avatar {
+    transform: scale(1.08);
+}
+
+.procurement-progress-icon {
+    transition: transform 0.2s ease;
+}
+
+.procurement-progress-item:hover .procurement-progress-icon {
+    transform: scale(1.1);
+}
+
+
+/* ----- Modal terima barang ----- */
+
+@keyframes pcd-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes pcd-pop {
+    from {
+        opacity: 0;
+
+        transform: translateY(14px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateY(0) scale(1);
+    }
+}
+
+.procurement-receive-modal-overlay.show {
+    animation: pcd-fade 0.2s ease;
+}
+
+.procurement-receive-modal-overlay.show .procurement-receive-modal {
+    animation: pcd-pop 0.25s ease;
+}
+
+.procurement-receive-modal-close:hover {
+    transform: rotate(90deg);
+}
+
+.procurement-receive-item {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.procurement-receive-item:hover,
+.procurement-receive-item:focus-within {
+    border-color: #C8D7C0;
+
+    box-shadow:
+        0 6px 16px rgba(37, 40, 35, 0.05);
+}
+
+.procurement-detail-button:hover {
+    transform: translateY(-1px);
+}
+
+.procurement-detail-button:active {
+    transform: translateY(0);
+}
+
+
+/* ----- Layar sentuh: tanpa efek hover yang menempel ----- */
+
+@media (hover: none) {
+
+    .procurement-detail-back:hover,
+    .procurement-receive-button:hover,
+    .procurement-detail-button:hover,
+    .procurement-supplier-profile:hover .procurement-supplier-avatar,
+    .procurement-progress-item:hover .procurement-progress-icon,
+    .procurement-detail-table tbody tr:hover .procurement-detail-material-type {
+        transform: none;
+    }
+}
+
+
+/* ----- Hormati pengaturan "kurangi animasi" ----- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .procurement-detail-back,
+    .procurement-receive-button,
+    .procurement-detail-button,
+    .procurement-detail-card,
+    .procurement-detail-material-type,
+    .procurement-supplier-avatar,
+    .procurement-progress-icon,
+    .procurement-receive-item,
+    .procurement-receive-modal-close,
+    .procurement-receive-modal-overlay.show,
+    .procurement-receive-modal-overlay.show .procurement-receive-modal {
+        animation: none;
+
+        transition: none;
+    }
+
+    .procurement-detail-back:hover,
+    .procurement-receive-button:hover,
+    .procurement-detail-button:hover,
+    .procurement-receive-modal-close:hover,
+    .procurement-supplier-profile:hover .procurement-supplier-avatar,
+    .procurement-progress-item:hover .procurement-progress-icon,
+    .procurement-detail-table tbody tr:hover .procurement-detail-material-type {
+        transform: none;
+    }
+}
+
+/* =========================
+   TOMBOL KEMBALI (hijau tua)
+========================= */
+
+.procurement-detail-back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    height: 34px;
+    padding: 0 14px;
+
+    margin-bottom: 16px;
+
+    background: var(--green-dark);
+    border: 1px solid var(--green-dark);
+    border-radius: 9px;
+
+    color: var(--white);
+
+    font-size: 10px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.procurement-detail-back svg {
+    flex-shrink: 0;
+
+    transition: transform 0.2s ease;
+}
+
+.procurement-detail-back:hover {
+    background: #455C3D;
+    border-color: #455C3D;
+
+    color: var(--white);
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 6px 14px rgba(82, 106, 72, 0.22);
+}
+
+.procurement-detail-back:hover svg {
+    transform: translateX(-3px);
+}
+
+.procurement-detail-back:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+.procurement-detail-back:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+
+    .procurement-detail-back {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .procurement-detail-back,
+    .procurement-detail-back svg {
+        transition: none;
+    }
+
+    .procurement-detail-back:hover,
+    .procurement-detail-back:hover svg {
+        transform: none;
+    }
+}

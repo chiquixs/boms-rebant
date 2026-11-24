@@ -939,3 +939,489 @@
     .toast-container { left: 12px; right: 12px; top: 12px; }
     .toast { min-width: 0; max-width: none; }
 }
+
+/* ========================================
+   SEARCH CLEAR (X) & RESET FILTER
+======================================== */
+
+/* Pencarian di kiri; filter dan Reset Filter di kanan */
+.material-toolbar {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.material-filter {
+    margin-left: auto;
+}
+
+.material-search-clear {
+    width: 20px;
+    height: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #EEEFEC;
+
+    color: #8B8E87;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.material-search-clear[hidden] {
+    display: none;
+}
+
+.material-search-clear:hover {
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    transform: scale(1.1);
+}
+
+.material-search-clear:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+.material-reset {
+    height: 36px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    flex-shrink: 0;
+
+    padding: 0 13px;
+
+    border: 1px solid #DCE7D7;
+    border-radius: 8px;
+
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition: 0.2s ease;
+}
+
+.material-reset[hidden] {
+    display: none;
+}
+
+.material-reset svg {
+    flex-shrink: 0;
+
+    transition: transform 0.2s ease;
+}
+
+.material-reset:hover {
+    border-color: var(--green);
+
+    background: #E3EFE0;
+
+    transform: translateY(-1px);
+}
+
+.material-reset:hover svg {
+    transform: rotate(90deg);
+}
+
+.material-reset:active {
+    transform: translateY(0);
+}
+
+.material-reset:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .material-search-clear,
+    .material-reset,
+    .material-reset svg {
+        transition: none;
+    }
+
+    .material-search-clear:hover,
+    .material-reset:hover,
+    .material-reset:hover svg {
+        transform: none;
+    }
+}
+
+
+/* ========================================
+   RESPONSIVE LANJUTAN
+   Menimpa aturan 700px di atas.
+======================================== */
+
+@media (max-width: 700px) {
+
+    .material-filter {
+        margin-left: 0;
+    }
+
+    .material-reset {
+        width: 100%;
+    }
+}
+
+
+/* Tabel menjadi kartu per bahan (tablet & HP) */
+@media (max-width: 800px) {
+
+    .material-table-wrapper {
+        overflow-x: visible;
+
+        padding: 14px;
+    }
+
+    .material-table {
+        min-width: 0;
+
+        display: block;
+    }
+
+    .material-table thead {
+        display: none;
+    }
+
+    .material-table tbody {
+        display: flex;
+        flex-direction: column;
+
+        gap: 12px;
+    }
+
+    .material-table tbody tr {
+        display: grid;
+
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+
+        gap: 12px 14px;
+
+        padding: 14px;
+
+        border: 1px solid var(--border);
+        border-radius: 12px;
+
+        background: #FBFCFA;
+    }
+
+    .material-table tbody tr:hover {
+        background: #FBFCFA;
+    }
+
+    .material-table td,
+    .material-table td:first-child {
+        min-width: 0;
+
+        padding: 0;
+
+        border: none;
+
+        white-space: normal;
+    }
+
+    .material-table td.stock-value {
+        text-align: left !important;
+    }
+
+    /* Susunan kartu:
+       Nama Bahan ............. Status
+       Kode (garis pemisah)
+       Tipe | Satuan | Ukuran Sheet
+       Current | Safety | Target
+       [ Edit ]   [ Hapus ]              */
+    .material-table td:nth-child(2) { grid-column: 1 / 3; grid-row: 1; }
+    .material-table td:nth-child(9) { grid-column: 3;     grid-row: 1; justify-self: end; }
+    .material-table td:nth-child(1) { grid-column: 1 / -1; grid-row: 2; }
+    .material-table td:nth-child(3) { grid-column: 1;     grid-row: 3; }
+    .material-table td:nth-child(4) { grid-column: 2;     grid-row: 3; }
+    .material-table td:nth-child(5) { grid-column: 3;     grid-row: 3; }
+    .material-table td:nth-child(6) { grid-column: 1;     grid-row: 4; }
+    .material-table td:nth-child(7) { grid-column: 2;     grid-row: 4; }
+    .material-table td:nth-child(8) { grid-column: 3;     grid-row: 4; }
+    .material-table td:nth-child(10) { grid-column: 1 / -1; grid-row: 5; }
+
+    /* Kode di bawah nama, dengan garis pemisah */
+    .material-table td:nth-child(1),
+    .material-table tbody tr:last-child td:nth-child(1) {
+        padding-bottom: 12px;
+
+        border-bottom: 1px solid #F0F1EE;
+
+        color: var(--text-muted);
+
+        font-size: 10px;
+    }
+
+    /* Label kolom (dari CSS, tanpa mengubah Blade) */
+    .material-table td:nth-child(3)::before { content: "Tipe"; }
+    .material-table td:nth-child(4)::before { content: "Satuan"; }
+    .material-table td:nth-child(5)::before { content: "Ukuran Sheet"; }
+    .material-table td:nth-child(6)::before { content: "Current Stock"; }
+    .material-table td:nth-child(7)::before { content: "Safety Stock"; }
+    .material-table td:nth-child(8)::before { content: "Target Stock"; }
+
+    .material-table td:nth-child(n+3):nth-child(-n+8)::before {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: #9A9D96;
+
+        font-size: 8px;
+        font-weight: 600;
+
+        letter-spacing: 0.4px;
+
+        text-transform: uppercase;
+    }
+
+    /* Tombol Edit dan Hapus berbagi lebar kartu */
+    .material-table .material-actions {
+        gap: 8px;
+    }
+
+    .material-table .material-actions .material-action {
+        width: 100%;
+        height: 34px;
+    }
+
+    .material-table .material-actions .material-action.edit,
+    .material-table .material-actions .material-delete-form {
+        flex: 1;
+    }
+}
+
+/* ========================================
+   INTERAKTIF (HOVER / FOCUS / ANIMASI)
+   Hanya tampilan: tidak mengubah markup, route, atau JS.
+======================================== */
+
+/* ----- Fokus keyboard yang jelas ----- */
+
+.add-material-button:focus-visible,
+.material-action:focus-visible,
+.material-modal-close:focus-visible,
+.material-modal-button:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* ----- Tombol "Tambah Bahan" ----- */
+
+.add-material-button span {
+    display: inline-block;
+
+    transition: transform 0.25s ease;
+}
+
+.add-material-button:hover span {
+    transform: rotate(90deg);
+}
+
+.add-material-button:active {
+    transform: translateY(0);
+}
+
+
+/* ----- Pencarian & filter ----- */
+
+.material-search,
+.material-filter {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background 0.2s ease;
+}
+
+.material-search:hover,
+.material-filter:hover {
+    border-color: #C8D7C0;
+}
+
+
+/* ----- Baris tabel ----- */
+
+.material-table tbody tr {
+    transition:
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.material-table tbody tr:hover {
+    background: #F6FAF3;
+
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+.material-code,
+.material-type,
+.material-status {
+    transition:
+        color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.material-table tbody tr:hover .material-code {
+    color: #465C3E;
+}
+
+.material-table tbody tr:hover .material-type {
+    transform: scale(1.05);
+}
+
+
+/* ----- Tombol aksi (Edit / Hapus) ----- */
+
+.material-action {
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.material-action:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 14px rgba(82, 106, 72, 0.14);
+}
+
+.material-action.delete:hover {
+    box-shadow:
+        0 6px 14px rgba(184, 92, 85, 0.14);
+}
+
+.material-action:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+
+/* ----- Modal: muncul halus ----- */
+
+@keyframes mm-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes mm-pop {
+    from {
+        opacity: 0;
+
+        transform: translateY(14px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateY(0) scale(1);
+    }
+}
+
+.material-modal-overlay.active {
+    animation: mm-fade 0.2s ease;
+}
+
+.material-modal-overlay.active .material-modal {
+    animation: mm-pop 0.25s ease;
+}
+
+.material-modal-close {
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.material-modal-close:hover {
+    transform: rotate(90deg);
+}
+
+
+/* ----- Modal: kolom isian ----- */
+
+.material-form-group input,
+.material-form-group select {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.material-form-group input:hover,
+.material-form-group select:hover {
+    border-color: #C8D7C0;
+}
+
+.material-form-group input:focus,
+.material-form-group select:focus {
+    border-color: var(--green);
+}
+
+
+/* ----- Modal: tombol ----- */
+
+.material-modal-button {
+    transition:
+        background 0.2s ease,
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+.material-modal-button:active {
+    transform: translateY(0);
+}
+
+
+/* ----- Hormati pengaturan "kurangi animasi" ----- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .add-material-button span,
+    .material-code,
+    .material-type,
+    .material-action,
+    .material-modal-close,
+    .material-modal-overlay.active,
+    .material-modal-overlay.active .material-modal {
+        animation: none;
+
+        transition: none;
+    }
+
+    .add-material-button:hover span,
+    .material-table tbody tr:hover .material-type,
+    .material-action:hover,
+    .material-modal-close:hover {
+        transform: none;
+    }
+}
