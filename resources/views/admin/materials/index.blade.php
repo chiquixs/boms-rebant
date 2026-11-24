@@ -37,6 +37,21 @@
                 </svg>
 
                 <input type="text" id="materialSearch" placeholder="Cari kode atau nama bahan...">
+
+                {{-- Hapus teks pencarian --}}
+                <button type="button"
+                        class="material-search-clear"
+                        id="materialSearchClear"
+                        aria-label="Hapus pencarian"
+                        title="Hapus pencarian"
+                        hidden>
+                    <svg width="12" height="12" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor"
+                         stroke-width="2.4" stroke-linecap="round">
+                        <path d="M18 6 6 18"/>
+                        <path d="m6 6 12 12"/>
+                    </svg>
+                </button>
             </div>
 
             <select class="material-filter" id="materialTypeFilter">
@@ -44,6 +59,17 @@
                 <option value="SHEET">SHEET</option>
                 <option value="NON_SHEET">NON-SHEET</option>
             </select>
+
+            {{-- RESET FILTER (hanya muncul saat sedang memfilter) --}}
+            <button type="button" class="material-reset" id="materialReset" hidden>
+                <svg width="14" height="14" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round">
+                    <path d="M18 6 6 18"/>
+                    <path d="m6 6 12 12"/>
+                </svg>
+                Reset Filter
+            </button>
         </div>
 
         <div class="material-table-wrapper">
@@ -318,6 +344,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchInput = document.getElementById('materialSearch');
     const typeFilter  = document.getElementById('materialTypeFilter');
     const emptyState  = document.getElementById('materialEmptyState');
+    const searchClear = document.getElementById('materialSearchClear');
+    const resetButton = document.getElementById('materialReset');
 
     /* ---------- DATA DARI BLADE ---------- */
 
@@ -476,10 +504,28 @@ document.addEventListener('DOMContentLoaded', function () {
             : 'Bahan mentah tidak ditemukan.';
 
         emptyState.style.display = visible === 0 ? 'block' : 'none';
+
+        // Tombol × muncul saat ada teks; Reset Filter muncul saat memfilter
+        searchClear.hidden = searchInput.value === '';
+        resetButton.hidden = keyword === '' && !selectedType;
     }
 
     searchInput.addEventListener('input', filterMaterials);
     typeFilter.addEventListener('change', filterMaterials);
+
+    searchClear.addEventListener('click', function () {
+        searchInput.value = '';
+        filterMaterials();
+        searchInput.focus();
+    });
+
+    resetButton.addEventListener('click', function () {
+        searchInput.value = '';
+        typeFilter.value  = '';
+        filterMaterials();
+        searchInput.focus();
+    });
+
     filterMaterials();
 
     /* ---------- TOAST ---------- */

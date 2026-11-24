@@ -57,6 +57,19 @@
                     <path d="m20 20-3.5-3.5"/>
                 </svg>
                 <input type="text" id="supplierSearch" placeholder="Cari supplier...">
+                                <button type="button"
+                    class="supplier-search-clear"
+                    id="supplierSearchClear"
+                    aria-label="Hapus pencarian"
+                    title="Hapus pencarian"
+                    hidden>
+                    <svg width="10" height="10" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor"
+                        stroke-width="2.4" stroke-linecap="round">
+                        <path d="M18 6 6 18"/>
+                        <path d="m6 6 12 12"/>
+                    </svg>
+                </button>
             </div>
 
             <select class="suppliers-filter" id="supplierStatusFilter">
@@ -64,6 +77,16 @@
                 <option value="active">Aktif</option>
                 <option value="inactive">Nonaktif</option>
             </select>
+
+                        <button type="button" class="supplier-reset" id="supplierReset" hidden>
+                <svg width="12" height="12" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round">
+                    <path d="M18 6 6 18"/>
+                    <path d="m6 6 12 12"/>
+                </svg>
+                Reset Filter
+            </button>
         </div>
 
         <div class="suppliers-table-wrapper">
@@ -463,6 +486,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const statusFilter = document.getElementById('supplierStatusFilter');
     const tableBody = document.getElementById('supplierTableBody');
     const emptyState = document.getElementById('supplierEmpty');
+    const searchClear = document.getElementById('supplierSearchClear');
+    const resetButton = document.getElementById('supplierReset');
 
     function filterSuppliers() {
         const keyword = searchInput.value.trim().toLowerCase();
@@ -486,10 +511,27 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         emptyState.style.display = visible === 0 ? 'flex' : 'none';
+
+        searchClear.hidden = searchInput.value === '';
+        resetButton.hidden = keyword === '' && status === 'all';
     }
 
     searchInput.addEventListener('input', filterSuppliers);
     statusFilter.addEventListener('change', filterSuppliers);
+
+    searchClear.addEventListener('click', () => {
+        searchInput.value = '';
+        filterSuppliers();
+        searchInput.focus();
+    });
+
+    resetButton.addEventListener('click', () => {
+        searchInput.value = '';
+        statusFilter.value = 'all';
+        filterSuppliers();
+        searchInput.focus();
+    });
+
     filterSuppliers();
 
     // ---------- TOAST (sama seperti halaman Material) ----------

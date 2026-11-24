@@ -224,9 +224,39 @@ $fmt = fn ($v) => rtrim(rtrim(number_format((float) $v, 3, '.', ''), '0'), '.');
                     <input
                         type="text"
                         id="restockSearch"
-                        placeholder="Cari bahan baku...">
+                        placeholder="Cari bahan baku..."
+                        autocomplete="off">
+
+                    {{-- Hapus teks pencarian --}}
+                    <button type="button"
+                        class="procurement-search-clear"
+                        id="restockSearchClear"
+                        aria-label="Hapus pencarian"
+                        title="Hapus pencarian"
+                        hidden>
+                        <svg width="10" height="10" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor"
+                            stroke-width="2.4" stroke-linecap="round">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
 
                 </div>
+
+                {{-- RESET FILTER (muncul saat ada filter aktif) --}}
+                <button type="button"
+                    class="procurement-reset"
+                    id="restockReset"
+                    hidden>
+                    <svg width="12" height="12" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                    Reset Filter
+                </button>
 
             </div>
 
@@ -372,7 +402,23 @@ $fmt = fn ($v) => rtrim(rtrim(number_format((float) $v, 3, '.', ''), '0'), '.');
                     <input
                         type="text"
                         id="poSearch"
-                        placeholder="Cari PO atau supplier...">
+                        placeholder="Cari PO atau supplier..."
+                        autocomplete="off">
+
+                    {{-- Hapus teks pencarian --}}
+                    <button type="button"
+                        class="procurement-search-clear"
+                        id="poSearchClear"
+                        aria-label="Hapus pencarian"
+                        title="Hapus pencarian"
+                        hidden>
+                        <svg width="10" height="10" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor"
+                            stroke-width="2.4" stroke-linecap="round">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
 
                 </div>
 
@@ -392,6 +438,20 @@ $fmt = fn ($v) => rtrim(rtrim(number_format((float) $v, 3, '.', ''), '0'), '.');
                         Received
                     </option>
                 </select>
+
+                {{-- RESET FILTER (muncul saat ada filter aktif) --}}
+                <button type="button"
+                    class="procurement-reset"
+                    id="poReset"
+                    hidden>
+                    <svg width="12" height="12" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                    Reset Filter
+                </button>
 
             </div>
 
@@ -1248,6 +1308,81 @@ $fmt = fn ($v) => rtrim(rtrim(number_format((float) $v, 3, '.', ''), '0'), '.');
         filterPurchaseOrders();
 
     });
+</script>
+
+<script>
+    (function () {
+
+        // Menambah tombol × dan Reset Filter tanpa mengubah fungsi filter yang ada.
+        // Filter lama tetap berjalan: script ini hanya mengosongkan kolom lalu
+        // memicu event 'input' / 'change' agar daftar diperbarui seperti biasa.
+        function bindTools(cfg) {
+
+            var input = document.getElementById(cfg.input);
+            var clear = document.getElementById(cfg.clear);
+            var reset = document.getElementById(cfg.reset);
+            var select = cfg.select ? document.getElementById(cfg.select) : null;
+
+            if (!input || !clear || !reset) return;
+
+            function fire(el, type) {
+                el.dispatchEvent(new Event(type, { bubbles: true }));
+            }
+
+            function sync() {
+
+                var hasText = input.value.trim() !== '';
+                var hasSelect = !!select && select.value !== cfg.selectDefault;
+
+                clear.hidden = !hasText;
+                reset.hidden = !(hasText || hasSelect);
+            }
+
+            input.addEventListener('input', sync);
+
+            if (select) select.addEventListener('change', sync);
+
+            // × : hanya mengosongkan pencarian, status filter tetap
+            clear.addEventListener('click', function () {
+
+                input.value = '';
+                fire(input, 'input');
+
+                input.focus();
+            });
+
+            // Reset Filter : pencarian dan status kembali ke awal
+            reset.addEventListener('click', function () {
+
+                input.value = '';
+                fire(input, 'input');
+
+                if (select) {
+                    select.value = cfg.selectDefault;
+                    fire(select, 'change');
+                }
+
+                input.focus();
+            });
+
+            sync();
+        }
+
+        bindTools({
+            input: 'restockSearch',
+            clear: 'restockSearchClear',
+            reset: 'restockReset'
+        });
+
+        bindTools({
+            input: 'poSearch',
+            clear: 'poSearchClear',
+            reset: 'poReset',
+            select: 'poStatusFilter',
+            selectDefault: 'all'
+        });
+
+    })();
 </script>
 
 @endpush

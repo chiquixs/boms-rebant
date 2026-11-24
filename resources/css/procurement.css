@@ -1158,3 +1158,374 @@ body.modal-open {
     }
 
 }
+
+/* =========================
+   INTERAKTIF (HOVER / FOCUS / ANIMASI)
+   Hanya tampilan: tidak mengubah route atau logika JS yang ada.
+========================= */
+
+/* ----- Fokus keyboard yang jelas ----- */
+
+.procurement-tab:focus-visible,
+.procurement-action-button:focus-visible,
+.procurement-detail-button:focus-visible,
+.procurement-modal-close:focus-visible,
+.procurement-button:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* ----- Kartu ringkasan ----- */
+
+.procurement-summary-card {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.procurement-summary-card:hover {
+    border-color: #C8D7C0;
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 26px rgba(37, 40, 35, 0.07);
+}
+
+.procurement-summary-icon {
+    transition: transform 0.25s ease;
+}
+
+.procurement-summary-card:hover .procurement-summary-icon {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+
+/* ----- Tab: isi muncul halus ----- */
+
+@keyframes pc-fade {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.procurement-tab-content.active {
+    animation: pc-fade 0.22s ease;
+}
+
+
+/* ----- Pencarian & filter ----- */
+
+.procurement-search:hover,
+.procurement-filter:hover {
+    border-color: #C8D7C0;
+}
+
+.procurement-filter {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.procurement-toolbar {
+    flex-wrap: wrap;
+
+    justify-content: flex-start;
+}
+
+.procurement-toolbar .procurement-filter {
+    margin-left: auto;
+}
+
+
+/* ----- Baris tabel ----- */
+
+.procurement-table tbody tr {
+    transition:
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.procurement-table tbody tr:hover {
+    background: #F6FAF3;
+}
+
+.procurement-table tbody tr:hover td:first-child {
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+/* Baris "belum ada data" tidak ikut menyala */
+.procurement-table tbody tr:has(td[colspan]):hover {
+    background: transparent;
+}
+
+.procurement-table tbody tr:has(td[colspan]):hover td:first-child {
+    box-shadow: none;
+}
+
+.procurement-po-number {
+    transition: color 0.15s ease;
+}
+
+.procurement-table tbody tr:hover .procurement-po-number {
+    color: #465C3E;
+}
+
+.procurement-stock-status,
+.procurement-po-status,
+.procurement-type,
+.procurement-email-status {
+    transition: transform 0.15s ease;
+}
+
+.procurement-table tbody tr:hover .procurement-stock-status,
+.procurement-table tbody tr:hover .procurement-po-status,
+.procurement-table tbody tr:hover .procurement-type,
+.procurement-table tbody tr:hover .procurement-email-status {
+    transform: scale(1.05);
+}
+
+
+/* ----- Tombol aksi (tinjau / detail) ----- */
+
+.procurement-action-button:hover,
+.procurement-detail-button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 14px rgba(82, 106, 72, 0.14);
+}
+
+.procurement-action-button:active,
+.procurement-detail-button:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+
+/* ----- Modal: muncul halus ----- */
+
+@keyframes pc-modal-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes pc-modal-pop {
+    from {
+        opacity: 0;
+
+        transform: translateY(14px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+
+        transform: translateY(0) scale(1);
+    }
+}
+
+.procurement-modal-overlay.show {
+    animation: pc-modal-fade 0.2s ease;
+}
+
+.procurement-modal-overlay.show .procurement-modal {
+    animation: pc-modal-pop 0.25s ease;
+}
+
+.procurement-modal-close:hover {
+    transform: rotate(90deg);
+}
+
+.procurement-button:hover {
+    transform: translateY(-1px);
+}
+
+.procurement-button:active {
+    transform: translateY(0);
+}
+
+
+/* =========================
+   SEARCH CLEAR (X) & RESET FILTER
+========================= */
+
+.procurement-search-clear {
+    width: 18px;
+    height: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #EEEFEC;
+
+    color: #8B8E87;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.procurement-search-clear[hidden] {
+    display: none;
+}
+
+.procurement-search-clear:hover {
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    transform: scale(1.1);
+}
+
+.procurement-search-clear:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+.procurement-reset {
+    height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 0 12px;
+
+    border: 1px solid #DCE7D7;
+    border-radius: 7px;
+
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    font-family: inherit;
+    font-size: 9px;
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.procurement-reset[hidden] {
+    display: none;
+}
+
+.procurement-reset svg {
+    flex-shrink: 0;
+
+    transition: transform 0.2s ease;
+}
+
+.procurement-reset:hover {
+    border-color: var(--green);
+
+    background: #E3EFE0;
+
+    transform: translateY(-1px);
+}
+
+.procurement-reset:hover svg {
+    transform: rotate(90deg);
+}
+
+.procurement-reset:active {
+    transform: translateY(0);
+}
+
+.procurement-reset:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* ----- Layar sentuh: tanpa efek hover yang menempel ----- */
+
+@media (hover: none) {
+
+    .procurement-summary-card:hover,
+    .procurement-summary-card:hover .procurement-summary-icon,
+    .procurement-action-button:hover,
+    .procurement-detail-button:hover,
+    .procurement-button:hover,
+    .procurement-reset:hover,
+    .procurement-reset:hover svg,
+    .procurement-search-clear:hover,
+    .procurement-table tbody tr:hover .procurement-stock-status,
+    .procurement-table tbody tr:hover .procurement-po-status,
+    .procurement-table tbody tr:hover .procurement-type,
+    .procurement-table tbody tr:hover .procurement-email-status {
+        transform: none;
+    }
+}
+
+
+/* ----- Mobile: tombol reset selebar layar ----- */
+
+@media (max-width: 768px) {
+
+    .procurement-toolbar .procurement-filter {
+        margin-left: 0;
+    }
+
+    .procurement-reset {
+        width: 100%;
+    }
+}
+
+
+/* ----- Hormati pengaturan "kurangi animasi" ----- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .procurement-summary-card,
+    .procurement-summary-icon,
+    .procurement-tab-content.active,
+    .procurement-action-button,
+    .procurement-detail-button,
+    .procurement-button,
+    .procurement-search-clear,
+    .procurement-reset,
+    .procurement-reset svg,
+    .procurement-stock-status,
+    .procurement-po-status,
+    .procurement-type,
+    .procurement-email-status,
+    .procurement-modal-close,
+    .procurement-modal-overlay.show,
+    .procurement-modal-overlay.show .procurement-modal {
+        animation: none;
+
+        transition: none;
+    }
+
+    .procurement-summary-card:hover,
+    .procurement-summary-card:hover .procurement-summary-icon,
+    .procurement-action-button:hover,
+    .procurement-detail-button:hover,
+    .procurement-button:hover,
+    .procurement-reset:hover,
+    .procurement-reset:hover svg,
+    .procurement-search-clear:hover,
+    .procurement-modal-close:hover,
+    .procurement-table tbody tr:hover .procurement-stock-status,
+    .procurement-table tbody tr:hover .procurement-po-status,
+    .procurement-table tbody tr:hover .procurement-type,
+    .procurement-table tbody tr:hover .procurement-email-status {
+        transform: none;
+    }
+}
