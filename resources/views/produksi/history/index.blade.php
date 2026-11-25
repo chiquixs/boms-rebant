@@ -121,6 +121,16 @@
             autocomplete="off"
             aria-label="Cari riwayat produksi"
         >
+
+        <button type="button" class="ph-search-clear" id="phSearchClear"
+            aria-label="Hapus pencarian" title="Hapus pencarian" hidden>
+            <svg width="12" height="12" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor"
+                 stroke-width="2.4" stroke-linecap="round">
+                <path d="M18 6 6 18"/>
+                <path d="m6 6 12 12"/>
+            </svg>
+        </button>
     </label>
 
     <div class="ph-range">
@@ -144,6 +154,12 @@
     </select>
 
     <button type="button" class="pq-reset" id="phReset" hidden>
+        <svg width="14" height="14" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round">
+            <path d="M18 6 6 18"/>
+            <path d="m6 6 12 12"/>
+        </svg>
         Reset Filter
     </button>
 
@@ -446,6 +462,7 @@
         product:   $('phFilterProduct'),
         user:      $('phFilterUser'),
         reset:     $('phReset'),
+        clear:     $('phSearchClear'),
         rangeErr:  $('phRangeError'),
 
         count:    $('phCount'),
@@ -753,6 +770,7 @@
         els.footer.hidden = true;
         els.wrapper.hidden = false;
         els.reset.hidden = !hasFilter();
+        els.clear.hidden = els.search.value === '';
 
         const invalid = rangeInvalid();
         els.rangeErr.hidden = !invalid;
@@ -1013,6 +1031,7 @@
     let searchTimer = null;
 
     els.search.addEventListener('input', function () {
+        els.clear.hidden = els.search.value === '';
         clearTimeout(searchTimer);
         searchTimer = setTimeout(function () {
             state.search = els.search.value;
@@ -1067,6 +1086,15 @@
         els.user.value = '';
         render();
     }
+
+    els.clear.addEventListener('click', function () {
+        clearTimeout(searchTimer);
+        els.search.value = '';
+        state.search = '';
+        state.page = 1;
+        render();
+        els.search.focus();
+    });
 
     els.reset.addEventListener('click', resetFilters);
     els.emptyRst.addEventListener('click', resetFilters);

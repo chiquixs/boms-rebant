@@ -1060,3 +1060,618 @@
 
     background: var(--green-light);
 }
+
+
+
+/* =========================
+   SEARCH CLEAR (X) & RESET FILTER
+========================= */
+
+#spSearchClear:hover {
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    transform: scale(1.1);
+}
+
+#spReset {
+    height: 44px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 0 16px;
+
+    border: 1px solid #DCE7D7;
+    border-radius: 11px;
+
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    font-size: 12px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+#spReset[hidden] {
+    display: none;
+}
+
+#spReset svg {
+    flex-shrink: 0;
+
+    transition: transform 0.2s ease;
+}
+
+#spReset:hover {
+    border-color: var(--green);
+
+    background: #E3EFE0;
+
+    transform: translateY(-1px);
+}
+
+#spReset:hover svg {
+    transform: rotate(90deg);
+}
+
+#spReset:active {
+    transform: translateY(0);
+}
+
+#spReset:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* =========================
+   INTERAKTIF (HOVER / FOCUS / ANIMASI)
+========================= */
+
+.pq-stats:has(#spStatTotal) .pq-stat {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.pq-stats:has(#spStatTotal) .pq-stat:hover {
+    transform: translateY(-3px);
+
+    border-color: var(--green);
+
+    box-shadow: 0 10px 22px rgba(85, 107, 74, 0.10);
+}
+
+.pq-stats:has(#spStatTotal) .pq-stat-icon {
+    transition: transform 0.2s ease;
+}
+
+.pq-stats:has(#spStatTotal) .pq-stat:hover .pq-stat-icon {
+    transform: scale(1.08);
+}
+
+.sp-tab:hover {
+    border-color: var(--green);
+
+    transform: translateY(-1px);
+}
+
+.sp-tab.active:hover {
+    background: #465C3E;
+
+    border-color: #465C3E;
+}
+
+.sp-tab:active {
+    transform: translateY(0);
+}
+
+.pq-toolbar:has(#spSearch) .pq-search {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.pq-toolbar:has(#spSearch) .pq-search:hover,
+#spFilterCategory:hover,
+#spFilterStatus:hover {
+    border-color: var(--green);
+}
+
+#spFilterCategory:focus-visible,
+#spFilterStatus:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+#spTableBody tr.sp-group-row {
+    transition:
+        background 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+#spTableBody tr.sp-group-row:hover {
+    background: #F6FAF3;
+
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+#spTableBody .pq-badge {
+    transition: transform 0.2s ease;
+}
+
+#spTableBody tr:hover .pq-badge {
+    transform: scale(1.05);
+}
+
+.sp-thumb {
+    transition: transform 0.2s ease;
+}
+
+#spTableBody tr.sp-group-row:hover .sp-thumb {
+    transform: scale(1.06);
+}
+
+#spTableBody .pv-btn {
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+#spTableBody .pv-btn:hover {
+    transform: translateY(-1px);
+}
+
+.sp-vitem {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+.sp-vitem:hover {
+    border-color: #C8D7C0;
+
+    box-shadow: 0 6px 14px rgba(85, 107, 74, 0.08);
+
+    transform: translateY(-1px);
+}
+
+.sp-vitem.low:hover {
+    border-color: #E8B4AF;
+}
+
+.sp-action {
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.sp-action:hover:not(:disabled) {
+    transform: translateY(-2px);
+
+    box-shadow: 0 5px 12px rgba(39, 46, 35, 0.12);
+}
+
+.sp-action:active:not(:disabled) {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+.sp-panel {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.sp-panel:hover {
+    transform: translateY(-3px);
+
+    border-color: var(--green);
+
+    box-shadow: 0 10px 22px rgba(85, 107, 74, 0.10);
+}
+
+.sp-top button:hover {
+    transform: translateY(-1px);
+}
+
+#spPagination button:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+#spEmpty button,
+#spError button {
+    transition: 0.2s ease;
+}
+
+#spEmpty button:hover,
+#spError button:hover {
+    transform: translateY(-1px);
+}
+
+
+/* ----- Modal Detail Produk & Buat Permintaan Produksi ----- */
+
+#spdOverlay:not([hidden]),
+#spmOverlay:not([hidden]) {
+    animation: sp-fade 0.2s ease;
+}
+
+#spdOverlay:not([hidden]) .pe-modal,
+#spmOverlay:not([hidden]) .pe-modal {
+    animation: sp-pop 0.25s ease;
+}
+
+@keyframes sp-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes sp-pop {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+#spdOverlay .pe-close,
+#spmOverlay .pe-close {
+    transition: 0.2s ease;
+}
+
+#spdOverlay .pe-close:hover,
+#spmOverlay .pe-close:hover {
+    transform: rotate(90deg);
+}
+
+#spdOverlay .pe-btn,
+#spmOverlay .pe-btn {
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#spdOverlay .pe-btn:hover:not(:disabled),
+#spmOverlay .pe-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+
+    box-shadow: 0 6px 14px rgba(39, 46, 35, 0.12);
+}
+
+#spdOverlay .pe-btn:active:not(:disabled),
+#spmOverlay .pe-btn:active:not(:disabled) {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+#spdOverlay .sp-field,
+#spmOverlay .sp-field {
+    transition: transform 0.2s ease;
+}
+
+#spdOverlay .sp-field:hover,
+#spmOverlay .sp-field:hover {
+    transform: translateY(-2px);
+}
+
+#spmOverlay .pe-input-group {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#spmOverlay .pe-input-group:hover {
+    border-color: var(--green);
+}
+
+#spmOverlay .pe-input-group:focus-within {
+    border-color: var(--green);
+
+    box-shadow: 0 0 0 3px rgba(157, 186, 140, 0.14);
+}
+
+#spmOverlay .sp-textarea:hover {
+    border-color: var(--green);
+}
+
+
+/* =========================
+   RESPONSIVE LANJUTAN
+========================= */
+
+@media (max-width: 900px) {
+
+    #spTableWrapper {
+        overflow-x: visible;
+    }
+
+    #spTableWrapper .pq-table {
+        display: block;
+    }
+
+    #spTableWrapper .pq-table thead {
+        display: none;
+    }
+
+    #spTableWrapper .pq-table tbody {
+        display: block;
+    }
+
+    #spTableBody tr {
+        display: block;
+
+        border-top: 1px solid #F0F1EE;
+    }
+
+    #spTableBody td {
+        display: block;
+
+        border-top: none;
+    }
+
+    /* Baris produk */
+
+    #spTableBody tr.sp-group-row {
+        display: grid;
+
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-areas:
+            "prod prod status"
+            "cat  vari rec";
+
+        gap: 12px;
+
+        padding: 14px 16px;
+    }
+
+    #spTableBody tr.sp-group-row td {
+        min-width: 0;
+
+        padding: 0;
+
+        background: transparent;
+
+        white-space: normal;
+
+        text-align: left;
+    }
+
+    #spTableBody tr.sp-group-row.open > td {
+        background: transparent;
+    }
+
+    #spTableBody tr.sp-group-row td:nth-child(1) { display: none; }
+    #spTableBody tr.sp-group-row td:nth-child(2) { grid-area: prod; }
+    #spTableBody tr.sp-group-row td:nth-child(3) { grid-area: cat; }
+    #spTableBody tr.sp-group-row td:nth-child(4) { grid-area: vari; }
+    #spTableBody tr.sp-group-row td:nth-child(5) { grid-area: rec; }
+
+    #spTableBody tr.sp-group-row td:nth-child(6) {
+        grid-area: status;
+
+        justify-self: end;
+        align-self: start;
+    }
+
+    #spTableBody tr.sp-group-row td:nth-child(3)::before,
+    #spTableBody tr.sp-group-row td:nth-child(4)::before,
+    #spTableBody tr.sp-group-row td:nth-child(5)::before {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: #9A9D96;
+
+        font-size: 9px;
+        font-weight: 600;
+
+        letter-spacing: 0.4px;
+
+        text-transform: uppercase;
+    }
+
+    #spTableBody tr.sp-group-row td:nth-child(3)::before { content: "Kategori"; }
+    #spTableBody tr.sp-group-row td:nth-child(4)::before { content: "Varian"; }
+    #spTableBody tr.sp-group-row td:nth-child(5)::before { content: "Rekomendasi (MTS)"; }
+
+    /* Baris daftar varian (saat dibuka) */
+
+    #spTableBody tr.pv-detail-row td {
+        padding: 0 16px 16px;
+    }
+
+    #spTableBody .sp-vlist {
+        min-width: 0;
+    }
+
+    #spTableBody .sp-vitem {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "name   badge"
+            "sku    sku"
+            "stock  stock"
+            "rec    rec"
+            "action action";
+
+        gap: 8px 10px;
+    }
+
+    #spTableBody .sp-vitem > :nth-child(1) { grid-area: sku; }
+    #spTableBody .sp-vitem > :nth-child(2) { grid-area: name; }
+    #spTableBody .sp-vitem > :nth-child(3) { grid-area: stock; }
+    #spTableBody .sp-vitem > :nth-child(4) { grid-area: badge; align-self: start; }
+
+    #spTableBody .sp-vitem > :nth-child(5) {
+        grid-area: rec;
+
+        text-align: left;
+    }
+
+    #spTableBody .sp-vitem > :nth-child(6) {
+        grid-area: action;
+
+        justify-content: stretch;
+    }
+
+    #spTableBody .sp-vitem .sp-actions .sp-action {
+        flex: 1 1 auto;
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .pq-toolbar:has(#spSearch) .pq-search {
+        flex: 1 1 100%;
+    }
+
+    #spReset {
+        flex: 1 1 100%;
+    }
+
+    .pq-card-header:has(#spCount) {
+        flex-wrap: wrap;
+    }
+
+    .pq-footer:has(#spInfo) .pq-pagination {
+        flex-wrap: wrap;
+    }
+
+    #spTabs {
+        display: grid;
+
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #spTabs .sp-tab {
+        justify-content: space-between;
+    }
+
+    .sp-panel {
+        padding: 18px;
+    }
+
+    /* Modal */
+
+    #spdOverlay,
+    #spmOverlay {
+        padding: 10px;
+    }
+
+    #spdOverlay .pe-modal,
+    #spmOverlay .pe-modal {
+        max-height: calc(100vh - 20px);
+
+        border-radius: 16px;
+    }
+
+    #spdOverlay .pe-header,
+    #spmOverlay .pe-header {
+        gap: 10px;
+
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+
+    #spdOverlay .pe-header-icon,
+    #spmOverlay .pe-header-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    #spdOverlay .pe-header,
+    #spdOverlay .pe-body,
+    #spdOverlay .pe-footer,
+    #spmOverlay .pe-header,
+    #spmOverlay .pe-body,
+    #spmOverlay .pe-footer {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    #spdOverlay .pe-footer,
+    #spmOverlay .pe-footer {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    #spdOverlay .pe-footer .pe-btn,
+    #spmOverlay .pe-footer .pe-btn {
+        width: 100%;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .pq-stats:has(#spStatTotal) .pq-stat,
+    .pq-stats:has(#spStatTotal) .pq-stat-icon,
+    .sp-tab,
+    #spTableBody tr.sp-group-row,
+    #spTableBody .pq-badge,
+    #spTableBody .pv-btn,
+    .sp-thumb,
+    .sp-vitem,
+    .sp-action,
+    .sp-panel,
+    #spReset,
+    #spReset svg,
+    #spdOverlay .pe-close,
+    #spmOverlay .pe-close,
+    #spdOverlay .pe-btn,
+    #spmOverlay .pe-btn,
+    #spdOverlay .sp-field,
+    #spmOverlay .sp-field {
+        transition: none;
+    }
+
+    #spdOverlay:not([hidden]),
+    #spmOverlay:not([hidden]),
+    #spdOverlay:not([hidden]) .pe-modal,
+    #spmOverlay:not([hidden]) .pe-modal {
+        animation: none;
+    }
+
+    .pq-stats:has(#spStatTotal) .pq-stat:hover,
+    .pq-stats:has(#spStatTotal) .pq-stat:hover .pq-stat-icon,
+    .sp-tab:hover,
+    #spTableBody tr:hover .pq-badge,
+    #spTableBody tr.sp-group-row:hover .sp-thumb,
+    #spTableBody .pv-btn:hover,
+    .sp-vitem:hover,
+    .sp-action:hover:not(:disabled),
+    .sp-panel:hover,
+    .sp-top button:hover,
+    #spReset:hover,
+    #spReset:hover svg,
+    #spSearchClear:hover,
+    #spdOverlay .pe-close:hover,
+    #spmOverlay .pe-close:hover,
+    #spdOverlay .pe-btn:hover:not(:disabled),
+    #spmOverlay .pe-btn:hover:not(:disabled),
+    #spdOverlay .sp-field:hover,
+    #spmOverlay .sp-field:hover {
+        transform: none;
+    }
+}

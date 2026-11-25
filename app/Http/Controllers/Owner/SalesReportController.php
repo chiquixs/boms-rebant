@@ -21,7 +21,12 @@ class SalesReportController extends Controller
         ]);
 
         $orders = Order::with(['platform', 'items.product.group'])
-            ->where('status', Order::STATUS_COMPLETED)
+            ->whereIn('status', [
+                'NEW',
+                'WAITING_PRODUCTION',
+                'READY_TO_PACK',
+                'COMPLETED',
+            ])
             ->whereBetween('order_date', [$range['start'], $range['end']])
             ->orderBy('order_date')
             ->orderBy('id')

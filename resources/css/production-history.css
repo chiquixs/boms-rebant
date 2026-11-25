@@ -490,3 +490,599 @@
 .ph-table tbody tr.ph-row-progress:hover {
     background: #FFF9E6;
 }
+
+
+
+/* =========================
+   SEARCH CLEAR (X) & RESET FILTER
+========================= */
+
+.ph-search-clear {
+    width: 24px;
+    height: 24px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    margin-left: auto;
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #F0F1EE;
+    color: #8A8D86;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.ph-search-clear[hidden] {
+    display: none;
+}
+
+.ph-search-clear:hover {
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    transform: scale(1.1);
+}
+
+.ph-search-clear:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+#phReset {
+    height: 44px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 0 16px;
+
+    border: 1px solid #DCE7D7;
+    border-radius: 11px;
+
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    font-size: 12px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+#phReset[hidden] {
+    display: none;
+}
+
+#phReset svg {
+    flex-shrink: 0;
+
+    transition: transform 0.2s ease;
+}
+
+#phReset:hover {
+    border-color: var(--green);
+
+    background: #E3EFE0;
+
+    transform: translateY(-1px);
+}
+
+#phReset:hover svg {
+    transform: rotate(90deg);
+}
+
+#phReset:active {
+    transform: translateY(0);
+}
+
+#phReset:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* =========================
+   INTERAKTIF (HOVER / FOCUS / ANIMASI)
+========================= */
+
+.pq-stats:has(#phStatQty) .pq-stat {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.pq-stats:has(#phStatQty) .pq-stat:hover {
+    transform: translateY(-3px);
+
+    border-color: var(--green);
+
+    box-shadow: 0 10px 22px rgba(85, 107, 74, 0.10);
+}
+
+.pq-stats:has(#phStatQty) .pq-stat-icon {
+    transition: transform 0.2s ease;
+}
+
+.pq-stats:has(#phStatQty) .pq-stat:hover .pq-stat-icon {
+    transform: scale(1.08);
+}
+
+.pq-toolbar:has(#phSearch) .pq-search {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.pq-toolbar:has(#phSearch) .pq-search:hover,
+#phDateFrom:hover,
+#phDateTo:hover,
+#phFilterType:hover,
+#phFilterProduct:hover,
+#phFilterUser:hover {
+    border-color: var(--green);
+}
+
+#phFilterType:focus-visible,
+#phFilterProduct:focus-visible,
+#phFilterUser:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+#phTableBody tr {
+    transition:
+        background 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+#phTableBody tr:has(.ph-action):not(.ph-row-progress):hover {
+    background: #F6FAF3;
+
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+#phTableBody tr.ph-row-progress:hover {
+    box-shadow: inset 3px 0 0 #E3C766;
+}
+
+#phTableBody .pq-request-no {
+    transition: color 0.2s ease;
+}
+
+#phTableBody tr:hover .pq-request-no {
+    color: #465C3E;
+}
+
+#phTableBody .ph-badge,
+#phTableBody .ph-avatar,
+#phTableBody .ph-thumb {
+    transition: transform 0.2s ease;
+}
+
+#phTableBody tr:hover .ph-badge {
+    transform: scale(1.05);
+}
+
+#phTableBody tr:hover .ph-avatar,
+#phTableBody tr:hover .ph-thumb {
+    transform: scale(1.06);
+}
+
+.ph-action {
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.ph-action:hover {
+    transform: translateY(-2px);
+
+    box-shadow: 0 5px 12px rgba(39, 46, 35, 0.12);
+}
+
+.ph-action:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+#phPagination button:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+#phEmpty button,
+#phError button {
+    transition: 0.2s ease;
+}
+
+#phEmpty button:hover,
+#phError button:hover {
+    transform: translateY(-1px);
+}
+
+
+/* ----- Modal Detail Riwayat Produksi ----- */
+
+#phdOverlay:not([hidden]) {
+    animation: ph-fade 0.2s ease;
+}
+
+#phdOverlay:not([hidden]) .pe-modal {
+    animation: ph-pop 0.25s ease;
+}
+
+@keyframes ph-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes ph-pop {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+#phdOverlay .pe-close {
+    transition: 0.2s ease;
+}
+
+#phdOverlay .pe-close:hover {
+    transform: rotate(90deg);
+}
+
+#phdOverlay .pe-btn {
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#phdOverlay .pe-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+
+    box-shadow: 0 6px 14px rgba(39, 46, 35, 0.12);
+}
+
+#phdOverlay .pe-btn:active:not(:disabled) {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+#phdOverlay .ph-field {
+    transition: transform 0.2s ease;
+}
+
+#phdOverlay .ph-field:hover {
+    transform: translateY(-2px);
+}
+
+#phdOverlay .ph-mat tbody tr {
+    transition: background 0.18s ease;
+}
+
+#phdOverlay .ph-mat tbody tr:hover {
+    background: #F6FAF3;
+}
+
+
+/* =========================
+   RESPONSIVE LANJUTAN
+========================= */
+
+@media (max-width: 800px) {
+
+    #phTableWrapper {
+        overflow-x: visible;
+    }
+
+    #phTableWrapper .pq-table {
+        display: block;
+    }
+
+    #phTableWrapper .pq-table thead {
+        display: none;
+    }
+
+    #phTableWrapper .pq-table tbody {
+        display: block;
+    }
+
+    #phTableBody tr {
+        display: block;
+
+        border-top: 1px solid #F0F1EE;
+    }
+
+    #phTableBody td {
+        display: block;
+
+        border-top: none;
+    }
+
+    #phTableBody tr:has(.ph-action) {
+        display: grid;
+
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-areas:
+            "req    req    date"
+            "prod   prod   prod"
+            "qty    user   user"
+            "notes  notes  notes"
+            "action action action";
+
+        gap: 12px;
+
+        padding: 14px 16px;
+    }
+
+    #phTableBody tr:has(.ph-action) td {
+        min-width: 0;
+
+        padding: 0;
+
+        white-space: normal;
+
+        text-align: left;
+    }
+
+    #phTableBody tr:has(.ph-action) td:nth-child(1) { display: none; }
+    #phTableBody tr:has(.ph-action) td:nth-child(2) { grid-area: date; text-align: right; }
+    #phTableBody tr:has(.ph-action) td:nth-child(3) { grid-area: prod; }
+    #phTableBody tr:has(.ph-action) td:nth-child(4) { grid-area: req; }
+    #phTableBody tr:has(.ph-action) td:nth-child(5) { grid-area: qty; }
+    #phTableBody tr:has(.ph-action) td:nth-child(6) { grid-area: user; }
+    #phTableBody tr:has(.ph-action) td:nth-child(7) { grid-area: notes; }
+
+    #phTableBody tr:has(.ph-action) td:nth-child(8) {
+        grid-area: action;
+
+        padding-top: 12px;
+
+        border-top: 1px dashed var(--border);
+    }
+
+    #phTableBody tr:has(.ph-action) td:nth-child(2)::before,
+    #phTableBody tr:has(.ph-action) td:nth-child(5)::before,
+    #phTableBody tr:has(.ph-action) td:nth-child(6)::before,
+    #phTableBody tr:has(.ph-action) td:nth-child(7)::before {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: #9A9D96;
+
+        font-size: 9px;
+        font-weight: 600;
+
+        letter-spacing: 0.4px;
+
+        text-transform: uppercase;
+    }
+
+    #phTableBody tr:has(.ph-action) td:nth-child(2)::before { content: "Tanggal"; }
+    #phTableBody tr:has(.ph-action) td:nth-child(5)::before { content: "Jumlah Diproduksi"; }
+    #phTableBody tr:has(.ph-action) td:nth-child(6)::before { content: "Dicatat Oleh"; }
+    #phTableBody tr:has(.ph-action) td:nth-child(7)::before { content: "Catatan"; }
+
+    #phTableBody tr:has(.ph-action) .ph-notes {
+        max-width: none;
+    }
+
+    #phTableBody .ph-action {
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .pq-toolbar:has(#phSearch) .pq-search {
+        flex: 1 1 100%;
+    }
+
+    .ph-range {
+        flex: 1 1 100%;
+    }
+
+    #phReset {
+        flex: 1 1 100%;
+    }
+
+    .pq-card-header:has(#phCount) {
+        flex-wrap: wrap;
+    }
+
+    .pq-footer:has(#phInfo) .pq-pagination {
+        flex-wrap: wrap;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    #phdOverlay {
+        padding: 10px;
+    }
+
+    #phdOverlay .pe-modal {
+        max-height: calc(100vh - 20px);
+
+        border-radius: 16px;
+    }
+
+    #phdOverlay .pe-header {
+        gap: 10px;
+
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+
+    #phdOverlay .pe-header-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    #phdOverlay .pe-header,
+    #phdOverlay .pe-body,
+    #phdOverlay .pe-footer {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    #phdOverlay .pe-footer .pe-btn {
+        width: 100%;
+    }
+
+    /* Tabel bahan baku menjadi kartu */
+
+    #phdOverlay .ph-mat-wrap {
+        overflow-x: visible;
+    }
+
+    #phdOverlay .ph-mat,
+    #phdOverlay .ph-mat tbody {
+        display: block;
+    }
+
+    #phdOverlay .ph-mat thead {
+        display: none;
+    }
+
+    #phdOverlay .ph-mat tbody tr {
+        display: grid;
+
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-areas:
+            "mat  mat"
+            "unit qty"
+            "date date";
+
+        gap: 6px 12px;
+
+        padding: 12px 8px;
+
+        border-top: 1px solid var(--border);
+    }
+
+    #phdOverlay .ph-mat tbody tr:first-child {
+        border-top: none;
+    }
+
+    #phdOverlay .ph-mat td {
+        min-width: 0;
+
+        padding: 0;
+
+        border-top: none;
+    }
+
+    #phdOverlay .ph-mat td:nth-child(1) { grid-area: mat; }
+    #phdOverlay .ph-mat td:nth-child(2) { grid-area: unit; }
+    #phdOverlay .ph-mat td:nth-child(3) { grid-area: qty; text-align: left; }
+    #phdOverlay .ph-mat td:nth-child(4) { grid-area: date; }
+
+    #phdOverlay .ph-mat td:nth-child(2)::before,
+    #phdOverlay .ph-mat td:nth-child(3)::before,
+    #phdOverlay .ph-mat td:nth-child(4)::before {
+        display: block;
+
+        margin-bottom: 2px;
+
+        color: #9A9D96;
+
+        font-size: 9px;
+        font-weight: 600;
+
+        letter-spacing: 0.4px;
+
+        text-transform: uppercase;
+    }
+
+    #phdOverlay .ph-mat td:nth-child(2)::before { content: "Satuan"; }
+    #phdOverlay .ph-mat td:nth-child(3)::before { content: "Jumlah Digunakan"; }
+    #phdOverlay .ph-mat td:nth-child(4)::before { content: "Tanggal Pakai"; }
+
+}
+
+@media (max-width: 380px) {
+
+    #phTableBody tr:has(.ph-action) {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "req"
+            "date"
+            "prod"
+            "qty"
+            "user"
+            "notes"
+            "action";
+    }
+
+    #phTableBody tr:has(.ph-action) td:nth-child(2) {
+        text-align: left;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .pq-stats:has(#phStatQty) .pq-stat,
+    .pq-stats:has(#phStatQty) .pq-stat-icon,
+    #phTableBody tr,
+    #phTableBody .ph-badge,
+    #phTableBody .ph-avatar,
+    #phTableBody .ph-thumb,
+    .ph-action,
+    .ph-search-clear,
+    #phReset,
+    #phReset svg,
+    #phdOverlay .pe-close,
+    #phdOverlay .pe-btn,
+    #phdOverlay .ph-field,
+    #phdOverlay .ph-mat tbody tr {
+        transition: none;
+    }
+
+    #phdOverlay:not([hidden]),
+    #phdOverlay:not([hidden]) .pe-modal {
+        animation: none;
+    }
+
+    .pq-stats:has(#phStatQty) .pq-stat:hover,
+    .pq-stats:has(#phStatQty) .pq-stat:hover .pq-stat-icon,
+    #phTableBody tr:hover .ph-badge,
+    #phTableBody tr:hover .ph-avatar,
+    #phTableBody tr:hover .ph-thumb,
+    .ph-action:hover,
+    .ph-search-clear:hover,
+    #phReset:hover,
+    #phReset:hover svg,
+    #phdOverlay .pe-close:hover,
+    #phdOverlay .pe-btn:hover:not(:disabled),
+    #phdOverlay .ph-field:hover {
+        transform: none;
+    }
+}

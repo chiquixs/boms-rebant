@@ -902,3 +902,688 @@
 
     font-weight: 500;
 }
+
+
+
+/* =========================
+   SEARCH CLEAR (X) & RESET FILTER
+========================= */
+
+#pqSearchClear:hover {
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    transform: scale(1.1);
+}
+
+#pqReset {
+    height: 44px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 0 16px;
+
+    border: 1px solid #DCE7D7;
+    border-radius: 11px;
+
+    background: var(--green-light);
+
+    color: var(--green-dark);
+
+    font-size: 12px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+#pqReset[hidden] {
+    display: none;
+}
+
+#pqReset svg {
+    flex-shrink: 0;
+
+    transition: transform 0.2s ease;
+}
+
+#pqReset:hover {
+    border-color: var(--green);
+
+    background: #E3EFE0;
+
+    transform: translateY(-1px);
+}
+
+#pqReset:hover svg {
+    transform: rotate(90deg);
+}
+
+#pqReset:active {
+    transform: translateY(0);
+}
+
+#pqReset:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* =========================
+   INTERAKTIF (HOVER / FOCUS / ANIMASI)
+========================= */
+
+.pq-stats:has(#pqStatTotal) .pq-stat {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.pq-stats:has(#pqStatTotal) .pq-stat:hover {
+    transform: translateY(-3px);
+
+    border-color: var(--green);
+
+    box-shadow: 0 10px 22px rgba(85, 107, 74, 0.10);
+}
+
+.pq-stats:has(#pqStatTotal) .pq-stat-icon {
+    transition: transform 0.2s ease;
+}
+
+.pq-stats:has(#pqStatTotal) .pq-stat:hover .pq-stat-icon {
+    transform: scale(1.08);
+}
+
+.pq-toolbar:has(#pqSearch) .pq-search {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.pq-toolbar:has(#pqSearch) .pq-search:hover,
+#pqFilterSource:hover,
+#pqFilterStatus:hover {
+    border-color: var(--green);
+}
+
+#pqFilterSource:focus-visible,
+#pqFilterStatus:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+#pqTableBody tr {
+    transition:
+        background 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+#pqTableBody tr:has(.pq-action):hover {
+    background: #F6FAF3;
+
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+#pqTableBody .pq-badge {
+    transition: transform 0.2s ease;
+}
+
+#pqTableBody tr:hover .pq-badge {
+    transform: scale(1.05);
+}
+
+#pqTableBody .pq-request-no {
+    transition: color 0.2s ease;
+}
+
+#pqTableBody tr:hover .pq-request-no {
+    color: #465C3E;
+}
+
+#pqTableBody .pq-thumb {
+    transition: transform 0.2s ease;
+}
+
+#pqTableBody tr:hover .pq-thumb {
+    transform: scale(1.06);
+}
+
+#pqTableBody .pq-action {
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#pqTableBody .pq-action:hover {
+    transform: translateY(-2px);
+
+    box-shadow: 0 5px 12px rgba(39, 46, 35, 0.14);
+}
+
+#pqTableBody .pq-action:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+#pqPagination button:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+#pqEmpty button,
+#pqError button {
+    transition: 0.2s ease;
+}
+
+#pqEmpty button:hover,
+#pqError button:hover {
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   RESPONSIVE LANJUTAN
+========================= */
+
+@media (max-width: 800px) {
+
+    #pqTableWrapper {
+        overflow-x: visible;
+    }
+
+    #pqTableWrapper .pq-table {
+        display: block;
+    }
+
+    #pqTableWrapper .pq-table thead {
+        display: none;
+    }
+
+    #pqTableWrapper .pq-table tbody {
+        display: block;
+    }
+
+    #pqTableBody tr {
+        display: block;
+
+        border-top: 1px solid #F0F1EE;
+    }
+
+    #pqTableBody td {
+        display: block;
+
+        border-top: none;
+    }
+
+    #pqTableBody tr:has(.pq-action) {
+        display: grid;
+
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-areas:
+            "req    req    status"
+            "prod   prod   prod"
+            "src    src    date"
+            "asked  made   left"
+            "action action action";
+
+        gap: 12px;
+
+        padding: 14px 16px;
+    }
+
+    #pqTableBody tr:has(.pq-action) td {
+        min-width: 0;
+
+        padding: 0;
+
+        white-space: normal;
+
+        text-align: left;
+    }
+
+    #pqTableBody tr:has(.pq-action) td:nth-child(1) { display: none; }
+    #pqTableBody tr:has(.pq-action) td:nth-child(2) { grid-area: req; }
+    #pqTableBody tr:has(.pq-action) td:nth-child(3) { grid-area: prod; }
+    #pqTableBody tr:has(.pq-action) td:nth-child(4) { grid-area: src; }
+    #pqTableBody tr:has(.pq-action) td:nth-child(5) { grid-area: asked; }
+    #pqTableBody tr:has(.pq-action) td:nth-child(6) { grid-area: made; }
+    #pqTableBody tr:has(.pq-action) td:nth-child(7) { grid-area: left; }
+    #pqTableBody tr:has(.pq-action) td:nth-child(8) { grid-area: date; }
+
+    #pqTableBody tr:has(.pq-action) td:nth-child(9) {
+        grid-area: status;
+
+        justify-self: end;
+        align-self: start;
+    }
+
+    #pqTableBody tr:has(.pq-action) td:nth-child(10) {
+        grid-area: action;
+
+        padding-top: 12px;
+
+        border-top: 1px dashed var(--border);
+    }
+
+    #pqTableBody tr:has(.pq-action) td:nth-child(4)::before,
+    #pqTableBody tr:has(.pq-action) td:nth-child(5)::before,
+    #pqTableBody tr:has(.pq-action) td:nth-child(6)::before,
+    #pqTableBody tr:has(.pq-action) td:nth-child(7)::before,
+    #pqTableBody tr:has(.pq-action) td:nth-child(8)::before {
+        display: block;
+
+        margin-bottom: 4px;
+
+        color: #9A9D96;
+
+        font-size: 9px;
+        font-weight: 600;
+
+        letter-spacing: 0.4px;
+
+        text-transform: uppercase;
+    }
+
+    #pqTableBody tr:has(.pq-action) td:nth-child(4)::before { content: "Source"; }
+    #pqTableBody tr:has(.pq-action) td:nth-child(5)::before { content: "Diminta"; }
+    #pqTableBody tr:has(.pq-action) td:nth-child(6)::before { content: "Diproduksi"; }
+    #pqTableBody tr:has(.pq-action) td:nth-child(7)::before { content: "Sisa"; }
+    #pqTableBody tr:has(.pq-action) td:nth-child(8)::before { content: "Tanggal"; }
+
+    #pqTableBody tr:has(.pq-action) td:nth-child(8) {
+        text-align: right;
+    }
+
+    #pqTableBody tr:has(.pq-action) .pq-product {
+        max-width: none;
+    }
+
+    #pqTableBody .pq-action {
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 700px) {
+
+    .pq-toolbar:has(#pqSearch) .pq-search {
+        flex: 1 1 100%;
+    }
+
+    #pqReset {
+        flex: 1 1 100%;
+    }
+
+    .pq-card-header:has(#pqCount) {
+        flex-wrap: wrap;
+    }
+
+    .pq-footer:has(#pqInfo) .pq-pagination {
+        flex-wrap: wrap;
+    }
+
+}
+
+@media (max-width: 380px) {
+
+    #pqTableBody tr:has(.pq-action) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-areas:
+            "req    status"
+            "prod   prod"
+            "src    date"
+            "asked  made"
+            "left   left"
+            "action action";
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .pq-stats:has(#pqStatTotal) .pq-stat,
+    .pq-stats:has(#pqStatTotal) .pq-stat-icon,
+    #pqTableBody tr,
+    #pqTableBody .pq-badge,
+    #pqTableBody .pq-thumb,
+    #pqTableBody .pq-action,
+    #pqReset,
+    #pqReset svg {
+        transition: none;
+    }
+
+    .pq-stats:has(#pqStatTotal) .pq-stat:hover,
+    .pq-stats:has(#pqStatTotal) .pq-stat:hover .pq-stat-icon,
+    #pqTableBody tr:hover .pq-badge,
+    #pqTableBody tr:hover .pq-thumb,
+    #pqTableBody .pq-action:hover,
+    #pqReset:hover,
+    #pqReset:hover svg,
+    #pqSearchClear:hover {
+        transform: none;
+    }
+}
+
+
+
+/* =========================
+   MODAL PRODUCTION QUEUE: INTERAKTIF
+   (dibatasi ke #pdOverlay dan #peOverlay agar halaman lain
+   yang memakai file ini tidak ikut berubah)
+========================= */
+
+#pdOverlay:not([hidden]),
+#peOverlay:not([hidden]) {
+    animation: pq-modal-fade 0.2s ease;
+}
+
+#pdOverlay:not([hidden]) .pe-modal,
+#peOverlay:not([hidden]) .pe-modal {
+    animation: pq-modal-pop 0.25s ease;
+}
+
+@keyframes pq-modal-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes pq-modal-pop {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+#pdOverlay .pe-close,
+#peOverlay .pe-close {
+    transition: 0.2s ease;
+}
+
+#pdOverlay .pe-close:hover,
+#peOverlay .pe-close:hover {
+    transform: rotate(90deg);
+}
+
+#pdOverlay .pe-btn,
+#peOverlay .pe-btn {
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#pdOverlay .pe-btn:hover:not(:disabled),
+#peOverlay .pe-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+
+    box-shadow: 0 6px 14px rgba(39, 46, 35, 0.12);
+}
+
+#pdOverlay .pe-btn:active:not(:disabled),
+#peOverlay .pe-btn:active:not(:disabled) {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+#pdOverlay .pe-table tbody tr,
+#peOverlay .pe-table tbody tr {
+    transition:
+        background 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+#pdOverlay .pe-table tbody tr:hover,
+#peOverlay .pe-table tbody tr:hover {
+    background: #F6FAF3;
+
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+#pdOverlay .pe-status,
+#peOverlay .pe-status {
+    transition: transform 0.2s ease;
+}
+
+#pdOverlay .pe-table tbody tr:hover .pe-status,
+#peOverlay .pe-table tbody tr:hover .pe-status {
+    transform: scale(1.05);
+}
+
+#pdOverlay .pe-product-thumb,
+#peOverlay .pe-product-thumb {
+    transition: transform 0.2s ease;
+}
+
+#pdOverlay .pe-product:hover .pe-product-thumb,
+#peOverlay .pe-product:hover .pe-product-thumb {
+    transform: scale(1.04);
+}
+
+#pdOverlay .pe-progress > div,
+#peOverlay .pe-progress > div {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#pdOverlay .pe-progress > div:hover,
+#peOverlay .pe-progress > div:hover {
+    transform: translateY(-2px);
+
+    box-shadow: 0 6px 14px rgba(85, 107, 74, 0.10);
+}
+
+#pdOverlay .pd-log li,
+#pdOverlay .pd-log > * {
+    transition: background 0.18s ease;
+}
+
+#peOverlay .pe-input-group {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#peOverlay .pe-input-group:hover {
+    border-color: var(--green);
+}
+
+#peOverlay .pe-input-group:focus-within {
+    border-color: var(--green);
+
+    box-shadow: 0 0 0 3px rgba(157, 186, 140, 0.14);
+}
+
+
+/* =========================
+   MODAL PRODUCTION QUEUE: RESPONSIVE LANJUTAN
+========================= */
+
+@media (max-width: 600px) {
+
+    #pdOverlay,
+    #peOverlay {
+        padding: 10px;
+    }
+
+    #pdOverlay .pe-modal,
+    #peOverlay .pe-modal {
+        max-height: calc(100vh - 20px);
+
+        border-radius: 16px;
+    }
+
+    #pdOverlay .pe-header,
+    #peOverlay .pe-header {
+        gap: 10px;
+
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+
+    #pdOverlay .pe-header-icon,
+    #peOverlay .pe-header-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    #pdOverlay .pe-footer,
+    #peOverlay .pe-footer {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    #pdOverlay .pe-footer .pe-btn,
+    #peOverlay .pe-footer .pe-btn {
+        width: 100%;
+    }
+
+    /* Tabel material menjadi kartu */
+
+    #pdOverlay .pe-table-wrap,
+    #peOverlay .pe-table-wrap {
+        overflow-x: visible;
+    }
+
+    #pdOverlay .pe-table,
+    #peOverlay .pe-table,
+    #pdOverlay .pe-table tbody,
+    #peOverlay .pe-table tbody {
+        display: block;
+    }
+
+    #pdOverlay .pe-table thead,
+    #peOverlay .pe-table thead {
+        display: none;
+    }
+
+    #pdOverlay .pe-table tbody tr,
+    #peOverlay .pe-table tbody tr {
+        display: grid;
+
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        grid-template-areas:
+            "mat    status"
+            "needed have";
+
+        gap: 8px 12px;
+
+        padding: 12px 14px;
+
+        border-top: 1px solid #F0F1EE;
+    }
+
+    #pdOverlay .pe-table tbody tr:first-child,
+    #peOverlay .pe-table tbody tr:first-child {
+        border-top: none;
+    }
+
+    #pdOverlay .pe-table td,
+    #peOverlay .pe-table td {
+        min-width: 0;
+
+        padding: 0;
+
+        border-top: none;
+
+        white-space: normal;
+
+        text-align: left;
+    }
+
+    #pdOverlay .pe-table td:nth-child(1),
+    #peOverlay .pe-table td:nth-child(1) { display: none; }
+
+    #pdOverlay .pe-table td:nth-child(2),
+    #peOverlay .pe-table td:nth-child(2) { grid-area: mat; font-weight: 600; }
+
+    #pdOverlay .pe-table td:nth-child(3),
+    #peOverlay .pe-table td:nth-child(3) { grid-area: needed; }
+
+    #pdOverlay .pe-table td:nth-child(4),
+    #peOverlay .pe-table td:nth-child(4) { grid-area: have; }
+
+    #pdOverlay .pe-table td:nth-child(5),
+    #peOverlay .pe-table td:nth-child(5) {
+        grid-area: status;
+
+        justify-self: end;
+        align-self: start;
+    }
+
+    #pdOverlay .pe-table td:nth-child(3)::before,
+    #pdOverlay .pe-table td:nth-child(4)::before,
+    #peOverlay .pe-table td:nth-child(3)::before,
+    #peOverlay .pe-table td:nth-child(4)::before {
+        display: block;
+
+        margin-bottom: 3px;
+
+        color: #9A9D96;
+
+        font-size: 9px;
+        font-weight: 600;
+
+        letter-spacing: 0.4px;
+
+        text-transform: uppercase;
+    }
+
+    #pdOverlay .pe-table td:nth-child(3)::before { content: "Kebutuhan"; }
+    #pdOverlay .pe-table td:nth-child(4)::before { content: "Aktual"; }
+    #peOverlay .pe-table td:nth-child(3)::before { content: "Estimasi Konsumsi"; }
+    #peOverlay .pe-table td:nth-child(4)::before { content: "Stok Tersedia"; }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    #pdOverlay:not([hidden]),
+    #peOverlay:not([hidden]),
+    #pdOverlay:not([hidden]) .pe-modal,
+    #peOverlay:not([hidden]) .pe-modal {
+        animation: none;
+    }
+
+    #pdOverlay .pe-close,
+    #peOverlay .pe-close,
+    #pdOverlay .pe-btn,
+    #peOverlay .pe-btn,
+    #pdOverlay .pe-table tbody tr,
+    #peOverlay .pe-table tbody tr,
+    #pdOverlay .pe-status,
+    #peOverlay .pe-status,
+    #pdOverlay .pe-product-thumb,
+    #peOverlay .pe-product-thumb,
+    #pdOverlay .pe-progress > div,
+    #peOverlay .pe-progress > div,
+    #peOverlay .pe-input-group {
+        transition: none;
+    }
+
+    #pdOverlay .pe-close:hover,
+    #peOverlay .pe-close:hover,
+    #pdOverlay .pe-btn:hover:not(:disabled),
+    #peOverlay .pe-btn:hover:not(:disabled),
+    #pdOverlay .pe-table tbody tr:hover .pe-status,
+    #peOverlay .pe-table tbody tr:hover .pe-status,
+    #pdOverlay .pe-product:hover .pe-product-thumb,
+    #peOverlay .pe-product:hover .pe-product-thumb,
+    #pdOverlay .pe-progress > div:hover,
+    #peOverlay .pe-progress > div:hover {
+        transform: none;
+    }
+}
