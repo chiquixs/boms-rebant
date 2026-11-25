@@ -9,6 +9,7 @@ use App\Models\Platform;
 use App\Models\Product;
 use App\Models\ProductionRequest;
 use App\Models\RawMaterial;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OwnerDashboardController extends Controller
@@ -34,14 +35,14 @@ class OwnerDashboardController extends Controller
         }
 
         // Nilai yang ditampilkan kembali di input, supaya user tidak perlu
-        // ngetik ulang walau inputnya invalid (start > end).
+        // mengetik ulang walau inputnya invalid (start > end).
         $inputStart = $filterStart ?: $start;
         $inputEnd   = $filterEnd ?: $end;
 
-        $days = (int) (\Carbon\Carbon::parse($start)->diffInDays(\Carbon\Carbon::parse($end)) + 1);
+        $days = (int) (Carbon::parse($start)->diffInDays(Carbon::parse($end)) + 1);
 
-        $prevEnd   = \Carbon\Carbon::parse($start)->subDay()->toDateString();
-        $prevStart = \Carbon\Carbon::parse($prevEnd)->subDays($days - 1)->toDateString();
+        $prevEnd   = Carbon::parse($start)->subDay()->toDateString();
+        $prevStart = Carbon::parse($prevEnd)->subDays($days - 1)->toDateString();
 
         $totalOrders = Order::whereBetween('order_date', [$start, $end])->count();
         $prevOrders  = Order::whereBetween('order_date', [$prevStart, $prevEnd])->count();
@@ -49,8 +50,8 @@ class OwnerDashboardController extends Controller
         $totalSales = (float) Order::whereBetween('order_date', [$start, $end])->sum('total_amount');
         $prevSales  = (float) Order::whereBetween('order_date', [$prevStart, $prevEnd])->sum('total_amount');
 
-        $totalQty = (int) OrderItem::whereHas('order', fn($q) => $q->whereBetween('order_date', [$start, $end]))->sum('qty');
-        $prevQty  = (int) OrderItem::whereHas('order', fn($q) => $q->whereBetween('order_date', [$prevStart, $prevEnd]))->sum('qty');
+        $totalQty = (int) OrderItem::whereHas('order', fn ($q) => $q->whereBetween('order_date', [$start, $end]))->sum('qty');
+        $prevQty  = (int) OrderItem::whereHas('order', fn ($q) => $q->whereBetween('order_date', [$prevStart, $prevEnd]))->sum('qty');
 
         $lowStockCount = Product::where('is_active', true)
             ->whereNotNull('min_stock')
@@ -81,21 +82,52 @@ class OwnerDashboardController extends Controller
 
         $topQtyTotal = $totalQty ?: 1;
 
-        $topProducts = OrderItem::selectRaw('product_id, SUM(qty) as qty')
-            ->whereHas('order', fn($q) => $q->whereBetween('order_date', [$start, $end]))
+        // Semua item order pada periode, apa pun status ordernya
+        $soldItems = OrderItem::with('product.group')
+            ->whereHas('order', fn ($q) => $q->whereBetween('order_date', [$start, $end]))
+            ->get();
+
+        // Per varian (SKU)
+        $topVariants = $soldItems
             ->groupBy('product_id')
-            ->orderByDesc('qty')
-            ->limit(3)
-            ->get()
-            ->map(function ($row) use ($topQtyTotal) {
-                $product = Product::with('group')->find($row->product_id);
+            ->map(function ($rows) use ($topQtyTotal) {
+                $product = $rows->first()->product;
+                $qty     = (int) $rows->sum('qty');
+
                 return [
-                    'name'       => $product->group->name ?? '-',
-                    'sku'        => $product->sku ?? '-',
-                    'qty'        => (int) $row->qty,
-                    'percentage' => round($row->qty / $topQtyTotal * 100, 1),
+                    'name'       => $product?->group?->name ?? 'Produk dihapus',
+                    'variant'    => $product?->variant_name,
+                    'sku'        => $product?->sku ?? '-',
+                    'qty'        => $qty,
+                    'revenue'    => (float) $rows->sum('subtotal'),
+                    'percentage' => round($qty / $topQtyTotal * 100, 1),
                 ];
-            });
+            })
+            ->sortByDesc('qty')
+            ->values();
+
+        // Per produk induk, dengan rincian varian
+        $topProducts = $soldItems
+            ->groupBy(fn ($item) => $item->product?->group_id ?? 0)
+            ->map(function ($rows) use ($topQtyTotal) {
+                $group = $rows->first()->product?->group;
+                $qty   = (int) $rows->sum('qty');
+
+                return [
+                    'name'       => $group?->name ?? 'Produk dihapus',
+                    'code'       => $group?->code ?? '-',
+                    'qty'        => $qty,
+                    'revenue'    => (float) $rows->sum('subtotal'),
+                    'percentage' => round($qty / $topQtyTotal * 100, 1),
+                    'variants'   => $rows->groupBy('product_id')->map(fn ($v) => [
+                        'sku'     => $v->first()->product?->sku ?? '-',
+                        'variant' => $v->first()->product?->variant_name,
+                        'qty'     => (int) $v->sum('qty'),
+                    ])->sortByDesc('qty')->values(),
+                ];
+            })
+            ->sortByDesc('qty')
+            ->values();
 
         return view('owner.dashboard.index', [
             'filterStart' => $start,
@@ -123,8 +155,10 @@ class OwnerDashboardController extends Controller
             'urgentCount'        => $urgentCount,
 
             'topProducts' => $topProducts,
+            'topVariants' => $topVariants,
         ]);
     }
+
     public function data(Request $request)
     {
         $start = $request->query('start') ?: now()->subDays(29)->toDateString();
@@ -146,7 +180,7 @@ class OwnerDashboardController extends Controller
         foreach ($platforms as $platform) {
 
             $byDate = [];
-            for ($d = \Carbon\Carbon::parse($start); $d->lte(\Carbon\Carbon::parse($end)); $d->addDay()) {
+            for ($d = Carbon::parse($start); $d->lte(Carbon::parse($end)); $d->addDay()) {
                 $byDate[$d->toDateString()] = 0;
             }
 

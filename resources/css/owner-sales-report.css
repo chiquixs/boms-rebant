@@ -848,3 +848,28 @@
 
     .pr-sign { margin: 28px 0 0 auto; width: 200px; text-align: center; break-inside: avoid; }
 }
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-badge.status-new       { background: #E7F0FA; color: #2F5F8F; }
+.status-badge.status-waiting   { background: #FFF8E1; color: #7A6728; }
+.status-badge.status-ready     { background: #EEF1FB; color: #4A55A2; }
+.status-badge.status-completed { background: #E8F5EC; color: #1E7B3C; }
+
+.report-summary-grid {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+/* Penanda kartu GMV (opsional) */
+.report-summary-card.gmv-card {
+    border-color: #BFE3C9;
+    background: #F6FBF7;
+}

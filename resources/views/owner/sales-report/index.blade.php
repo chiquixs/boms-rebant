@@ -57,13 +57,22 @@
 
     <!-- SUMMARY CARDS -->
     <section class="report-summary-grid">
-        <article class="report-summary-card">
+        <article class="report-summary-card gmv-card">
             <div class="summary-card-top">
                 <span class="summary-label">Total Omzet</span>
                 <span class="summary-icon revenue-icon">Rp</span>
             </div>
+            <h2 id="totalGmv">Rp0</h2>
+            <p class="summary-note">Total penjualan transaksi completed</p>
+        </article>
+
+        <article class="report-summary-card">
+            <div class="summary-card-top">
+                <span class="summary-label">GMV</span>
+                <span class="summary-icon revenue-icon">Rp</span>
+            </div>
             <h2 id="totalRevenue">Rp0</h2>
-            <p class="summary-note">Dari transaksi completed</p>
+            <p class="summary-note">Dari seluruh transaksi semua status</p>
         </article>
 
         <article class="report-summary-card">
@@ -81,7 +90,7 @@
                 <span class="summary-icon transaction-icon">▤</span>
             </div>
             <h2 id="totalTransactions">0</h2>
-            <p class="summary-note">Transaksi berstatus completed</p>
+            <p class="summary-note">Seluruh status transaksi</p>
         </article>
 
         <article class="report-summary-card">

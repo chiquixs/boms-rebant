@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class SalesReportController extends Controller
 {
+    private const STATUS_META = [
+        'NEW'                => ['label' => 'New',                'class' => 'new'],
+        'WAITING_PRODUCTION' => ['label' => 'Waiting Production', 'class' => 'waiting'],
+        'READY_TO_PACK'      => ['label' => 'Ready to Pack',      'class' => 'ready'],
+        'COMPLETED'          => ['label' => 'Completed',          'class' => 'completed'],
+    ];
+
     public function page()
     {
         return view('owner.sales-report.index'); // sesuaikan dengan lokasi view Anda
@@ -20,13 +27,8 @@ class SalesReportController extends Controller
             'end'   => ['required', 'date', 'after_or_equal:start'],
         ]);
 
+        // Semua status ikut dikirim. Penyaringan "completed" untuk omzet dilakukan di JS.
         $orders = Order::with(['platform', 'items.product.group'])
-            ->whereIn('status', [
-                'NEW',
-                'WAITING_PRODUCTION',
-                'READY_TO_PACK',
-                'COMPLETED',
-            ])
             ->whereBetween('order_date', [$range['start'], $range['end']])
             ->orderBy('order_date')
             ->orderBy('id')
@@ -45,15 +47,21 @@ class SalesReportController extends Controller
                 ];
             })->values();
 
+            $meta = self::STATUS_META[$order->status]
+                ?? ['label' => $order->status, 'class' => 'new'];
+
             return [
-                'id'       => $order->platform_order_no,
-                'date'     => $order->order_date->format('Y-m-d'),
-                'product'  => $items->pluck('name')->implode(', '),
-                'platform' => $order->platform?->badge_class === 'tiktok' ? 'TikTok' : 'Shopee',
-                'quantity' => $items->sum('quantity'),
-                'total'    => (float) $order->total_amount,
-                'status'   => 'Completed',
-                'items'    => $items,
+                'key'          => $order->id, // unik, karena nomor order bisa kembar antar platform
+                'id'           => $order->platform_order_no,
+                'date'         => $order->order_date->format('Y-m-d'),
+                'product'      => $items->pluck('name')->implode(', '),
+                'platform'     => $order->platform?->name ?? '-',
+                'quantity'     => $items->sum('quantity'),
+                'total'        => (float) $order->total_amount,
+                'status'       => $meta['label'],
+                'status_code'  => $order->status,
+                'status_class' => $meta['class'],
+                'items'        => $items,
             ];
         });
 
