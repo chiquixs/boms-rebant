@@ -127,7 +127,13 @@
     </select>
 
     <button type="button" class="pq-reset" id="pqReset" hidden>
-        Reset filter
+        <svg width="14" height="14" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+        </svg>
+        Reset Filter
     </button>
 
 </div>

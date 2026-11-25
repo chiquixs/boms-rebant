@@ -781,3 +781,280 @@ a.pd-stat:focus-visible {
         grid-template-columns: 1fr;
     }
 }
+
+
+
+/* =========================
+   INTERAKTIF (HOVER / FOCUS / ANIMASI)
+========================= */
+
+/* ----- Kartu statistik ----- */
+
+a.pd-stat:hover {
+    border-color: var(--green);
+
+    box-shadow: 0 10px 22px rgba(85, 107, 74, 0.10);
+}
+
+a.pd-stat:active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+.pd-stat .pq-stat-icon {
+    transition: transform 0.2s ease;
+}
+
+a.pd-stat:hover .pq-stat-icon {
+    transform: scale(1.08);
+}
+
+
+/* ----- Filter periode ----- */
+
+.pd-period .pq-select {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.pd-period .pq-select:hover {
+    border-color: var(--green);
+}
+
+.pd-period .pq-select:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+
+/* ----- Panel ----- */
+
+.pd-panel {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.pd-panel:hover {
+    border-color: #C8D7C0;
+
+    box-shadow: 0 10px 24px rgba(37, 40, 35, 0.05);
+}
+
+.pd-link {
+    transition:
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.pd-link:hover {
+    color: #465C3E;
+
+    transform: translateX(2px);
+}
+
+
+/* ----- Baris daftar ----- */
+
+.pd-list .pd-row:not(.pd-row-head) {
+    transition:
+        background 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.pd-list .pd-row:not(.pd-row-head):hover {
+    background: #F6FAF3;
+
+    box-shadow: inset 3px 0 0 var(--green);
+}
+
+.pd-q-no {
+    transition: color 0.2s ease;
+}
+
+.pd-q:hover .pd-q-no {
+    color: #465C3E;
+}
+
+.pd-q-status,
+.pq-badge.pd-low,
+.pq-badge.pd-safe {
+    transition: transform 0.2s ease;
+}
+
+.pd-q:hover .pd-q-status,
+.pd-stock:hover .pq-badge {
+    transform: scale(1.05);
+}
+
+.pd-bar span {
+    transition: filter 0.2s ease;
+}
+
+.pd-stock:hover .pd-bar span {
+    filter: brightness(0.94);
+}
+
+.pd-recent-icon,
+.pd-act-icon {
+    transition: transform 0.2s ease;
+}
+
+.pd-recent:hover .pd-recent-icon,
+.pd-act:hover .pd-act-icon {
+    transform: scale(1.1);
+}
+
+
+/* ----- Tombol "Coba lagi" ----- */
+
+#pdRetry {
+    transition: 0.2s ease;
+}
+
+#pdRetry:hover {
+    transform: translateY(-1px);
+}
+
+
+/* ----- Animasi muncul halus ----- */
+
+@keyframes pd-rise {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.pd-grid:not([hidden]) .pd-panel {
+    animation: pd-rise 0.3s ease both;
+}
+
+.pd-grid:not([hidden]) .pd-panel:nth-child(2) { animation-delay: 0.04s; }
+.pd-grid:not([hidden]) .pd-panel:nth-child(3) { animation-delay: 0.08s; }
+.pd-grid:not([hidden]) .pd-panel:nth-child(4) { animation-delay: 0.12s; }
+
+
+/* =========================
+   RESPONSIVE LANJUTAN
+========================= */
+
+@media (max-width: 900px) {
+
+    .pd-header {
+        margin-bottom: 22px;
+    }
+
+    .pd-panel-head {
+        padding: 18px 20px;
+    }
+
+    .pd-row {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+}
+
+@media (max-width: 520px) {
+
+    .pd-period label {
+        flex-shrink: 0;
+    }
+
+    .pd-panel-head {
+        flex-wrap: wrap;
+
+        padding: 16px;
+    }
+
+    .pd-panel-head > div {
+        min-width: 0;
+        flex: 1 1 100%;
+    }
+
+    .pd-link {
+        margin-top: 0;
+    }
+
+    .pd-row {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .pd-stock-meta {
+        flex-wrap: wrap;
+
+        gap: 6px 14px;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    a.pd-stat,
+    .pd-stat .pq-stat-icon,
+    .pd-period .pq-select,
+    .pd-panel,
+    .pd-link,
+    .pd-list .pd-row,
+    .pd-q-no,
+    .pd-q-status,
+    .pq-badge.pd-low,
+    .pq-badge.pd-safe,
+    .pd-bar span,
+    .pd-recent-icon,
+    .pd-act-icon,
+    #pdRetry {
+        transition: none;
+    }
+
+    .pd-grid:not([hidden]) .pd-panel {
+        animation: none;
+    }
+
+    a.pd-stat:hover,
+    a.pd-stat:hover .pq-stat-icon,
+    .pd-link:hover,
+    .pd-q:hover .pd-q-status,
+    .pd-stock:hover .pq-badge,
+    .pd-recent:hover .pd-recent-icon,
+    .pd-act:hover .pd-act-icon,
+    #pdRetry:hover {
+        transform: none;
+    }
+}
+
+
+
+/* =========================
+   PANEL NAIK SAAT HOVER
+========================= */
+
+/* animasi muncul tidak lagi menahan transform setelah selesai */
+.pd-grid:not([hidden]) .pd-panel {
+    animation-fill-mode: backwards;
+}
+
+.pd-panel {
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.pd-panel:hover {
+    transform: translateY(-3px);
+
+    border-color: var(--green);
+
+    box-shadow: 0 10px 22px rgba(85, 107, 74, 0.10);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .pd-panel:hover {
+        transform: none;
+    }
+
+}
