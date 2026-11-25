@@ -81,9 +81,9 @@
             </div>
 
             <div class="owner-summary-content">
-                <span class="owner-summary-label">Total Pesanan</span>
-                <strong class="owner-summary-value">{{ number_format($totalOrders) }}</strong>
-                <span class="owner-summary-caption">{{ $orderGrowth >= 0 ? '↑' : '↓' }} {{ abs($orderGrowth) }}% vs periode sebelumnya</span>
+                <span class="owner-summary-label">Produk Terjual</span>
+                <strong class="owner-summary-value">{{ number_format($totalQty) }}</strong>
+                <span class="owner-summary-caption">{{ $qtyGrowth >= 0 ? '↑' : '↓' }} {{ abs($qtyGrowth) }}% vs periode sebelumnya</span>
             </div>
 
         </div>
@@ -124,9 +124,9 @@
             </div>
 
             <div class="owner-summary-content">
-                <span class="owner-summary-label">Produk Terjual</span>
-                <strong class="owner-summary-value">1.245</strong>
-                <span class="owner-summary-caption">↑ 15% vs periode sebelumnya</span>
+                <span class="owner-summary-label">Total Transaksi</span>
+                <strong class="owner-summary-value">{{ number_format($totalOrders, 0, ',', '.') }}</strong>
+                <span class="owner-summary-caption">{{ $orderGrowth >= 0 ? '↑' : '↓' }} {{ abs($orderGrowth) }}% vs periode sebelumnya</span>
             </div>
 
         </div>
@@ -176,15 +176,14 @@
             </div>
 
             <div class="owner-chart">
-                <svg id="ownerSalesChart" viewBox="0 0 650 245"
-                    role="img" aria-label="Grafik tren penjualan"
-                    data-start="{{ $filterStart }}" data-end="{{ $filterEnd }}">
-                    role="img" aria-label="Grafik tren penjualan">
-                    <defs id="ownerChartGradients"></defs>
-                    <g id="ownerChartGrid"></g>
-                    <g id="ownerChartLines"></g>
-                    <g id="ownerChartLabels"></g>
-                </svg>
+            <svg id="ownerSalesChart" viewBox="0 0 650 245"
+                role="img" aria-label="Grafik tren penjualan"
+                data-start="{{ $filterStart }}" data-end="{{ $filterEnd }}">
+                <defs id="ownerChartGradients"></defs>
+                <g id="ownerChartGrid"></g>
+                <g id="ownerChartLines"></g>
+                <g id="ownerChartLabels"></g>
+            </svg>
             </div>
         </div>
 
@@ -205,9 +204,7 @@
             <div class="owner-product-list">
                 @forelse ($topProducts as $index => $p)
                 <div class="owner-product-item">
-                    <span class="owner-product-rank">
-                        {{ $index + 1 }}
-                    </span>
+                    <span class="owner-product-rank">{{ $index + 1 }}</span>
 
                     <div class="owner-product-image">
                         <svg width="22" height="22" viewBox="0 0 24 24"
@@ -219,20 +216,25 @@
 
                     <div class="owner-product-info">
                         <strong>{{ $p['name'] }}</strong>
-                        <span>{{ $p['sku'] }}</span>
+                        <span>{{ $p['code'] }}</span>
+                        <span>
+                            @foreach ($p['variants'] as $v)
+                                {{ $v['variant'] ?: $v['sku'] }} ({{ $v['qty'] }}){{ ! $loop->last ? ', ' : '' }}
+                            @endforeach
+                        </span>
                     </div>
 
                     <div class="owner-product-sales">
                         <strong>{{ number_format($p['qty']) }} pcs</strong>
                         <div class="owner-product-progress">
-                            <span @style(['width: ' . min(100, $p[' percentage'] ?? 0) . '%' ])></span>
+                            <span @style(['width: ' . min(100, $p['percentage']) . '%'])></span>
                         </div>
                         <span>{{ $p['percentage'] }}%</span>
                     </div>
                 </div>
                 @empty
                 <p style="color:#8A8D86; font-size:13px;">
-                    Belum ada data penjualan 30 hari terakhir.
+                    Belum ada data penjualan pada periode ini.
                 </p>
                 @endforelse
             </div>
