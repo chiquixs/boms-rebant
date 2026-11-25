@@ -38,10 +38,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    let filteredTransactions = [];
+    // Transaksi dianggap selesai bila status_code COMPLETED (atau status_class completed)
+    const isCompleted = function (item) {
+        return item.status_code === 'COMPLETED' || item.status_class === 'completed';
+    };
 
-    const rowsPerPage = 10;
-    let currentPage = 1;
+    // allTransactions       : semua status, dipakai kartu, grafik, dan performa produk
+    // completedTransactions : hanya COMPLETED, dipakai GMV, riwayat transaksi, dan export
+    let allTransactions = [];
+    let completedTransactions = [];
+
     let isLoading = false;
 
     /*
@@ -85,10 +91,15 @@ document.addEventListener('DOMContentLoaded', function () {
             ' – ' + formatDate(endDateInput.value);
     }
 
-    function renderSummary(data) {
-        const revenue = data.reduce(function (sum, item) {
+    function sumTotal(list) {
+        return list.reduce(function (sum, item) {
             return sum + item.total;
         }, 0);
+    }
+
+    function renderSummary(data, completed) {
+        const revenue = sumTotal(data);
+        const gmv = sumTotal(completed);
 
         const products = data.reduce(function (sum, item) {
             return sum + item.quantity;
@@ -100,6 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
             ? revenue / transactionCount
             : 0;
 
+        document.getElementById('totalGmv').textContent = rupiah(gmv);
         document.getElementById('totalRevenue').textContent = rupiah(revenue);
         document.getElementById('totalProducts').textContent = numberFormat(products);
         document.getElementById('totalTransactions').textContent = numberFormat(transactionCount);
@@ -251,13 +263,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }).join('');
     }
 
-    function renderTransactionTable(data) {
+    // Riwayat transaksi: hanya yang berstatus completed
+    function renderTransactionTable(completed) {
         const tbody = document.getElementById('transactionTableBody');
         const pagination = document.getElementById('paginationControls');
 
         pagination.innerHTML = '';
 
-        const totalData = data.length;
+        const totalData = completed.length;
 
         if (totalData === 0) {
             tbody.innerHTML = `
@@ -273,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        tbody.innerHTML = data.map(function (item) {
+        tbody.innerHTML = completed.map(function (item) {
             const platformClass = item.platform === 'Shopee'
                 ? 'shopee-pill'
                 : 'tiktok-pill';
@@ -312,15 +325,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (data === null) return;
 
-            filteredTransactions = data;
-            currentPage = 1;
+            allTransactions = data;
+            completedTransactions = data.filter(isCompleted);
 
             updatePeriodLabel();
-            renderSummary(data);
-            renderSalesChart(data);
-            renderPlatformChart(data);
-            renderProductTable(data);
-            renderTransactionTable(data);
+            renderSummary(allTransactions, completedTransactions);
+            renderSalesChart(allTransactions);
+            renderPlatformChart(allTransactions);
+            renderProductTable(allTransactions);
+            renderTransactionTable(completedTransactions);
         } finally {
             isLoading = false;
             applyButton.disabled = false;
@@ -332,10 +345,10 @@ document.addEventListener('DOMContentLoaded', function () {
         updateReport();
     });
 
-    // CSV EXPORT
+    // CSV EXPORT (hanya transaksi completed)
     function exportCSV() {
-        if (filteredTransactions.length === 0) {
-            alert('Tidak ada transaksi untuk diekspor.');
+        if (completedTransactions.length === 0) {
+            alert('Tidak ada transaksi completed untuk diekspor.');
             return;
         }
 
@@ -349,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'Status'
         ];
 
-        const rows = filteredTransactions.map(function (item) {
+        const rows = completedTransactions.map(function (item) {
             return [
                 item.id,
                 item.date,
@@ -378,12 +391,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // EXCEL EXPORT (.xls yang dapat dibuka Microsoft Excel)
     function exportExcel() {
-        if (filteredTransactions.length === 0) {
-            alert('Tidak ada transaksi untuk diekspor.');
+        if (completedTransactions.length === 0) {
+            alert('Tidak ada transaksi completed untuk diekspor.');
             return;
         }
 
-        const rows = filteredTransactions.map(function (item) {
+        const rows = completedTransactions.map(function (item) {
             return `
                 <tr>
                     <td>${escapeHTML(item.id)}</td>
@@ -405,6 +418,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <body>
                 <h2>Laporan Penjualan REBANT BOMS</h2>
                 <p>Periode: ${escapeHTML(startDateInput.value)} sampai ${escapeHTML(endDateInput.value)}</p>
+                <p>GMV (transaksi completed): ${sumTotal(completedTransactions)}</p>
                 <table border="1">
                     <thead>
                         <tr>
@@ -432,12 +446,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // PDF EXPORT (tampilan cetak browser, pilih Save as PDF)
     function exportPDF() {
-        if (filteredTransactions.length === 0) {
+        if (allTransactions.length === 0) {
             alert('Tidak ada transaksi untuk diekspor.');
             return;
         }
 
-        buildPrintReport(filteredTransactions);
+        buildPrintReport(allTransactions, completedTransactions);
         window.print();
     }
 
@@ -448,8 +462,9 @@ document.addEventListener('DOMContentLoaded', function () {
             endDateInput.value + '.' + extension;
     }
 
-    function buildPrintReport(data) {
-        const revenue = data.reduce((s, i) => s + i.total, 0);
+    function buildPrintReport(data, completed) {
+        const revenue = sumTotal(data);
+        const gmv = sumTotal(completed);
         const units = data.reduce((s, i) => s + i.quantity, 0);
         const average = data.length ? revenue / data.length : 0;
 
@@ -492,11 +507,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td class="r">${numberFormat(v.q)}</td><td class="r">${rupiah(v.r)}</td></tr>`;
             }).join('');
 
-        const trxRows = data.map(function (t) {
-            return `<tr><td>${escapeHTML(t.id)}</td><td>${formatDate(t.date)}</td>
-                <td>${escapeHTML(t.product)}</td><td>${escapeHTML(t.platform)}</td>
-                <td class="r">${numberFormat(t.quantity)}</td><td class="r">${rupiah(t.total)}</td></tr>`;
-        }).join('');
+        const trxRows = completed.length
+            ? completed.map(function (t) {
+                return `<tr><td>${escapeHTML(t.id)}</td><td>${formatDate(t.date)}</td>
+                    <td>${escapeHTML(t.product)}</td><td>${escapeHTML(t.platform)}</td>
+                    <td class="r">${numberFormat(t.quantity)}</td><td class="r">${rupiah(t.total)}</td>
+                    <td>${escapeHTML(t.status)}</td></tr>`;
+            }).join('')
+            : '<tr><td colspan="7">Tidak ada transaksi completed pada periode ini.</td></tr>';
 
         const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -509,6 +527,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             <h2>1. Ringkasan</h2>
             <div class="pr-summary">
+                <div class="pr-card"><span>GMV (Completed)</span><strong>${rupiah(gmv)}</strong></div>
                 <div class="pr-card"><span>Total Omzet</span><strong>${rupiah(revenue)}</strong></div>
                 <div class="pr-card"><span>Produk Terjual</span><strong>${numberFormat(units)} unit</strong></div>
                 <div class="pr-card"><span>Total Transaksi</span><strong>${numberFormat(data.length)}</strong></div>
@@ -527,8 +546,8 @@ document.addEventListener('DOMContentLoaded', function () {
             <table class="pr-table"><thead><tr><th>No</th><th>Nama Produk</th><th class="r">Unit</th><th class="r">Omzet</th></tr></thead>
                 <tbody>${productRows}</tbody></table>
 
-            <h2>5. Riwayat Transaksi</h2>
-            <table class="pr-table"><thead><tr><th>ID</th><th>Tanggal</th><th>Produk</th><th>Platform</th><th class="r">Qty</th><th class="r">Total</th></tr></thead>
+            <h2>5. Riwayat Transaksi (Completed)</h2>
+            <table class="pr-table"><thead><tr><th>ID</th><th>Tanggal</th><th>Produk</th><th>Platform</th><th class="r">Qty</th><th class="r">Total</th><th>Status</th></tr></thead>
                 <tbody>${trxRows}</tbody></table>
 
             <div class="pr-sign">Malang, ${today}<br>Dicetak oleh,<br><br><br><br><strong>Business Owner</strong></div>
