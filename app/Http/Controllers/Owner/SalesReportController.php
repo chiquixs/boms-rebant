@@ -27,7 +27,7 @@ class SalesReportController extends Controller
             'end'   => ['required', 'date', 'after_or_equal:start'],
         ]);
 
-        // Semua status ikut dikirim. Penyaringan "completed" untuk omzet dilakukan di JS.
+        // Semua status dikirim. Penyaringan COMPLETED dilakukan di JS.
         $orders = Order::with(['platform', 'items.product.group'])
             ->whereBetween('order_date', [$range['start'], $range['end']])
             ->orderBy('order_date')
@@ -51,11 +51,11 @@ class SalesReportController extends Controller
                 ?? ['label' => $order->status, 'class' => 'new'];
 
             return [
-                'key'          => $order->id, // unik, karena nomor order bisa kembar antar platform
+                'key'          => $order->id, // unik, nomor order bisa kembar antar platform
                 'id'           => $order->platform_order_no,
                 'date'         => $order->order_date->format('Y-m-d'),
                 'product'      => $items->pluck('name')->implode(', '),
-                'platform'     => $order->platform?->name ?? '-',
+                'platform'     => $order->platform?->name ?? '-', // nama asli dari tabel platforms
                 'quantity'     => $items->sum('quantity'),
                 'total'        => (float) $order->total_amount,
                 'status'       => $meta['label'],

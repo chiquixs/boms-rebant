@@ -59,7 +59,7 @@
     <section class="report-summary-grid">
         <article class="report-summary-card gmv-card">
             <div class="summary-card-top">
-                <span class="summary-label">Total Omzet</span>
+                <span class="summary-label">GMV</span>
                 <span class="summary-icon revenue-icon">Rp</span>
             </div>
             <h2 id="totalGmv">Rp0</h2>
@@ -68,11 +68,11 @@
 
         <article class="report-summary-card">
             <div class="summary-card-top">
-                <span class="summary-label">GMV</span>
+                <span class="summary-label">Total Omzet</span>
                 <span class="summary-icon revenue-icon">Rp</span>
             </div>
             <h2 id="totalRevenue">Rp0</h2>
-            <p class="summary-note">Dari seluruh transaksi semua status</p>
+            <p class="summary-note">Dari seluruh transaksi</p>
         </article>
 
         <article class="report-summary-card">
@@ -123,7 +123,7 @@
             <div class="panel-heading">
                 <div>
                     <h3>Performa Platform</h3>
-                    <p>Kontribusi omzet setiap platform</p>
+                    <p>Kontribusi GMV transaksi completed setiap platform</p>
                 </div>
             </div>
 
