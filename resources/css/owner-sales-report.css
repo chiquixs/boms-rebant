@@ -873,3 +873,23 @@
     border-color: #BFE3C9;
     background: #F6FBF7;
 }
+
+.platform-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    background: #EEF1EC;
+    color: #4B5563;
+}
+
+.report-summary-grid {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.report-summary-card.gmv-card {
+    border-color: #BFE3C9;
+    background: #F6FBF7;
+}

@@ -38,13 +38,34 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
+    // Aman kalau elemen tidak ada di view
+    const setText = function (id, value) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+    };
+
+    const setHTML = function (id, html) {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+    };
+
     // Transaksi dianggap selesai bila status_code COMPLETED (atau status_class completed)
     const isCompleted = function (item) {
         return item.status_code === 'COMPLETED' || item.status_class === 'completed';
     };
 
-    // allTransactions       : semua status, dipakai kartu, grafik, dan performa produk
-    // completedTransactions : hanya COMPLETED, dipakai GMV, riwayat transaksi, dan export
+    // Kelompok platform dari nama aslinya ("TikTok Shop" tetap dikenali sebagai TikTok)
+    const platformKey = function (name) {
+        const n = String(name || '').toLowerCase();
+
+        if (n.indexOf('tiktok') !== -1) return 'tiktok';
+        if (n.indexOf('shopee') !== -1) return 'shopee';
+
+        return 'other';
+    };
+
+    // allTransactions       : semua status, dipakai kartu, tren, dan performa produk
+    // completedTransactions : hanya COMPLETED, dipakai GMV, platform, riwayat, dan export
     let allTransactions = [];
     let completedTransactions = [];
 
@@ -80,15 +101,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
             return await response.json();
         } catch (error) {
-            alert('Data penjualan gagal dimuat. Coba lagi.');
+            console.error('Gagal mengambil data penjualan:', error);
             return null;
         }
     }
 
+    function showLoadError() {
+        const message = '<div class="chart-empty">Data gagal dimuat. Coba lagi.</div>';
+
+        setHTML('salesChart', message);
+        setHTML('platformChart', message);
+        setHTML('productTableBody', '<tr><td colspan="4" class="empty-table">Data gagal dimuat.</td></tr>');
+        setHTML('transactionTableBody', '<tr><td colspan="7" class="empty-table">Data gagal dimuat.</td></tr>');
+        setText('transactionCount', 'Menampilkan 0 transaksi');
+    }
+
     function updatePeriodLabel() {
-        document.getElementById('periodLabel').textContent =
-            'Periode ' + formatDate(startDateInput.value) +
-            ' – ' + formatDate(endDateInput.value);
+        setText(
+            'periodLabel',
+            'Periode ' + formatDate(startDateInput.value) + ' – ' + formatDate(endDateInput.value)
+        );
     }
 
     function sumTotal(list) {
@@ -106,23 +138,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 0);
 
         const transactionCount = data.length;
+        const average = transactionCount > 0 ? revenue / transactionCount : 0;
 
-        const average = transactionCount > 0
-            ? revenue / transactionCount
-            : 0;
-
-        document.getElementById('totalGmv').textContent = rupiah(gmv);
-        document.getElementById('totalRevenue').textContent = rupiah(revenue);
-        document.getElementById('totalProducts').textContent = numberFormat(products);
-        document.getElementById('totalTransactions').textContent = numberFormat(transactionCount);
-        document.getElementById('averageOrderValue').textContent = rupiah(average);
+        setText('totalGmv', rupiah(gmv));
+        setText('totalRevenue', rupiah(revenue));
+        setText('totalProducts', numberFormat(products));
+        setText('totalTransactions', numberFormat(transactionCount));
+        setText('averageOrderValue', rupiah(average));
     }
 
     function renderSalesChart(data) {
-        const chart = document.getElementById('salesChart');
-
         if (data.length === 0) {
-            chart.innerHTML = '<div class="chart-empty">Tidak ada data penjualan pada periode ini.</div>';
+            setHTML('salesChart', '<div class="chart-empty">Tidak ada data penjualan pada periode ini.</div>');
             return;
         }
 
@@ -135,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const dates = Object.keys(dailyRevenue).sort();
         const maxRevenue = Math.max(...Object.values(dailyRevenue), 1);
 
-        chart.innerHTML = dates.map(function (date) {
+        setHTML('salesChart', dates.map(function (date) {
             const revenue = dailyRevenue[date];
             const height = Math.max((revenue / maxRevenue) * 100, 3);
             const label = new Date(date + 'T00:00:00').toLocaleDateString('id-ID', {
@@ -153,70 +180,62 @@ document.addEventListener('DOMContentLoaded', function () {
                     <span class="chart-label">${label}</span>
                 </div>
             `;
-        }).join('');
+        }).join(''));
     }
 
-    function renderPlatformChart(data) {
-        const chart = document.getElementById('platformChart');
+    // Performa platform: hanya transaksi completed, semua platform dari tabel platforms
+    function renderPlatformChart(completed) {
+        const byPlatform = {};
 
-        const platformRevenue = {
-            Shopee: 0,
-            TikTok: 0
-        };
-
-        data.forEach(function (item) {
-            if (Object.prototype.hasOwnProperty.call(platformRevenue, item.platform)) {
-                platformRevenue[item.platform] += item.total;
-            }
+        completed.forEach(function (item) {
+            const name = item.platform || '-';
+            byPlatform[name] = (byPlatform[name] || 0) + item.total;
         });
 
-        const totalRevenue = platformRevenue.Shopee + platformRevenue.TikTok;
+        const entries = Object.keys(byPlatform)
+            .map(function (name) {
+                return { name: name, total: byPlatform[name] };
+            })
+            .sort(function (a, b) {
+                return b.total - a.total;
+            });
 
-        if (totalRevenue === 0) {
-            chart.innerHTML = '<div class="chart-empty">Belum ada data platform.</div>';
+        const grandTotal = entries.reduce(function (sum, entry) {
+            return sum + entry.total;
+        }, 0);
+
+        if (entries.length === 0 || grandTotal === 0) {
+            setHTML('platformChart', '<div class="chart-empty">Belum ada data platform dari transaksi completed.</div>');
             return;
         }
 
-        const shopeePercentage = (platformRevenue.Shopee / totalRevenue) * 100;
-        const tiktokPercentage = (platformRevenue.TikTok / totalRevenue) * 100;
+        setHTML('platformChart', entries.map(function (entry) {
+            const key = platformKey(entry.name);
+            const pct = (entry.total / grandTotal) * 100;
+            const otherDot = key === 'other' ? ' style="background:#6B8FB5"' : '';
+            const otherFill = key === 'other' ? ';background:#6B8FB5' : '';
 
-        chart.innerHTML = `
-            <div class="platform-item">
-                <div class="platform-info">
-                    <span class="platform-name">
-                        <span class="platform-dot shopee-dot"></span>
-                        Shopee
-                    </span>
-                    <span class="platform-value">${rupiah(platformRevenue.Shopee)}</span>
+            return `
+                <div class="platform-item">
+                    <div class="platform-info">
+                        <span class="platform-name">
+                            <span class="platform-dot ${key}-dot"${otherDot}></span>
+                            ${escapeHTML(entry.name)}
+                        </span>
+                        <span class="platform-value">${rupiah(entry.total)}</span>
+                    </div>
+                    <div class="platform-progress">
+                        <div class="platform-progress-fill ${key}-fill"
+                             style="width: ${pct}%${otherFill}"></div>
+                    </div>
+                    <span class="platform-percentage">${pct.toFixed(1)}% dari GMV</span>
                 </div>
-                <div class="platform-progress">
-                    <div class="platform-progress-fill shopee-fill"
-                         style="width: ${shopeePercentage}%"></div>
-                </div>
-                <span class="platform-percentage">${shopeePercentage.toFixed(1)}% dari total omzet</span>
-            </div>
-
-            <div class="platform-item">
-                <div class="platform-info">
-                    <span class="platform-name">
-                        <span class="platform-dot tiktok-dot"></span>
-                        TikTok
-                    </span>
-                    <span class="platform-value">${rupiah(platformRevenue.TikTok)}</span>
-                </div>
-                <div class="platform-progress">
-                    <div class="platform-progress-fill tiktok-fill"
-                         style="width: ${tiktokPercentage}%"></div>
-                </div>
-                <span class="platform-percentage">${tiktokPercentage.toFixed(1)}% dari total omzet</span>
-            </div>
-        `;
+            `;
+        }).join(''));
     }
 
     // Satu order bisa berisi beberapa produk, jadi dihitung per item
     function renderProductTable(data) {
-        const tbody = document.getElementById('productTableBody');
-
         const products = {};
 
         data.forEach(function (transaction) {
@@ -243,15 +262,14 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
         if (sortedProducts.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="4" class="empty-table">Tidak ada data produk pada periode ini.</td>
-                </tr>
-            `;
+            setHTML(
+                'productTableBody',
+                '<tr><td colspan="4" class="empty-table">Tidak ada data produk pada periode ini.</td></tr>'
+            );
             return;
         }
 
-        tbody.innerHTML = sortedProducts.map(function (product, index) {
+        setHTML('productTableBody', sortedProducts.map(function (product, index) {
             return `
                 <tr>
                     <td><span class="rank-number">${index + 1}</span></td>
@@ -260,36 +278,27 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>${rupiah(product.revenue)}</td>
                 </tr>
             `;
-        }).join('');
+        }).join(''));
     }
 
     // Riwayat transaksi: hanya yang berstatus completed
     function renderTransactionTable(completed) {
-        const tbody = document.getElementById('transactionTableBody');
-        const pagination = document.getElementById('paginationControls');
-
-        pagination.innerHTML = '';
+        setHTML('paginationControls', '');
 
         const totalData = completed.length;
 
         if (totalData === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="empty-table">
-                        Tidak ada transaksi completed pada periode ini.
-                    </td>
-                </tr>
-            `;
-
-            document.getElementById('transactionCount').textContent =
-                'Menampilkan 0 transaksi';
+            setHTML(
+                'transactionTableBody',
+                '<tr><td colspan="7" class="empty-table">Tidak ada transaksi completed pada periode ini.</td></tr>'
+            );
+            setText('transactionCount', 'Menampilkan 0 transaksi');
             return;
         }
 
-        tbody.innerHTML = completed.map(function (item) {
-            const platformClass = item.platform === 'Shopee'
-                ? 'shopee-pill'
-                : 'tiktok-pill';
+        setHTML('transactionTableBody', completed.map(function (item) {
+            const key = platformKey(item.platform);
+            const platformClass = key === 'other' ? '' : key + '-pill';
 
             return `
                 <tr>
@@ -306,10 +315,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td><span class="status-completed">Completed</span></td>
                 </tr>
             `;
-        }).join('');
+        }).join(''));
 
-        document.getElementById('transactionCount').textContent =
-            `Menampilkan ${totalData} transaksi`;
+        setText('transactionCount', 'Menampilkan ' + totalData + ' transaksi');
     }
 
     async function updateReport() {
@@ -318,12 +326,15 @@ document.addEventListener('DOMContentLoaded', function () {
         isLoading = true;
 
         const applyButton = document.getElementById('applyFilter');
-        applyButton.disabled = true;
+        if (applyButton) applyButton.disabled = true;
 
         try {
             const data = await getFilteredTransactions();
 
-            if (data === null) return;
+            if (data === null) {
+                showLoadError();
+                return;
+            }
 
             allTransactions = data;
             completedTransactions = data.filter(isCompleted);
@@ -331,19 +342,17 @@ document.addEventListener('DOMContentLoaded', function () {
             updatePeriodLabel();
             renderSummary(allTransactions, completedTransactions);
             renderSalesChart(allTransactions);
-            renderPlatformChart(allTransactions);
+            renderPlatformChart(completedTransactions);
             renderProductTable(allTransactions);
             renderTransactionTable(completedTransactions);
+        } catch (error) {
+            console.error('Gagal merender laporan penjualan:', error);
+            showLoadError();
         } finally {
             isLoading = false;
-            applyButton.disabled = false;
+            if (applyButton) applyButton.disabled = false;
         }
     }
-
-    // FILTER BUTTON
-    document.getElementById('applyFilter').addEventListener('click', function () {
-        updateReport();
-    });
 
     // CSV EXPORT (hanya transaksi completed)
     function exportCSV() {
@@ -455,7 +464,6 @@ document.addEventListener('DOMContentLoaded', function () {
         window.print();
     }
 
-
     function getFileName(extension) {
         return 'laporan-penjualan-' +
             startDateInput.value + '-sampai-' +
@@ -465,7 +473,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function buildPrintReport(data, completed) {
         const revenue = sumTotal(data);
         const gmv = sumTotal(completed);
-        const units = data.reduce((s, i) => s + i.quantity, 0);
+        const units = data.reduce(function (s, i) { return s + i.quantity; }, 0);
         const average = data.length ? revenue / data.length : 0;
 
         const daily = {};
@@ -474,7 +482,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         data.forEach(function (t) {
             daily[t.date] = (daily[t.date] || 0) + t.total;
-            platforms[t.platform] = (platforms[t.platform] || 0) + t.total;
 
             (t.items || []).forEach(function (it) {
                 products[it.name] = products[it.name] || { q: 0, r: 0 };
@@ -483,8 +490,17 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
+        // Platform dihitung dari transaksi completed saja (sama dengan grafik di layar)
+        completed.forEach(function (t) {
+            const name = t.platform || '-';
+            platforms[name] = (platforms[name] || 0) + t.total;
+        });
+
         const maxDaily = Math.max(...Object.values(daily), 1);
-        const platformTotal = Math.max(Object.values(platforms).reduce((a, b) => a + b, 0), 1);
+        const platformTotal = Math.max(
+            Object.values(platforms).reduce(function (a, b) { return a + b; }, 0),
+            1
+        );
 
         const dailyRows = Object.keys(daily).sort().map(function (d) {
             return `<tr><td style="width:90px">${formatDate(d)}</td>
@@ -492,16 +508,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td class="r" style="width:100px">${rupiah(daily[d])}</td></tr>`;
         }).join('');
 
-        const platformRows = Object.keys(platforms).map(function (p) {
-            const pct = platforms[p] / platformTotal * 100;
-            return `<tr><td style="width:90px">${escapeHTML(p)}</td>
-                <td><div class="pr-bar"><i class="${p === 'TikTok' ? 'tiktok' : ''}" style="width:${pct}%"></i></div></td>
-                <td class="r" style="width:100px">${rupiah(platforms[p])}</td>
-                <td class="r" style="width:45px">${pct.toFixed(1)}%</td></tr>`;
-        }).join('');
+        const platformRows = Object.keys(platforms).length
+            ? Object.keys(platforms).map(function (p) {
+                const pct = platforms[p] / platformTotal * 100;
+                return `<tr><td style="width:90px">${escapeHTML(p)}</td>
+                    <td><div class="pr-bar"><i class="${platformKey(p) === 'tiktok' ? 'tiktok' : ''}" style="width:${pct}%"></i></div></td>
+                    <td class="r" style="width:100px">${rupiah(platforms[p])}</td>
+                    <td class="r" style="width:45px">${pct.toFixed(1)}%</td></tr>`;
+            }).join('')
+            : '<tr><td colspan="4">Belum ada data platform dari transaksi completed.</td></tr>';
 
         const productRows = Object.entries(products)
-            .sort((a, b) => b[1].q - a[1].q)
+            .sort(function (a, b) { return b[1].q - a[1].q; })
             .map(function ([name, v], i) {
                 return `<tr><td style="width:35px">${i + 1}</td><td>${escapeHTML(name)}</td>
                     <td class="r">${numberFormat(v.q)}</td><td class="r">${rupiah(v.r)}</td></tr>`;
@@ -518,7 +536,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const today = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
-        document.getElementById('printReport').innerHTML = `
+        setHTML('printReport', `
             <div class="pr-head">
                 <div class="pr-brand">REBANT BOMS<small>Business Operation Management System</small></div>
                 <div class="pr-title">LAPORAN PENJUALAN
@@ -538,8 +556,8 @@ document.addEventListener('DOMContentLoaded', function () {
             <table class="pr-table"><thead><tr><th>Tanggal</th><th>Omzet</th><th class="r">Nilai</th></tr></thead>
                 <tbody>${dailyRows}</tbody></table>
 
-            <h2>3. Performa Platform</h2>
-            <table class="pr-table"><thead><tr><th>Platform</th><th>Kontribusi</th><th class="r">Omzet</th><th class="r">%</th></tr></thead>
+            <h2>3. Performa Platform (Completed)</h2>
+            <table class="pr-table"><thead><tr><th>Platform</th><th>Kontribusi</th><th class="r">GMV</th><th class="r">%</th></tr></thead>
                 <tbody>${platformRows}</tbody></table>
 
             <h2>4. Performa Produk</h2>
@@ -551,7 +569,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <tbody>${trxRows}</tbody></table>
 
             <div class="pr-sign">Malang, ${today}<br>Dicetak oleh,<br><br><br><br><strong>Business Owner</strong></div>
-        `;
+        `);
     }
 
     function downloadBlob(blob, fileName) {
@@ -568,9 +586,16 @@ document.addEventListener('DOMContentLoaded', function () {
         URL.revokeObjectURL(url);
     }
 
-    document.getElementById('exportCsv').addEventListener('click', exportCSV);
-    document.getElementById('exportExcel').addEventListener('click', exportExcel);
-    document.getElementById('exportPdf').addEventListener('click', exportPDF);
+    // EVENT
+    const applyButtonEl = document.getElementById('applyFilter');
+    const csvButtonEl = document.getElementById('exportCsv');
+    const excelButtonEl = document.getElementById('exportExcel');
+    const pdfButtonEl = document.getElementById('exportPdf');
+
+    if (applyButtonEl) applyButtonEl.addEventListener('click', updateReport);
+    if (csvButtonEl) csvButtonEl.addEventListener('click', exportCSV);
+    if (excelButtonEl) excelButtonEl.addEventListener('click', exportExcel);
+    if (pdfButtonEl) pdfButtonEl.addEventListener('click', exportPDF);
 
     // INITIAL RENDER
     updateReport();
