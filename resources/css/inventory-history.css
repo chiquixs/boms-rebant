@@ -180,12 +180,12 @@
 .stock-history-card {
     width: 100%;
 
-    overflow: hidden;
+    overflow: visible;
 
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    border: none;
+    border-radius: 0;
 
-    background: var(--white);
+    background: transparent;
 }
 
 
@@ -196,7 +196,12 @@
 .stock-history-filter-section {
     padding: 17px 16px 18px;
 
-    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    background: var(--white);
 }
 
 .stock-history-section-heading {
@@ -284,7 +289,27 @@
 
 .stock-history-table-section
 .stock-history-section-heading {
-    padding: 0 16px;
+    padding: 14px 16px;
+
+    margin-bottom: 0;
+
+    border: 1px solid var(--green-dark);
+    border-radius: 9px 9px 0 0;
+    border-bottom: 2px solid var(--green-dark);
+
+    border-radius: 9px 9px 0 0;
+
+    background: var(--green-dark);
+}
+
+.stock-history-table-section
+.stock-history-section-heading h2 {
+    color: var(--white);
+}
+
+.stock-history-table-section
+.stock-history-section-heading p {
+    color: rgba(255, 255, 255, 0.75);
 }
 
 
@@ -294,6 +319,7 @@
 
 .stock-history-table-wrapper {
     width: 100%;
+    border-top: 2px solid #FFFFFF;
 
     overflow-x: auto;
 }
@@ -310,6 +336,7 @@
     border-collapse: collapse;
 
     font-size: 11px;
+    
 }
 
 .stock-history-table th {
@@ -351,6 +378,7 @@
 }
 
 .stock-history-table tbody tr {
+    background: #FFFFFF;
     transition: background 0.2s ease;
 }
 
@@ -737,6 +765,7 @@
     .stock-history-table tbody {
         display: flex;
         flex-direction: column;
+        background: var(--white);
 
         gap: 12px;
     }
@@ -766,6 +795,7 @@
         padding: 0;
 
         border: none;
+          background: #FFFFFF;
     }
 
     .history-date,
@@ -785,6 +815,7 @@
         padding-bottom: 12px;
 
         border-bottom: 1px solid #F0F1EE;
+        background: #FFFFFF;
     }
 
     /* Label kolom: transaksi produk jadi */
@@ -954,3 +985,49 @@
         transform: none;
     }
 }
+
+/* ========================================
+   RIWAYAT PERGERAKAN - HEADER HIJAU TUA
+======================================== */
+
+.stock-history-table-section .stock-history-section-heading h2 {
+    color: #FFFFFF;
+}
+
+.stock-history-table-section .stock-history-section-heading p {
+    color: #c1bcbc;
+}
+
+/* ========================================
+   TABLE HEADER - HIJAU TUA
+======================================== */
+
+.stock-history-table th {
+    background: var(--green-dark);
+
+    color: #FFFFFF;
+
+    border-top: 1px solid var(--green-dark);
+    border-bottom: 1px solid var(--green-dark);
+}
+
+
+/* HAPUS JARAK ANTARA HEADING DAN TABLE */
+
+.stock-history-table-section .stock-history-section-heading {
+    margin-bottom: 0;
+    padding-bottom: 10px;
+
+    border-radius: 9px 9px 0 0;
+}
+
+.stock-history-table-wrapper {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.stock-history-section-heading h2,
+.stock-history-section-heading p {
+    margin-bottom: 0;
+}
+

@@ -657,3 +657,196 @@ button {
         display: none;
     }
 }
+
+
+
+/* =========================
+   SIDEBAR NAIK SAAT HOVER
+========================= */
+
+/* menu biasa */
+.nav-item:not(.nav-parent-link) {
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.nav-item:not(.nav-parent-link):hover {
+    transform: translateY(-2px);
+
+    box-shadow: 0 6px 14px rgba(85, 107, 74, 0.10);
+}
+
+.nav-item:not(.nav-parent-link):active {
+    transform: translateY(0);
+
+    box-shadow: none;
+}
+
+/* menu induk (Master Data, Procurement): link dan panah naik bersama */
+.nav-parent {
+    transition: transform 0.2s ease;
+}
+
+.nav-parent:hover {
+    transform: translateY(-2px);
+}
+
+.nav-parent:hover .nav-parent-link {
+    color: var(--green-dark);
+
+    background: #F5F8F2;
+
+    box-shadow: 0 6px 14px rgba(85, 107, 74, 0.10);
+}
+
+.nav-parent-link {
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.nav-parent:hover .nav-parent-link.active {
+    background: var(--green-light);
+}
+
+/* submenu: naik, bukan geser ke kanan */
+.nav-subitem:hover {
+    transform: translateY(-2px);
+
+    box-shadow: 0 4px 10px rgba(85, 107, 74, 0.08);
+}
+
+.nav-subitem.active:hover {
+    background: var(--green-light);
+}
+
+/* focus keyboard */
+.nav-item:focus-visible,
+.nav-subitem:focus-visible,
+.nav-toggle:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .nav-item,
+    .nav-parent,
+    .nav-subitem,
+    .nav-chevron {
+        transition: none;
+    }
+
+    .nav-item:not(.nav-parent-link):hover,
+    .nav-parent:hover,
+    .nav-subitem:hover {
+        transform: none;
+    }
+}
+
+
+
+/* =========================
+   LATAR BERANIMASI
+========================= */
+
+/* blob gradien hijau & kuning yang melayang pelan */
+body::before {
+    content: "";
+
+    position: fixed;
+    inset: -25%;
+    z-index: -1;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            40% 40% at 18% 22%,
+            rgba(157, 186, 140, 0.30),
+            transparent 70%
+        ),
+        radial-gradient(
+            34% 34% at 82% 18%,
+            rgba(244, 223, 145, 0.28),
+            transparent 70%
+        ),
+        radial-gradient(
+            44% 44% at 72% 82%,
+            rgba(157, 186, 140, 0.22),
+            transparent 70%
+        ),
+        radial-gradient(
+            30% 30% at 25% 85%,
+            rgba(244, 223, 145, 0.18),
+            transparent 70%
+        );
+
+    animation: bg-drift 26s ease-in-out infinite alternate;
+
+    will-change: transform;
+}
+
+/* pola titik halus yang memudar ke bawah */
+body::after {
+    content: "";
+
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+
+    pointer-events: none;
+
+    background-image: radial-gradient(
+        rgba(82, 106, 72, 0.14) 1px,
+        transparent 1px
+    );
+    background-size: 24px 24px;
+
+    -webkit-mask-image: linear-gradient(to bottom, #000, transparent 75%);
+            mask-image: linear-gradient(to bottom, #000, transparent 75%);
+}
+
+@keyframes bg-drift {
+    0% {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate3d(3%, -2%, 0) scale(1.06);
+    }
+
+    100% {
+        transform: translate3d(-3%, 3%, 0) rotate(4deg) scale(1.03);
+    }
+}
+
+/* HP: gerakan lebih lambat & lebih ringan */
+@media (max-width: 700px) {
+
+    body::before {
+        animation-duration: 40s;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    body::before {
+        animation: none;
+    }
+
+}
+
+@media print {
+
+    body::before,
+    body::after {
+        display: none;
+    }
+
+}

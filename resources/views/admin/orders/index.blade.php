@@ -8,6 +8,7 @@
     PAGE HEADER
 ========================= --}}
 
+
 <div class="page-header">
 
     <div>
@@ -29,7 +30,7 @@
             <path d="M5 12h14" />
         </svg>
 
-        <span>Add Order</span>
+        <span>Tambah Pesanan</span>
     </button>
 
 </div>
@@ -368,8 +369,8 @@
         <div class="modal-header">
 
             <div>
-                <span class="modal-eyebrow">NEW ORDER</span>
-                <h2>Add New Order</h2>
+                <span class="modal-eyebrow">PESANAN BARU</span>
+                <h2>Tambah Pesanan Baru</h2>
                 <p>Tambahkan pesanan baru ke sistem REBANT.</p>
             </div>
 
@@ -586,8 +587,8 @@
 
             <div>
                 <span class="modal-eyebrow">KONFIRMASI</span>
-                <h2>Pastikan isian order benar</h2>
-                <p>Harap cek kembali data order sebelum disimpan.</p>
+                <h2>Pastikan Pesanan Sesuai </h2>
+                <p>Harap cek kembali data pesanan sebelum disimpan.</p>
             </div>
 
         </div>

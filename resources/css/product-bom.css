@@ -330,9 +330,9 @@
 .bom-table th {
     padding: 11px 14px;
 
-    background: #FAFBF8;
+    background: #40583A;
 
-    color: #9A9D96;
+    color: #FFFFFF;
 
     text-align: left;
 
@@ -344,6 +344,8 @@
     text-transform: uppercase;
 
     white-space: nowrap;
+
+    border-bottom: 1px solid #526A48;
 }
 
 .bom-table td {

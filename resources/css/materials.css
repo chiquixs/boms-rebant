@@ -111,6 +111,8 @@
 
     padding: 13px 16px;
 
+    background: var(--green-dark);
+    border-bottom: 1px solid var(--green-dark);
     border-bottom: 1px solid var(--border);
 }
 
@@ -135,6 +137,7 @@
     border-radius: 8px;
 
     background: var(--white);
+    
 
     color: var(--text-muted);
 }
@@ -234,11 +237,11 @@
 .material-table th {
     padding: 11px 14px;
 
-    background: #FAFBF8;
+    background: var(--green-dark);
 
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--green-dark);
 
-    color: var(--text-muted);
+    color: var(--white);
 
     font-size: 9px;
     font-weight: 700;
@@ -527,6 +530,8 @@
 
     padding: 18px 20px;
 
+    background: var(--green-dark);
+    border-bottom-color: rgba(255, 255, 255, 0.2);
     border-bottom: 1px solid var(--border);
 }
 
@@ -536,7 +541,7 @@
     font-size: 18px;
     font-weight: 700;
 
-    color: var(--text);
+    color: var(--white);
 }
 
 .material-modal-header p {
@@ -544,7 +549,7 @@
 
     font-size: 12px;
 
-    color: var(--text-muted);
+    color: var(--white);
 }
 
 .material-modal-close {
@@ -562,7 +567,7 @@
     border: none;
     border-radius: 7px;
 
-    background: transparent;
+    background: #FAFBF8;
 
     color: var(--text-muted);
 
@@ -1425,3 +1430,4 @@
         transform: none;
     }
 }
+

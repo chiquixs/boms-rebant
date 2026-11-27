@@ -118,22 +118,22 @@
 
 .stat-icon.new {
     color: #607C55;
-    background: #E8F1E3;
+    
 }
 
 .stat-icon.waiting {
     color: #A28130;
-    background: #FFF3CE;
+    
 }
 
 .stat-icon.ready {
     color: #657E88;
-    background: #E8F0F2;
+    
 }
 
 .stat-icon.completed {
     color: #58754E;
-    background: #E3EFE0;
+    
 }
 
 .stat-content {
@@ -184,24 +184,22 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     gap: 20px;
-
     padding: 23px 24px;
 
-    border-bottom: 1px solid var(--border);
+    background: #40583A;
+    border-bottom: 1px solid #526A48;
 }
 
 .orders-card-header h2 {
     margin-bottom: 4px;
-
+    color: #FFFFFF;
     font-size: 15px;
     font-weight: 600;
 }
 
 .orders-card-header p {
-    color: var(--text-muted);
-
+    color: #DCE9D5;
     font-size: 10px;
 }
 
@@ -342,9 +340,9 @@
 .orders-table th {
     padding: 13px 18px;
 
-    background: #FAFBF8;
+    background: #40583A;
 
-    color: #9A9D96;
+    color: #FFFFFF;
 
     text-align: left;
 
@@ -605,12 +603,13 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-
     gap: 20px;
 
     padding: 25px 27px 20px;
 
-    border-bottom: 1px solid var(--border);
+    background: #40583A;
+    border-bottom: 1px solid #526A48;
+    border-radius: 20px 20px 0 0;
 }
 
 .modal-eyebrow {
@@ -618,7 +617,8 @@
 
     margin-bottom: 5px;
 
-    color: var(--green-dark);
+    color: #DCE9D5;
+
 
     font-size: 8px;
     font-weight: 700;
@@ -628,6 +628,7 @@
 
 .modal-header h2 {
     margin-bottom: 5px;
+    color: #FFFFFF;
 
     font-size: 19px;
     font-weight: 700;
