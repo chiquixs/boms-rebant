@@ -159,30 +159,30 @@ $fmt = fn ($v) => rtrim(rtrim(number_format((float) $v, 3, '.', ''), '0'), '.');
     </div>
 
 
-    {{-- ========================================
-        MAIN CARD
-    ========================================= --}}
-    <div class="procurement-card">
+{{-- ========================================
+    TABS CARD (ELEMEN SENDIRI)
+======================================== --}}
+<div class="procurement-tabs-card">
 
-        {{-- TABS --}}
-        <div class="procurement-tabs">
+    <div class="procurement-tabs">
 
-            <button type="button" class="procurement-tab active" data-tab="restock">
-                Perlu Restock
-                <span class="procurement-tab-count">
-                    {{ $restockMaterials->count() }}
-                </span>
-            </button>
+        <button type="button" class="procurement-tab active" data-tab="restock">
+            Perlu Restock
+            <span class="procurement-tab-count">
+                {{ $restockMaterials->count() }}
+            </span>
+        </button>
 
+        <button
+            type="button"
+            class="procurement-tab"
+            data-tab="purchase-orders">
+            Purchase Order
+        </button>
 
-            <button
-                type="button"
-                class="procurement-tab"
-                data-tab="purchase-orders">
-                Purchase Order
-            </button>
+    </div>
 
-        </div>
+</div>
 
 
         {{-- ========================================

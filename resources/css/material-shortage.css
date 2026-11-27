@@ -819,3 +819,106 @@
     }
 }
 
+/* ========================================
+   HEADER DAFTAR KEKURANGAN BAHAN
+======================================== */
+
+.pq-card-header:has(#msCount) {
+    background: var(--green-dark);
+    color: var(--white);
+}
+
+.pq-card-header:has(#msCount) h2,
+.pq-card-header:has(#msCount) p,
+.pq-card-header:has(#msCount) span {
+    color: var(--white);
+}
+
+
+/* ========================================
+   HEADER TABEL
+======================================== */
+
+#msTableWrapper .pq-table thead th {
+    background: var(--green-dark);
+    color: var(--white);
+}
+
+
+/* ========================================
+   HEADER MODAL DETAIL SHORTAGE
+======================================== */
+
+#msdOverlay .pe-modal-header {
+    background: var(--green-dark);
+    color: var(--white);
+}
+
+#msdOverlay .pe-modal-header h2,
+#msdOverlay .pe-modal-header p,
+#msdOverlay .pe-modal-header span {
+    color: var(--white);
+}
+
+/* =========================
+   PERBAIKAN WARNA HIJAU TUA
+   (badge "laporan" + header modal Detail & Buat PO)
+========================= */
+
+/* ----- Badge "0 laporan" di header Daftar Kekurangan Bahan ----- */
+
+.pq-card-header:has(#msCount) .pq-count {
+    background: rgba(255, 255, 255, 0.18);
+
+    color: var(--white);
+}
+
+
+/* ----- Header modal: Detail Shortage & Buat Purchase Order ----- */
+
+#msdOverlay .pe-header,
+#mspOverlay .pe-header {
+    background: var(--green-dark);
+
+    border-bottom-color: var(--green-dark);
+}
+
+#msdOverlay .pe-header-text h2,
+#mspOverlay .pe-header-text h2 {
+    color: var(--white);
+}
+
+#msdOverlay .pe-header-text p,
+#mspOverlay .pe-header-text p {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+#msdOverlay .pe-header-text strong,
+#mspOverlay .pe-header-text strong {
+    color: var(--white);
+}
+
+#msdOverlay .pe-header-icon,
+#mspOverlay .pe-header-icon {
+    background: rgba(255, 255, 255, 0.16);
+
+    color: var(--white);
+}
+
+#msdOverlay .pe-close,
+#mspOverlay .pe-close {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+#msdOverlay .pe-close:hover,
+#mspOverlay .pe-close:hover {
+    background: rgba(255, 255, 255, 0.16);
+
+    color: var(--white);
+}
+
+#msdOverlay .pe-close:focus-visible,
+#mspOverlay .pe-close:focus-visible {
+    outline: 2px solid var(--white);
+    outline-offset: 2px;
+}

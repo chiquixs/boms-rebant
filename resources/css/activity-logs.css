@@ -1151,3 +1151,70 @@
         transform: none;
     }
 }
+
+/* ========================================
+   CARD HEADER - HIJAU TUA
+======================================== */
+
+.activity-logs-card-header {
+    padding: 14px 16px;
+
+    background: var(--green-dark);
+
+    border-bottom: 1px solid var(--green-dark);
+}
+
+.activity-logs-card-header h2 {
+    color: var(--white);
+}
+
+.activity-logs-card-header p {
+    color: #E0E8DC;
+}
+
+/* ========================================
+   TOOLBAR - HIJAU TUA
+======================================== */
+
+.activity-logs-toolbar {
+    padding: 12px 16px;
+
+    background: var(--green-dark);
+
+    border-bottom: 1px solid var(--green-dark);
+}
+
+/* Search tetap putih */
+.activity-logs-search {
+    background: var(--white);
+}
+
+/* Filter tetap putih */
+.activity-logs-filter {
+    background-color: var(--white);
+    color: var(--text);
+}
+
+/* Tombol reset */
+.activity-reset {
+    background: var(--white);
+    border-color: var(--white);
+    color: var(--green-dark);
+}
+
+/* ========================================
+   TABLE HEADER - HIJAU TUA
+======================================== */
+
+.activity-logs-table thead {
+    background: var(--green-dark);
+}
+
+.activity-logs-table th {
+    background: var(--green-dark);
+
+    color: var(--white);
+
+    border-top: 1px solid var(--green-dark);
+    border-bottom: 1px solid var(--green-dark);
+}   

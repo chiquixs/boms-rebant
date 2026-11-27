@@ -137,22 +137,30 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 15px;
-    padding: 14px 16px 8px;
+
+    padding: 14px 16px;
+
+    background: var(--green-dark);
+    border: 1px solid var(--green-dark);
+    border-radius: 9px 9px 0 0;
 }
 
 .suppliers-card-header h2 {
     margin: 0 0 3px;
-    color: var(--text);
+    color: var(--white);
     font-size: 13px;
     font-weight: 700;
 }
 
 .suppliers-card-header p {
     margin: 0;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.75);
     font-size: 9px;
     line-height: 1.5;
 }
+
+
+
 
 
 /* ========================================
@@ -165,6 +173,9 @@
     justify-content: space-between;
     gap: 10px;
     padding: 7px 16px 12px;
+
+    background: var(--green-dark);
+    border: 1px solid var(--green-dark);
 }
 
 .suppliers-search {
@@ -246,17 +257,24 @@
 }
 
 .suppliers-table thead {
-    background: #FAFBF9;
+    background: var(--green-dark);
 }
 
 .suppliers-table th {
     padding: 9px 12px;
-    border-bottom: 1px solid var(--border);
-    color: var(--text-muted);
+
+    background: var(--green-dark);
+
+    border-bottom: 1px solid var(--green-dark);
+
+    color: var(--white);
+
     font-size: 8px;
     font-weight: 700;
+
     text-align: left;
     text-transform: uppercase;
+
     letter-spacing: 0.03em;
     white-space: nowrap;
 }
@@ -539,19 +557,20 @@ body.modal-open {
     justify-content: space-between;
     gap: 15px;
     padding: 16px 18px 14px;
-    border-bottom: 1px solid var(--border);
+    background: var(--green-dark);
+    border-bottom: 1px solid var(--green-dark);
 }
 
 .supplier-modal-header h2 {
     margin: 0 0 3px;
-    color: var(--text);
+    color: var(--white);
     font-size: 14px;
     font-weight: 700;
 }
 
 .supplier-modal-header p {
     margin: 0;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.75);
     font-size: 9px;
     line-height: 1.5;
 }
