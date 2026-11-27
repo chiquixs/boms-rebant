@@ -212,44 +212,36 @@
     border: 1px solid var(--border);
     border-radius: 16px;
 }
-
 .product-table-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     gap: 15px;
-
     padding: 18px 20px;
 
-    border-bottom: 1px solid var(--border);
+    background: #40583A;
+    border-bottom: 1px solid #526A48;
 }
 
 .product-table-header h2 {
     margin: 0 0 4px;
-
-    color: var(--text);
-
+    color: #FFFFFF;
     font-size: 14px;
     font-weight: 600;
 }
 
 .product-table-header p {
     margin: 0;
-
-    color: var(--text-muted);
-
+    color: #cfdac7;
     font-size: 9px;
 }
 
 .product-count {
     padding: 6px 9px;
-
     border-radius: 20px;
 
-    background: var(--green-light);
-
-    color: var(--green-dark);
+    background: rgba(255, 255, 255, 0.15);
+    color: #FFFFFF;
 
     font-size: 8px;
     font-weight: 600;
@@ -276,9 +268,9 @@
 .product-table th {
     padding: 11px 14px;
 
-    background: #FAFBF8;
+    background: #40583A;
 
-    color: #969A93;
+    color: #FFFFFF;;
 
     text-align: left;
 
@@ -309,7 +301,7 @@
 }
 
 .product-table tbody tr:hover {
-    background: #FCFDFB;
+    background: #E5EBDD
 }
 
 
@@ -622,7 +614,6 @@
 .product-modal-header {
     position: sticky;
     top: 0;
-
     z-index: 3;
 
     display: flex;
@@ -630,12 +621,11 @@
     justify-content: space-between;
 
     gap: 20px;
-
     padding: 20px 22px;
 
-    border-bottom: 1px solid var(--border);
-
-    background: var(--white);
+    border-bottom: 1px solid #526A48;
+    border-radius: 18px 18px 0 0;
+    background: #40583A;
 }
 
 .product-modal-eyebrow {
@@ -643,7 +633,7 @@
 
     margin-bottom: 5px;
 
-    color: var(--green-dark);
+    color: #DCE9D5;
 
     font-size: 8px;
     font-weight: 700;
@@ -654,7 +644,7 @@
 .product-modal-header h2 {
     margin: 0 0 4px;
 
-    color: var(--text);
+    color: #FFFFFF;
 
     font-size: 17px;
     font-weight: 700;
@@ -663,7 +653,7 @@
 .product-modal-header p {
     margin: 0;
 
-    color: var(--text-muted);
+    color: #E4EBDD;
 
     font-size: 9px;
 }
@@ -682,7 +672,6 @@
     border-radius: 8px;
 
     background: #F4F5F2;
-
     color: #7D8179;
 
     font-family: inherit;
@@ -694,9 +683,8 @@
 }
 
 .product-modal-close:hover {
-    background: #EAEBE7;
-
-    color: var(--text);
+    background: rgba(255, 255, 255, 0.22);
+    color: #FFFFFF;
 }
 
 

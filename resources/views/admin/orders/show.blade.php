@@ -40,7 +40,7 @@ $currentStep = $currentStep === false ? 0 : $currentStep;
                 <path d="m12 19-7-7 7-7" />
             </svg>
 
-            Back to Orders
+            Kembali Ke Order
 
         </a>
 

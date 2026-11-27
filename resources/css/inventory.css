@@ -130,12 +130,12 @@
 .inventory-card {
     width: 100%;
 
-    background: var(--white);
+    background: transparent;
 
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    border: none;
+    border-radius: 0;
 
-    overflow: hidden;
+    overflow: visible;
 }
 
 
@@ -150,9 +150,12 @@
 
     padding: 12px;
 
-    border-bottom: 1px solid var(--border);
+    background: var(--white);
 
-    background: #FAFBF8;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    margin-bottom: 16px;
 }
 
 .inventory-tab {
@@ -202,6 +205,13 @@
 
 .inventory-tab-content {
     display: none;
+
+    background: var(--white);
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+
+    overflow: hidden;
 }
 
 .inventory-tab-content.active {
@@ -220,6 +230,10 @@
     gap: 16px;
 
     padding: 17px 16px 14px;
+
+    background: var(--green-dark);
+    border-radius: 8px 8px 0 0;
+    border-bottom: 1px solid #d1d5db;
 }
 
 .inventory-section-header h2 {
@@ -228,7 +242,7 @@
     font-size: 15px;
     font-weight: 700;
 
-    color: var(--text);
+    color: var(--white);
 }
 
 .inventory-section-header p {
@@ -236,7 +250,7 @@
 
     font-size: 11px;
 
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.8);
 }
 
 
@@ -275,12 +289,12 @@
 .inventory-table th {
     padding: 10px 14px;
 
-    background: #FAFBF8;
+    background: var(--green-dark);
 
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    border-top: 1px solid var(--green-dark);
+    border-bottom: 1px solid var(--green-dark);
 
-    color: var(--text-muted);
+    color: var(--white);
 
     font-size: 9px;
     font-weight: 700;

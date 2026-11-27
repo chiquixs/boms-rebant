@@ -338,9 +338,9 @@
 .detail-items-table th {
     padding: 11px 14px;
 
-    background: #FAFBF8;
+    background: #40583A;
 
-    color: #9A9D96;
+    color: #FFFFFF;
 
     text-align: left;
 
@@ -357,7 +357,7 @@
 .detail-items-table td {
     padding: 13px 14px;
 
-    border-top: 1px solid #F0F1EE;
+    border-top: 1px solid #E5EAE1;
 
     color: #686B65;
 
