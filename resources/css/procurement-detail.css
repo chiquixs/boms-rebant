@@ -807,12 +807,14 @@ body.modal-open {
     justify-content: space-between;
     gap: 15px;
     padding: 16px 18px 14px;
-    border-bottom: 1px solid var(--border);
+
+    background: var(--green-dark);
+    border-bottom: 1px solid var(--green-dark);
 }
 
 .procurement-receive-modal-header h2 {
     margin: 0 0 3px;
-    color: var(--text);
+    color: var(--white);
     font-size: 14px;
     font-weight: 700;
 }
@@ -820,7 +822,7 @@ body.modal-open {
 .procurement-receive-modal-header p {
     max-width: 340px;
     margin: 0;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.78);
     font-size: 8px;
     line-height: 1.55;
 }
@@ -1515,4 +1517,44 @@ body.modal-open {
 /* jarak agar isi kartu tidak menempel ke header hijau */
 .procurement-detail-card:has(.procurement-email-history) .procurement-email-history {
     padding-top: 14px;
+}
+
+
+/* ========================================
+   INPUT JUMLAH BARANG DITERIMA
+======================================== */
+
+.procurement-receive-item input {
+    width: 100%;
+    height: 42px;
+    padding: 0 13px;
+
+    background: #F8FAF7;
+    border: 1px solid #DCE5D8;
+    border-radius: 9px;
+
+    color: #283D2C;
+    font-size: 13px;
+    font-weight: 600;
+
+    outline: none;
+
+    transition: all 0.2s ease;
+}
+
+.procurement-receive-item input:hover {
+    border-color: #B8CBB1;
+    background: #FFFFFF;
+}
+
+.procurement-receive-item input:focus {
+    border-color: #668A62;
+    background: #FFFFFF;
+
+    box-shadow: 0 0 0 3px rgba(102, 138, 98, 0.12);
+}
+
+.procurement-receive-item input::placeholder {
+    color: #A0AAA0;
+    font-weight: 400;
 }

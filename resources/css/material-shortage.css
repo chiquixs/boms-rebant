@@ -922,3 +922,69 @@
     outline: 2px solid var(--white);
     outline-offset: 2px;
 }
+
+
+/* ========================================
+   DROPDOWN SUPPLIER - MODAL BUAT PO
+======================================== */
+
+#mspOverlay select {
+    width: 100%;
+    max-width: 150px;
+    min-height: 38px;
+
+    padding: 0 34px 0 12px;
+
+    border: 1px solid #DCE4D8;
+    border-radius: 10px;
+
+    outline: none;
+
+    background-color: #FAFCF8;
+    color: #465C3E;
+
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+
+    appearance: none;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23526A48' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+
+    background-repeat: no-repeat;
+    background-position: right 13px center;
+}
+
+#mspOverlay select:hover {
+    border-color: #B8CCAE;
+    background-color: #F6FAF3;
+}
+
+#mspOverlay select:focus {
+    border-color: #8FAF7E;
+    background-color: #FFFFFF;
+
+    box-shadow: 0 0 0 3px rgba(157, 186, 140, 0.16);
+}
+
+#mspOverlay select option {
+    background: #FFFFFF;
+    color: #465C3E;
+    padding: 10px;
+}
+
+#mspOverlay select:disabled {
+    background-color: #F1F3EF;
+    color: #A0A39C;
+    cursor: not-allowed;
+}
+
+
+
