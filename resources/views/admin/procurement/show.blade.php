@@ -11,7 +11,7 @@
 
 <div class="procurement-detail-page" id="procurementDetailPage" data-status="{{ strtolower($purchaseOrder->status) }}">
 
-    <a href="{{ route('admin.procurement.index') }}" class="procurement-detail-back">
+    <a href="{{ route('admin.procurement.index') }}#purchase-orders" class="procurement-detail-back">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="m15 18-6-6 6-6" />
         </svg>

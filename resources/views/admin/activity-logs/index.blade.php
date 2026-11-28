@@ -383,26 +383,53 @@
         @endif
 
         @if ($logs->hasPages())
-            <div class="activity-pagination">
+            @php
+                $current = $logs->currentPage();
+                $last    = $logs->lastPage();
+
+                // jendela 3 nomor halaman yang bergeser mengikuti halaman aktif
+                $start = max(1, min($current - 1, $last - 2));
+                $end   = min($last, $start + 2);
+            @endphp
+
+            <nav class="activity-table-footer" aria-label="Navigasi halaman">
+
                 <span>
                     Menampilkan {{ $logs->firstItem() }}–{{ $logs->lastItem() }} dari {{ $logs->total() }} aktivitas
                 </span>
 
-                <div>
+                <div class="activity-pager">
+
+                    {{-- Sebelumnya --}}
                     @if ($logs->onFirstPage())
-                        <span class="disabled">‹ Sebelumnya</span>
+                        <span class="activity-pager-btn" aria-disabled="true">‹</span>
                     @else
-                        <a href="{{ $logs->previousPageUrl() }}">‹ Sebelumnya</a>
+                        <a href="{{ $logs->previousPageUrl() }}" class="activity-pager-btn"
+                            rel="prev" aria-label="Halaman sebelumnya">‹</a>
                     @endif
 
+                    {{-- Nomor halaman --}}
+                    @foreach ($logs->getUrlRange($start, $end) as $page => $url)
+                        @if ($page === $current)
+                            <span class="activity-pager-btn active" aria-current="page">{{ $page }}</span>
+                        @else
+                            <a href="{{ $url }}" class="activity-pager-btn"
+                                aria-label="Halaman {{ $page }}">{{ $page }}</a>
+                        @endif
+                    @endforeach
+
+                    {{-- Berikutnya --}}
                     @if ($logs->hasMorePages())
-                        <a href="{{ $logs->nextPageUrl() }}">Berikutnya ›</a>
+                        <a href="{{ $logs->nextPageUrl() }}" class="activity-pager-btn"
+                            rel="next" aria-label="Halaman berikutnya">›</a>
                     @else
-                        <span class="disabled">Berikutnya ›</span>
+                        <span class="activity-pager-btn" aria-disabled="true">›</span>
                     @endif
-                </div>
-            </div>
-        @endif
+
+        </div>
+
+    </nav>
+@endif
 
     </div>
 

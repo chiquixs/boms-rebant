@@ -360,39 +360,59 @@
         const tabContents =
             document.querySelectorAll('.inventory-tab-content');
 
+        // hash di URL  =>  id panel
+        const tabHashes = {
+            'produk-jadi': 'finishedGoods',
+            'bahan-baku': 'rawMaterials',
+            'riwayat': 'stockHistory'
+        };
+
+        // id panel  =>  hash di URL
+        const hashByTab = {
+            finishedGoods: 'produk-jadi',
+            rawMaterials: 'bahan-baku',
+            stockHistory: 'riwayat'
+        };
+
+        function activateTab(targetId) {
+
+            if (!hashByTab[targetId]) {
+                targetId = 'finishedGoods';
+            }
+
+            tabs.forEach(function(item) {
+                item.classList.toggle('active', item.dataset.tab === targetId);
+            });
+
+            tabContents.forEach(function(content) {
+                content.classList.toggle('active', content.id === targetId);
+            });
+
+        }
 
         tabs.forEach(function(tab) {
 
             tab.addEventListener('click', function() {
 
-                const targetId =
-                    tab.dataset.tab;
+                const targetId = tab.dataset.tab;
 
+                activateTab(targetId);
 
-                tabs.forEach(function(item) {
-                    item.classList.remove('active');
-                });
-
-
-                tabContents.forEach(function(content) {
-                    content.classList.remove('active');
-                });
-
-
-                tab.classList.add('active');
-
-
-                const targetContent =
-                    document.getElementById(targetId);
-
-
-                if (targetContent) {
-                    targetContent.classList.add('active');
-                }
+                // Ingat tab aktif di URL, tanpa memuat ulang halaman
+                window.history.replaceState(
+                    null,
+                    '',
+                    targetId === 'finishedGoods'
+                        ? window.location.pathname + window.location.search
+                        : '#' + hashByTab[targetId]
+                );
 
             });
 
         });
+
+        // Buka tab sesuai URL saat halaman dimuat
+        activateTab(tabHashes[window.location.hash.replace('#', '')]);
 
     });
 </script>

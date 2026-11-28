@@ -6,7 +6,7 @@
 
 <div class="stock-history-page">
 
-    <a href="{{ route('admin.inventory.index') }}" class="stock-history-back">
+    <a href="{{ route('admin.inventory.index') }}#produk-jadi" class="stock-history-back">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="m15 18-6-6 6-6" />
         </svg>

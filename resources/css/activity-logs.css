@@ -1217,4 +1217,131 @@
 
     border-top: 1px solid var(--green-dark);
     border-bottom: 1px solid var(--green-dark);
-}   
+}
+
+/* =========================
+   PAGINATION (gaya seperti Order)
+========================= */
+
+.activity-table-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    padding: 16px 22px;
+
+    border-top: 1px solid var(--border);
+}
+
+.activity-table-footer > span {
+    color: #A0A39C;
+
+    font-size: 9px;
+}
+
+.activity-pager {
+    display: flex;
+
+    gap: 5px;
+}
+
+.activity-pager-btn {
+    min-width: 30px;
+    height: 30px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 8px;
+
+    border: 1px solid var(--border);
+    border-radius: 8px;
+
+    background: var(--white);
+
+    color: #858881;
+
+    font-size: 10px;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.15s ease;
+}
+
+a.activity-pager-btn:hover {
+    background: var(--green-light);
+
+    border-color: #CBD8C4;
+
+    color: var(--green-dark);
+
+    transform: translateY(-1px);
+}
+
+a.activity-pager-btn:active {
+    transform: translateY(0);
+}
+
+a.activity-pager-btn:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+.activity-pager-btn.active {
+    border-color: var(--green-dark);
+
+    background: var(--green-dark);
+
+    color: var(--white);
+
+    cursor: default;
+}
+
+.activity-pager-btn[aria-disabled="true"] {
+    opacity: 0.4;
+
+    cursor: default;
+}
+
+/* HP: teks di atas, nomor halaman di tengah */
+@media (max-width: 600px) {
+
+    .activity-table-footer {
+        flex-direction: column;
+        align-items: stretch;
+
+        padding: 14px 12px;
+
+        text-align: center;
+    }
+
+    .activity-pager {
+        justify-content: center;
+    }
+
+    .activity-pager-btn {
+        min-width: 36px;
+        height: 36px;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .activity-pager-btn {
+        transition: none;
+    }
+
+    a.activity-pager-btn:hover {
+        transform: none;
+    }
+
+}

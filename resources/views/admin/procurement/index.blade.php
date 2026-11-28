@@ -323,7 +323,7 @@ $fmt = fn ($v) => rtrim(rtrim(number_format((float) $v, 3, '.', ''), '0'), '.');
 
                             <td>
                                 <button type="button" class="procurement-action-button review-restock-button">
-                                    Review
+                                    Buat PO
                                 </button>
                             </td>
                         </tr>
@@ -852,45 +852,51 @@ $fmt = fn ($v) => rtrim(rtrim(number_format((float) $v, 3, '.', ''), '0'), '.');
         const tabContents =
             document.querySelectorAll('.procurement-tab-content');
 
+        // data-tab  =>  id panel
+        const tabPanels = {
+            'restock': 'restockTab',
+            'purchase-orders': 'purchaseOrdersTab'
+        };
+
+        function activateTab(target) {
+
+            if (!tabPanels[target]) {
+                target = 'restock';
+            }
+
+            tabButtons.forEach(function(item) {
+                item.classList.toggle('active', item.dataset.tab === target);
+            });
+
+            tabContents.forEach(function(content) {
+                content.classList.toggle('active', content.id === tabPanels[target]);
+            });
+
+        }
 
         tabButtons.forEach(function(button) {
 
             button.addEventListener('click', function() {
 
-                const target =
-                    button.dataset.tab;
+                const target = button.dataset.tab;
 
+                activateTab(target);
 
-                tabButtons.forEach(function(item) {
-                    item.classList.remove('active');
-                });
-
-
-                tabContents.forEach(function(content) {
-                    content.classList.remove('active');
-                });
-
-
-                button.classList.add('active');
-
-
-                if (target === 'restock') {
-
-                    document
-                        .getElementById('restockTab')
-                        .classList.add('active');
-
-                } else {
-
-                    document
-                        .getElementById('purchaseOrdersTab')
-                        .classList.add('active');
-
-                }
+                // Ingat tab aktif di URL (#purchase-orders), tanpa memuat ulang halaman
+                history.replaceState(
+                    null,
+                    '',
+                    target === 'restock'
+                        ? location.pathname + location.search
+                        : '#' + target
+                );
 
             });
 
         });
+
+        // Buka tab sesuai URL saat halaman dimuat
+        activateTab(location.hash.replace('#', ''));
 
 
 
